@@ -100,32 +100,32 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddFirewalls.Designer.vb">
+    <Compile Include="WinForms\AddFirewalls.Designer.vb">
       <DependentUpon>AddFirewalls.vb</DependentUpon>
     </Compile>
-    <Compile Include="AddFirewalls.vb">
+    <Compile Include="WinForms\AddFirewalls.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CentralLogin.Designer.vb">
+    <Compile Include="WinForms\CentralLogin.Designer.vb">
       <DependentUpon>CentralLogin.vb</DependentUpon>
     </Compile>
-    <Compile Include="CentralLogin.vb">
+    <Compile Include="WinForms\CentralLogin.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FileHelpers.vb" />
-    <Compile Include="KeyComparer.vb" />
-    <Compile Include="ListViewItemComparer.vb" />
-    <Compile Include="LogViewer.Designer.vb">
+    <Compile Include="Classes\FileHelpers.vb" />
+    <Compile Include="Classes\KeyComparer.vb" />
+    <Compile Include="Classes\ListViewItemComparer.vb" />
+    <Compile Include="WinForms\LogViewer.Designer.vb">
       <DependentUpon>LogViewer.vb</DependentUpon>
     </Compile>
-    <Compile Include="LogViewer.vb">
+    <Compile Include="WinForms\LogViewer.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.vb">
+    <Compile Include="WinForms\MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.vb">
+    <Compile Include="WinForms\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -144,40 +144,40 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="MyTitleBar.Designer.vb">
+    <Compile Include="UserControls\MyTitleBar.Designer.vb">
       <DependentUpon>MyTitleBar.vb</DependentUpon>
     </Compile>
-    <Compile Include="MyTitleBar.vb">
+    <Compile Include="UserControls\MyTitleBar.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NewPassword.Designer.vb">
+    <Compile Include="WinForms\NewPassword.Designer.vb">
       <DependentUpon>NewPassword.vb</DependentUpon>
     </Compile>
-    <Compile Include="NewPassword.vb">
+    <Compile Include="WinForms\NewPassword.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PasswordChangeConfirmation.Designer.vb">
+    <Compile Include="WinForms\PasswordChangeConfirmation.Designer.vb">
       <DependentUpon>PasswordChangeConfirmation.vb</DependentUpon>
     </Compile>
-    <Compile Include="PasswordChangeConfirmation.vb">
+    <Compile Include="WinForms\PasswordChangeConfirmation.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PasswordStrength.vb" />
-    <Compile Include="SecurityCheck.vb" />
-    <Compile Include="AES256Wrapper.vb" />
-    <Compile Include="XGShellConnection.vb" />
+    <Compile Include="Classes\PasswordStrength.vb" />
+    <Compile Include="Classes\SecurityCheck.vb" />
+    <Compile Include="Classes\AES256Wrapper.vb" />
+    <Compile Include="Classes\XGShellConnection.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AddFirewalls.resx">
+    <EmbeddedResource Include="WinForms\AddFirewalls.resx">
       <DependentUpon>AddFirewalls.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CentralLogin.resx">
+    <EmbeddedResource Include="WinForms\CentralLogin.resx">
       <DependentUpon>CentralLogin.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LogViewer.resx">
+    <EmbeddedResource Include="WinForms\LogViewer.resx">
       <DependentUpon>LogViewer.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="WinForms\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -186,13 +186,13 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="MyTitleBar.resx">
+    <EmbeddedResource Include="UserControls\MyTitleBar.resx">
       <DependentUpon>MyTitleBar.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewPassword.resx">
+    <EmbeddedResource Include="WinForms\NewPassword.resx">
       <DependentUpon>NewPassword.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PasswordChangeConfirmation.resx">
+    <EmbeddedResource Include="WinForms\PasswordChangeConfirmation.resx">
       <DependentUpon>PasswordChangeConfirmation.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -211,7 +211,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="README.TXT" />
     <Content Include="XG.ico" />
   </ItemGroup>
   <ItemGroup>
