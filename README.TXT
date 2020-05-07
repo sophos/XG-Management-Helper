@@ -1,6 +1,6 @@
 ﻿XG Management Helper
-By: Alan Toews (alan@toews.xyz)
-Created May 4, 2020
+Created By: Alan Toews (alan.toews@sophos.com)
+Created April 30, 2020
 ==============================
 
 === WARNING ===
@@ -42,6 +42,8 @@ A series of options will allow firewalls to be automatically registered to Sopho
 
 === Security ===
 This application stores passwords in encrypted form, using a unique encryption key on every installation. This should not be considered absolute security, as a malicious actor with access to the machine where the application is installed, could potentially access enough information to derive the key. Ensure that access to the machine where this application is used, is properly controlled, and adequate endpoint protection is installed to protect the data this application can handle. 
+
+
 
 
 
