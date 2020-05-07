@@ -23,11 +23,11 @@ Partial Class LogViewer
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.LogsComboBox = New System.Windows.Forms.ComboBox()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.LogMessagesTextBox = New System.Windows.Forms.TextBox()
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
-        Me.Button1 = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -39,18 +39,8 @@ Partial Class LogViewer
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel1.Location = New System.Drawing.Point(2, 52)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(796, 26)
+        Me.Panel1.Size = New System.Drawing.Size(984, 26)
         Me.Panel1.TabIndex = 0
-        '
-        'Label1
-        '
-        Me.Label1.Dock = System.Windows.Forms.DockStyle.Left
-        Me.Label1.Location = New System.Drawing.Point(0, 0)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(132, 26)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Password Change Logs"
-        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'LogsComboBox
         '
@@ -62,8 +52,33 @@ Partial Class LogViewer
         Me.LogsComboBox.FormattingEnabled = True
         Me.LogsComboBox.Location = New System.Drawing.Point(132, 0)
         Me.LogsComboBox.Name = "LogsComboBox"
-        Me.LogsComboBox.Size = New System.Drawing.Size(518, 26)
+        Me.LogsComboBox.Size = New System.Drawing.Size(706, 26)
         Me.LogsComboBox.TabIndex = 0
+        '
+        'Button1
+        '
+        Me.Button1.BackColor = System.Drawing.Color.FromArgb(CType(CType(25, Byte), Integer), CType(CType(135, Byte), Integer), CType(CType(203, Byte), Integer))
+        Me.Button1.Dock = System.Windows.Forms.DockStyle.Right
+        Me.Button1.FlatAppearance.BorderSize = 0
+        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Button1.Font = New System.Drawing.Font("Arial", 12.0!)
+        Me.Button1.ForeColor = System.Drawing.Color.White
+        Me.Button1.Location = New System.Drawing.Point(838, 0)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(146, 26)
+        Me.Button1.TabIndex = 2
+        Me.Button1.Text = "Delete"
+        Me.Button1.UseVisualStyleBackColor = False
+        '
+        'Label1
+        '
+        Me.Label1.Dock = System.Windows.Forms.DockStyle.Left
+        Me.Label1.Location = New System.Drawing.Point(0, 0)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(132, 26)
+        Me.Label1.TabIndex = 1
+        Me.Label1.Text = "Password Change Logs"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'LogMessagesTextBox
         '
@@ -74,7 +89,7 @@ Partial Class LogViewer
         Me.LogMessagesTextBox.Name = "LogMessagesTextBox"
         Me.LogMessagesTextBox.ReadOnly = True
         Me.LogMessagesTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.LogMessagesTextBox.Size = New System.Drawing.Size(796, 370)
+        Me.LogMessagesTextBox.Size = New System.Drawing.Size(984, 370)
         Me.LogMessagesTextBox.TabIndex = 1
         '
         'MyTitleBar1
@@ -85,29 +100,14 @@ Partial Class LogViewer
         Me.MyTitleBar1.MaximizeBox = True
         Me.MyTitleBar1.MinimizeBox = True
         Me.MyTitleBar1.Name = "MyTitleBar1"
-        Me.MyTitleBar1.Size = New System.Drawing.Size(796, 50)
+        Me.MyTitleBar1.Size = New System.Drawing.Size(984, 50)
         Me.MyTitleBar1.TabIndex = 2
-        '
-        'Button1
-        '
-        Me.Button1.BackColor = System.Drawing.Color.FromArgb(CType(CType(25, Byte), Integer), CType(CType(135, Byte), Integer), CType(CType(203, Byte), Integer))
-        Me.Button1.Dock = System.Windows.Forms.DockStyle.Right
-        Me.Button1.FlatAppearance.BorderSize = 0
-        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Button1.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.Button1.ForeColor = System.Drawing.Color.White
-        Me.Button1.Location = New System.Drawing.Point(650, 0)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(146, 26)
-        Me.Button1.TabIndex = 2
-        Me.Button1.Text = "Delete"
-        Me.Button1.UseVisualStyleBackColor = False
         '
         'LogViewer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.ClientSize = New System.Drawing.Size(988, 450)
         Me.ControlBox = False
         Me.Controls.Add(Me.LogMessagesTextBox)
         Me.Controls.Add(Me.Panel1)
@@ -117,6 +117,7 @@ Partial Class LogViewer
         Me.MinimizeBox = False
         Me.Name = "LogViewer"
         Me.Padding = New System.Windows.Forms.Padding(2)
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "LogViewer"
         Me.Panel1.ResumeLayout(False)
         Me.ResumeLayout(False)

@@ -1,4 +1,11 @@
-﻿Imports System
+﻿' Copyright 2020  Sophos Ltd.  All rights reserved.
+' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+' You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+' Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, 
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing 
+' permissions and limitations under the License.
+
+Imports System
 Imports System.IO
 Imports System.Security.Cryptography
 Imports System.Text
@@ -13,7 +20,7 @@ Class AES256Wrapper
 #Enable Warning IDE0044 ' Add readonly modifier
 
     Sub New(key As String)
-        If key Is Nothing Then Throw New ArgumentNullException("Key is required")
+        If key Is Nothing Then Throw New Exception("Key is required")
         If key.Length = 0 Then Throw New ArgumentNullException("Key cannot be blank")
         Me.Key = key
     End Sub
@@ -32,31 +39,33 @@ Class AES256Wrapper
         Dim keys As Byte()() = GetHashKeys(key)
         Try
             EncryptedData = AESEncryptBytes(data, keys(0), keys(1))
+            Return EncryptedData
         Catch ex As Exception
             'failures should be handled by throwing away the data, and returning an empty string       
             Return ""
         End Try
 
-        Return EncryptedData
+        Return ""
     End Function
 
     Public Function Decrypt(ByVal key As String, ByVal data As String) As String
         Dim DecryptedData As String
         Dim Keys As Byte()() = GetHashKeys(key)
         If data Is Nothing Then Return ""
+
         Try
-            DecryptedData = AESDecryptBytes(data, keys(0), keys(1))
+            DecryptedData = AESDecryptBytes(data, Keys(0), Keys(1))
+            Return DecryptedData
         Catch ex As Exception
             'failures should be handled by throwing away the data, and returning an empty string
             'could happen if registry data is transported from one computer to another
             Return ""
         End Try
 
-        Return DecryptedData
     End Function
 
     Private Shared Function AESEncryptBytes(ByVal plainText As String, ByVal Key As Byte(), ByVal IV As Byte()) As String
-        If plainText Is Nothing OrElse plainText.Length <= 0 Then Throw New ArgumentNullException("plainText")
+        If plainText Is Nothing OrElse plainText.Length <= 0 Then Return "" 'Throw New ArgumentNullException("plainText")
         If Key Is Nothing OrElse Key.Length <= 0 Then Throw New ArgumentNullException("Key")
         If IV Is Nothing OrElse IV.Length <= 0 Then Throw New ArgumentNullException("IV")
         Dim EncryptedBytes As Byte()
@@ -78,9 +87,8 @@ Class AES256Wrapper
 
     Private Shared Function AESDecryptBytes(ByVal cipherTextString As String, ByVal Key As Byte(), ByVal IV As Byte()) As String
         Try
-
             Dim EncryptedBytes As Byte() = Convert.FromBase64String(cipherTextString)
-            If EncryptedBytes Is Nothing OrElse EncryptedBytes.Length <= 0 Then Throw New ArgumentNullException("EncryptedBytes")
+            If EncryptedBytes Is Nothing OrElse EncryptedBytes.Length <= 0 Then Return "" 'Throw New ArgumentNullException("EncryptedBytes")
             If Key Is Nothing OrElse Key.Length <= 0 Then Throw New ArgumentNullException("Key")
             If IV Is Nothing OrElse IV.Length <= 0 Then Throw New ArgumentNullException("IV")
             Dim plaintext As String = Nothing
@@ -97,10 +105,12 @@ Class AES256Wrapper
                     End Using
                 End Using
             End Using
+
             '
             Return plaintext
         Catch ex As Exception
-            'MsgBox(ex.ToString)
+            MsgBox(ex.ToString & vbNewLine & vbNewLine & cipherTextString.Length)
+            Return ""
         End Try
     End Function
 

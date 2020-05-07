@@ -1,10 +1,17 @@
-﻿Imports System.Management
+﻿' Copyright 2020  Sophos Ltd.  All rights reserved.
+' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+' You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+' Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, 
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing 
+' permissions and limitations under the License.
+
+Imports System.Management
 Imports System.Security.Cryptography
 Imports System.IO.Compression
+Imports System.ComponentModel
+Imports XGManagementHelper.RandomStringGenerator
 
 Public Class MainForm
-
-
     'temporary quick encryption, replaced now
     'ReadOnly ENC As New Hider(My.Computer.Name & "wertyuj3k4er8foji4rewfoyiczld4d53ads6assad7")
 
@@ -12,12 +19,13 @@ Public Class MainForm
     ReadOnly Key1 As String = "9P5xruz;=FH""Q^Xzj'1[#nbKY7vwgGVl7Q$(=N?Pyw\gnM,])2*7jJmPK[qdMJu"
     ReadOnly key2 As String = My.Computer.Name & SerialNumbers()
     Private key3 As String
+    Const Iterations As Integer = 1
     Private AESWrapper As AES256Wrapper
-
-    'Public host As KeyValuePair(Of String, String)
-
-    Public Hosts As New List(Of KeyValuePair(Of String, String))
+    ReadOnly AESINIT As New AES256Wrapper(Key1 & key2)
     ReadOnly NewHosts As New List(Of KeyValuePair(Of String, String))
+    ReadOnly IncrementalAutoSave As Boolean = True
+    Private FormIsDirty As Boolean
+    ReadOnly Hosts As New List(Of KeyValuePair(Of String, String))
     Private CentralUser As String = ""
     Private CentralPass As String = ""
     Private ShellCommonPass As String = ""
@@ -46,7 +54,6 @@ Public Class MainForm
         Dim LogLevel As XGShellConnection.LogSeverity = XGShellConnection.LogSeverity.Informational
         '
         If My.Computer.Keyboard.CtrlKeyDown Then
-            MsgBox("Debug logging enabled", MsgBoxStyle.Information)
             LogLevel = XGShellConnection.LogSeverity.Debug
         End If
         '
@@ -61,11 +68,8 @@ Public Class MainForm
             Case ActionOptions.Check_Current_Version '"Check Current Version"
                 DoVersionCheck(LogLevel)
 
-            Case ActionOptions.Install_Available_Hotfixes '"Install Available Hotfix(es)"
-                If MsgBox("Are you sure you want to trigger hotfix installation on " & sfcount & " firewall(s)?",
-                          MsgBoxStyle.Exclamation + MsgBoxStyle.YesNo, "Please Confirm") = MsgBoxResult.Yes Then
-                    DoHotfixInstall(LogLevel)
-                End If
+            Case ActionOptions.Install_Available_Hotfixes '"Install Available Hotfix(es)"                
+                DoHotfixInstall(LogLevel)
 
             Case ActionOptions.Enable_All_Central_Services '"Enable All Central Services"
                 CM = True : CR = True : CMBackup = True
@@ -88,22 +92,14 @@ Public Class MainForm
                 DoMigrate = True
 
             Case ActionOptions.Deregister_from_Central '"De-Register from Central"
-                If MsgBox("Are you sure you want to De-register " & sfcount & " firewall(s) from Sophos Central?",
-                          MsgBoxStyle.Exclamation + MsgBoxStyle.YesNo, "Please Confirm") = MsgBoxResult.Yes Then
-                    DoDeRegister(LogLevel)
-                End If
+
+                DoDeRegister(LogLevel)
             Case ActionOptions.Change_admin_password
-                If MsgBox("Are you sure you want to change the 'admin' account password on " & sfcount & " firewall(s)?",
-                          MsgBoxStyle.Exclamation + MsgBoxStyle.YesNo, "Please Confirm") = MsgBoxResult.Yes Then
-                    DoSetAdminPassword(LogLevel)
-                End If
+                DoSetAdminPassword(LogLevel)
         End Select
 
         If DoMigrate Then
-            If MsgBox("Are you sure you want to migrate " & sfcount & " firewall(s) to Sophos Central?",
-                      MsgBoxStyle.Question + MsgBoxStyle.YesNo, "Please Confirm") = MsgBoxResult.Yes Then
-                DoMigration(LogLevel)
-            End If
+            DoMigration(LogLevel)
         End If
 
         TopPanel.Enabled = True
@@ -139,8 +135,9 @@ Public Class MainForm
 
     Private Sub CentralUserTextBox_TextChanged(sender As Object, e As EventArgs) Handles ShellPassTextBox.TextChanged
         If LoadingBool Then Exit Sub
+        FormIsDirty = True
         ShellCommonPass = ShellPassTextBox.Text
-        SaveSettings()
+        SaveSettings(IncrementalAutoSave)
         EnableDisable()
 
     End Sub
@@ -180,7 +177,7 @@ Public Class MainForm
         '
         Hosts.Clear()
         Hosts.AddRange(removedlist)
-        SaveHosts()
+        SaveHosts(IncrementalAutoSave)
         UpdateHostsList()
         '
     End Sub
@@ -214,7 +211,7 @@ Public Class MainForm
 
                 'combine unique entries
                 FinishAddNewHosts()
-                SaveHosts()
+                SaveHosts(IncrementalAutoSave)
                 UpdateHostsList()
             Catch ex As Exception
                 Debug.Print("E04683" & ex.Message)
@@ -244,12 +241,17 @@ Public Class MainForm
     Private Sub DoHotfixInstall(loglevel As XGShellConnection.LogSeverity)
 
         Dim SelectedHosts() As KeyValuePair(Of String, String) = GetSelectedHosts()
+        Dim confirm As New ChangeConfirmation(SelectedHosts.Count, loglevel = XGShellConnection.LogSeverity.Debug)
+        If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
+        If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
+
         GoButton.Enabled = False
         ToolStripProgressBar.Maximum = SelectedHosts.Count
         ToolStripProgressBar.Minimum = 0
         ToolStripProgressBar.Value = 0
         ToolStripProgressBar.Visible = True
         Dim count As Integer = 0
+
         'clear results window
         ListHosts()
         For Each Host As KeyValuePair(Of String, String) In SelectedHosts
@@ -263,23 +265,31 @@ Public Class MainForm
             Dim pass As String = Host.Value
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
-            Dim result As String = SSH.InstallHotfixes(Host.Key, "admin", pass, loglevel)
+            Dim result As XGShellConnection.ExpectResult = SSH.InstallHotfixes(Host.Key, "admin", pass, loglevel)
 
-            lvi.SubItems.Add(result)
+            lvi.SubItems.Add(result.Summary)
             lvi.SubItems.Add(Now.ToString("yyyy-MM-dd h:mm:ss tt"))
-            If result.Contains("200") Then
-                If result.Contains("remains") Then
+            If result.Success Then
+                If result.Reply.Contains("remains") Then
                     lvi.ImageKey = "gray check"
                 Else
                     lvi.ImageKey = "green check"
                 End If
-
-                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result, loglevel)
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result.Summary, loglevel)
             Else
-                lvi.ImageKey = "fail"
-
-                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result, loglevel)
+                Select Case result.FailReason
+                    Case "Timeout"
+                        lvi.ImageKey = "timeout"
+                    Case "Credentials"
+                        lvi.ImageKey = "fail"
+                    Case "Connection"
+                        lvi.ImageKey = "fail"
+                    Case Else
+                        lvi.ImageKey = "fail"
+                End Select
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
             End If
+
 
             ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent) 'And ColumnHeaderAutoResizeStyle.HeaderSize)
         Next
@@ -312,17 +322,28 @@ Public Class MainForm
             Dim pass As String = Host.Value
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
-            Dim result As String = SSH.CheckCurrentFirmwareVersion(Host.Key, "admin", pass, loglevel)
+            Dim result As XGShellConnection.ExpectResult = SSH.CheckCurrentFirmwareVersion(Host.Key, "admin", pass, loglevel)
 
-            lvi.SubItems.Add(result)
+            lvi.SubItems.Add(result.Summary)
             lvi.SubItems.Add(Now.ToString("yyyy-MM-dd h:mm:ss tt"))
-            If result.Contains("NO HOTFIX") Then
-                lvi.ImageKey = "fail"
-                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result, loglevel)
+
+            If result.Success Then
+                lvi.ImageKey = "gray check"
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result.Summary, loglevel)
             Else
-                lvi.ImageKey = ""
-                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result, loglevel)
+                Select Case result.FailReason
+                    Case "Timeout"
+                        lvi.ImageKey = "timeout"
+                    Case "Credentials"
+                        lvi.ImageKey = "fail"
+                    Case "Connection"
+                        lvi.ImageKey = "fail"
+                    Case Else
+                        lvi.ImageKey = "fail"
+                End Select
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
             End If
+
 
             ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent) 'And ColumnHeaderAutoResizeStyle.HeaderSize)
         Next
@@ -340,10 +361,13 @@ Public Class MainForm
         End If
 
         Dim Selection As IEnumerable = ResultsListView.Items
+        Dim SelectedHosts() As KeyValuePair(Of String, String) = GetSelectedHosts()
 
+        Dim confirm As New ChangeConfirmation(SelectedHosts.Count, loglevel = XGShellConnection.LogSeverity.Debug)
+        If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
+        If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
         If ResultsListView.CheckedItems.Count > 0 Then Selection = ResultsListView.CheckedItems
 
-        Dim SelectedHosts() As KeyValuePair(Of String, String) = GetSelectedHosts()
         GoButton.Enabled = False
         ToolStripProgressBar.Maximum = SelectedHosts.Count
         ToolStripProgressBar.Minimum = 0
@@ -369,24 +393,43 @@ Public Class MainForm
             Application.DoEvents()
 
             'now we can talk to the firewall..
-            Dim result As String = SSH.RegisterToCentral(Host.Key, "admin", pass, CentralUser, CentralPass, CM, CR, CMBackup, loglevel)
+            Dim result As XGShellConnection.ExpectResult = SSH.RegisterToCentral(Host.Key, "admin", pass, CentralUser, CentralPass, CM, CR, CMBackup, loglevel)
 
             'interpret results and update the line item accordingly
-            lvi.SubItems.Add(result)
+            lvi.SubItems.Add(result.Summary)
             lvi.SubItems.Add(Now.ToString("yyyy-MM-dd h:mm:ss tt"))
 
-            If result.Contains("Approval Pending") Then
-                lvi.ImageKey = "pause"
-                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result, loglevel)
-            ElseIf result.Contains("Timeout") Then
-                lvi.ImageKey = "timeout"
-                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result, loglevel)
-            ElseIf result.Contains("Central Service(s) enabled") Then
+            If result.Success Then
                 lvi.ImageKey = "gray check"
-                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result, loglevel)
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result.Summary, loglevel)
             Else
-                lvi.ImageKey = "fail"
-                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result, loglevel)
+
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
+            End If
+
+
+            If result.Success Then
+                If result.Summary.Contains("Central Service(s) enabled") Then
+                    lvi.ImageKey = "gray check"
+                Else
+                    lvi.ImageKey = "pause"
+                End If
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result.Summary, loglevel)
+            ElseIf result.Summary.Contains("Timeout") Then
+                lvi.ImageKey = "timeout"
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
+            Else
+                Select Case result.FailReason
+                    Case "Timeout"
+                        lvi.ImageKey = "timeout"
+                    Case "Credentials"
+                        lvi.ImageKey = "fail"
+                    Case "Connection"
+                        lvi.ImageKey = "fail"
+                    Case Else
+                        lvi.ImageKey = "fail"
+                End Select
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
             End If
             ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent) 'And ColumnHeaderAutoResizeStyle.HeaderSize)
         Next
@@ -401,6 +444,11 @@ Public Class MainForm
         'Throw New NotImplementedException
 
         Dim SelectedHosts() As KeyValuePair(Of String, String) = GetSelectedHosts()
+        Dim confirm As New ChangeConfirmation(SelectedHosts.Count, loglevel = XGShellConnection.LogSeverity.Debug)
+        If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
+        If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
+        If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
+
         GoButton.Enabled = False
         ToolStripProgressBar.Maximum = SelectedHosts.Count
         ToolStripProgressBar.Minimum = 0
@@ -421,18 +469,18 @@ Public Class MainForm
             Dim pass As String = Host.Value
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
-            Dim result As String = SSH.DeRegisterFromCentral(Host.Key, "admin", pass, loglevel)
-            lvi.SubItems.Add(result)
+            Dim result As XGShellConnection.ExpectResult = SSH.DeRegisterFromCentral(Host.Key, "admin", pass, loglevel)
+            lvi.SubItems.Add(result.Summary)
             lvi.SubItems.Add(Now.ToString("yyyy-MM-dd h:mm:ss tt"))
 
-            Select Case result
-                Case "Registration cleared successfully"
+            Select Case result.Summary
+                Case "SUCCESS: Registration cleared successfully"
                     lvi.ImageKey = "success"
 
-                Case "Not registered"
+                Case "FAIL: Not registered"
                     lvi.ImageKey = "gray check"
 
-                Case "Timeout"
+                Case "FAIL: Timeout"
                     lvi.ImageKey = "timeout"
 
                 Case Else
@@ -449,13 +497,6 @@ Public Class MainForm
     End Sub
 
     Private Sub DoSetAdminPassword(loglevel As XGShellConnection.LogSeverity)
-        Dim SelectedHosts() As KeyValuePair(Of String, String) = GetSelectedHosts()
-        GoButton.Enabled = False
-        ToolStripProgressBar.Maximum = SelectedHosts.Count
-        ToolStripProgressBar.Minimum = 0
-        ToolStripProgressBar.Value = 0
-        ToolStripProgressBar.Visible = True
-        Dim count As Integer = 0
 
         Dim np As New NewPassword
         Dim newpass As String
@@ -466,11 +507,24 @@ Public Class MainForm
         Else
             Exit Sub
         End If
+        Dim SelectedHosts() As KeyValuePair(Of String, String) = GetSelectedHosts()
+        Dim confirm As New ChangeConfirmation(SelectedHosts.Count, loglevel = XGShellConnection.LogSeverity.Debug)
+        If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
+        If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
+
+        GoButton.Enabled = False
+        ToolStripProgressBar.Maximum = SelectedHosts.Count
+        ToolStripProgressBar.Minimum = 0
+        ToolStripProgressBar.Value = 0
+        ToolStripProgressBar.Visible = True
+        Dim count As Integer = 0
 
         'clear results window
         ListHosts()
         Dim Logname As String = String.Format("PasswordChanges-{0}", Now.ToString("yyyy-MM-dd_h-mm_tt"))
         Dim loglines As String = ""
+        Dim Logfilename As String = FileHelpers.MakeUniqueFilename(Logname & ".enc")
+        Logname = IO.Path.GetFileNameWithoutExtension(Logfilename)
         For Each Host As KeyValuePair(Of String, String) In SelectedHosts
             count += 1
             ToolStripProgressBar.Value += 1
@@ -483,10 +537,11 @@ Public Class MainForm
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
             If Generate OrElse Not newpass = pass Then
-                If Generate Then newpass = RandomString(32)
+                If Generate Then newpass = RandomString(32, np.EnforceComplexity)
                 Dim result As XGShellConnection.ExpectResult = SSH.SetAdminPassword(Host.Key, "admin", pass, newpass, loglevel)
-
                 loglines &= String.Format("""{0}"",""{1}"",""{2}"",""{3}""{4}", Now.ToString("yyyy-MM-dd h:mm:ss tt"), Host.Key, newpass, result.Summary, vbNewLine)
+                System.IO.File.WriteAllText(Logfilename, AESWrapper.Encrypt(loglines))
+
                 lvi.SubItems.Add(result.Summary)
                 lvi.SubItems.Add(Now.ToString("yyyy-MM-dd h:mm:ss tt"))
 
@@ -499,15 +554,21 @@ Public Class MainForm
                         newhost = New KeyValuePair(Of String, String)(Host.Key, newpass)
                     End If
                     AddNewHost(newhost)
-                ElseIf result.Exception IsNot Nothing Then
-
-                    If result.Exception.Message.Contains("time") Then
-                        lvi.ImageKey = "timeout"
-
-                    Else
-                        lvi.ImageKey = "fail"
-
-                    End If
+                    FinishAddNewHosts()
+                    SaveHosts(IncrementalAutoSave)
+                    UpdateHostsList()
+                Else
+                    Select Case result.FailReason
+                        Case "Timeout"
+                            lvi.ImageKey = "timeout"
+                        Case "Credentials"
+                            lvi.ImageKey = "fail"
+                        Case "Connection"
+                            lvi.ImageKey = "fail"
+                        Case Else
+                            lvi.ImageKey = "fail"
+                    End Select
+                    XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
                 End If
             Else
                 lvi.SubItems.Add("No change needed")
@@ -519,24 +580,20 @@ Public Class MainForm
             '
         Next
 
-        Dim Logfilename As String = FileHelpers.MakeUniqueFilename(Logname & ".enc")
-        Logname = IO.Path.GetFileNameWithoutExtension(Logfilename)
-
-        System.IO.File.AppendAllText(Logfilename, AESWrapper.Encrypt(loglines))
 
         Dim lv As New LogViewer(key2 & Key1 & key3)
         lv.ShowLog(Logname)
         lv.ShowDialog()
 
         FinishAddNewHosts()
-        SaveHosts()
+        SaveHosts(IncrementalAutoSave)
         UpdateHostsList()
 
         If Not Generate Then
             If MsgBox("Update complete. do you want to update your common firewall password to match the psasword you just set?", MsgBoxStyle.YesNo + MsgBoxStyle.Question) = MsgBoxResult.Yes Then
                 ShellCommonPass = newpass
                 ShellPassTextBox.Text = newpass
-                SaveSettings()
+                SaveSettings(IncrementalAutoSave)
             End If
         End If
         'finished. update status and clean up
@@ -544,21 +601,24 @@ Public Class MainForm
         ToolStripProgressBar.Visible = False
         GoButton.Enabled = True
     End Sub
+
 #End Region
 
 #Region "Private Methods"
 
     Private Sub LoadSavedValues()
         Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Sophos\XGManagementMigration")
-            key3 = key.GetValue("telemetry", Guid.NewGuid.ToString)
-            key.SetValue("telemetry", key3)
+            key3 = AESINIT.Decrypt(key.GetValue("telemetry", AESINIT.Encrypt(Guid.NewGuid.ToString)))
+            'If key3 Is Nothing Then key3 = key.GetValue("telemetry", Guid.NewGuid.ToString)
+            If key3.Length = 0 Then key3 = Guid.NewGuid.ToString
             '
+            key.SetValue("telemetry", AESINIT.Encrypt(key3))
             AESWrapper = New AES256Wrapper(key2 & Key1 & key3)
             '
             Try
-                ShellCommonPass = AESWrapper.Decrypt(key.GetValue("CommonShell"))
-                CentralUser = key.GetValue("LastEmail")
-                CentralPass = AESWrapper.Decrypt(key.GetValue("LastEmailPass"))
+                ShellCommonPass = AESWrapper.Decrypt(key.GetValue("CommonShell", ""))
+                CentralUser = key.GetValue("LastEmail", "")
+                CentralPass = AESWrapper.Decrypt(key.GetValue("LastEmailPass", ""))
             Catch ex As Exception
                 MsgBox(ex.ToString)
             End Try
@@ -584,57 +644,63 @@ Public Class MainForm
         LoadingBool = False
     End Sub
 
-    Private Sub SaveSettings()
-        Dim key As Microsoft.Win32.RegistryKey
-        key = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Sophos\XGManagementMigration")
-        Try
-            If CentralUser.Length Then
-                key.SetValue("LastEmail", CentralUser)
-            Else
-                key.DeleteValue("LastEmail")
-            End If
-        Catch ex As Exception
-            Debug.Print("LastEmail len {0} error {1}", CentralUser.Length, ex.Message)
-        End Try
+    Private Sub SaveSettings(Optional Force As Boolean = False)
+        If Force Then
+            Dim key As Microsoft.Win32.RegistryKey
+            key = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Sophos\XGManagementMigration")
+            Try
+                If CentralUser.Length Then
+                    key.SetValue("LastEmail", CentralUser)
+                Else
+                    key.DeleteValue("LastEmail")
+                End If
+            Catch ex As Exception
+                Debug.Print("LastEmail len {0} error {1}", CentralUser.Length, ex.Message)
+            End Try
 
-        Try
-            If CentralPass.Length Then
-                key.SetValue("LastEmailPass", AESWrapper.Encrypt(CentralPass))
-            Else
-                key.DeleteValue("LastEmailPass")
-            End If
-        Catch ex As Exception
-            Debug.Print("CentralPass len {0} error {1}", CentralPass.Length, ex.Message)
-        End Try
+            Try
+                If CentralPass.Length Then
+                    key.SetValue("LastEmailPass", AESWrapper.Encrypt(CentralPass))
+                Else
+                    key.DeleteValue("LastEmailPass")
+                End If
+            Catch ex As Exception
+                Debug.Print("CentralPass len {0} error {1}", CentralPass.Length, ex.Message)
+            End Try
 
-        Try
-            If ShellCommonPass.Length Then
-                key.SetValue("CommonShell", AESWrapper.Encrypt(ShellCommonPass))
-            Else
-                key.DeleteValue("CommonShell")
-            End If
-        Catch ex As Exception
-            Debug.Print("CommonShell len {0} error {1}", ShellCommonPass.Length, ex.Message)
-        End Try
-
+            Try
+                If ShellCommonPass.Length Then
+                    key.SetValue("CommonShell", AESWrapper.Encrypt(ShellCommonPass))
+                Else
+                    key.DeleteValue("CommonShell")
+                End If
+            Catch ex As Exception
+                Debug.Print("CommonShell len {0} error {1}", ShellCommonPass.Length, ex.Message)
+            End Try
+        Else
+            FormIsDirty = True
+        End If
     End Sub
 
-    Private Sub SaveHosts()
-        Dim key As Microsoft.Win32.RegistryKey
-        Try
-            My.Computer.Registry.CurrentUser.DeleteSubKeyTree("Software\Sophos\XGManagementMigration\Hosts")
-        Catch ex As Exception
-            Debug.Print("E082432:" & ex.Message)
-        End Try
-        Try
-            key = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Sophos\XGManagementMigration\Hosts")
-            For Each host As KeyValuePair(Of String, String) In Hosts
-                key.SetValue(host.Key, AESWrapper.Encrypt(host.Value))
-            Next
-        Catch ex As Exception
-            Debug.Print("E9348" & ex.Message)
-        End Try
-
+    Private Sub SaveHosts(Optional Force As Boolean = False)
+        If Force Then
+            Dim key As Microsoft.Win32.RegistryKey
+            Try
+                My.Computer.Registry.CurrentUser.DeleteSubKeyTree("Software\Sophos\XGManagementMigration\Hosts")
+            Catch ex As Exception
+                Debug.Print("E082432:" & ex.Message)
+            End Try
+            Try
+                key = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Sophos\XGManagementMigration\Hosts")
+                For Each host As KeyValuePair(Of String, String) In Hosts
+                    key.SetValue(host.Key, AESWrapper.Encrypt(host.Value))
+                Next
+            Catch ex As Exception
+                Debug.Print("E9348" & ex.Message)
+            End Try
+        Else
+            FormIsDirty = True
+        End If
     End Sub
 
     Private Sub EnableDisable()
@@ -690,11 +756,9 @@ Public Class MainForm
 
     Private Sub AddNewHost(newhost As KeyValuePair(Of String, String))
         If newhost.Key Is Nothing Then
-            'MsgBox("newhost is nothing")
             Exit Sub
         End If
         If newhost.Key.Trim.Length = 0 Then
-            'MsgBox("newhost length is zero")
             Exit Sub
         End If
         NewHosts.Add(newhost)
@@ -805,7 +869,7 @@ Public Class MainForm
                 Case DialogResult.Abort
                     CentralUser = ""
                     CentralPass = ""
-                    SaveSettings()
+                    SaveSettings(IncrementalAutoSave)
                     Exit Sub
 
                 Case DialogResult.Cancel
@@ -815,29 +879,8 @@ Public Class MainForm
         End While
         CentralUser = cu
         CentralPass = cp
-        SaveSettings()
+        SaveSettings(IncrementalAutoSave)
     End Sub
-
-    ReadOnly CryptoRandom As RandomNumberGenerator = RandomNumberGenerator.Create()
-    'Private Const allowedchars As String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-=+!@#$%^&*()"
-    Private Const allowedchars As String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    Private Function RandomString(Length As Integer) As String
-        Dim randomess(Length - 1) As UInt64
-        For count As Integer = 0 To Length - 1
-            Dim bytes(7) As Byte
-            CryptoRandom.GetNonZeroBytes(bytes)
-            randomess(count) = BitConverter.ToUInt64(bytes, 0)
-        Next
-
-        'minimze randomness skew by modding uint64 values
-        Dim rslt As String = ""
-        For Each number As UInt64 In randomess
-            Dim pos As Integer = number Mod (allowedchars.Length)
-            rslt &= allowedchars.Chars(pos)
-        Next
-
-        Return rslt
-    End Function
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim lv As New LogViewer(key2 & Key1 & key3)
@@ -845,6 +888,10 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub MainForm_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        SaveSettings(FormIsDirty)
+        SaveHosts(FormIsDirty)
+    End Sub
 
 #End Region
 

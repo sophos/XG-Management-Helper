@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class NewPassword
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class NewPassword
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
         Me.PasswordShowButton = New System.Windows.Forms.Button()
@@ -34,11 +34,11 @@ Partial Class NewPassword
         Me.StatusLabel = New System.Windows.Forms.Label()
         Me.StrengthProgressBar = New System.Windows.Forms.ProgressBar()
         Me.GenerateCheckBox = New System.Windows.Forms.CheckBox()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.CheckBoxLabel = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.StrengthLabel = New System.Windows.Forms.Label()
-        Me.DetailsLabel = New System.Windows.Forms.Label()
+        Me.ComplexityCheckBox = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'MyTitleBar1
@@ -183,15 +183,15 @@ Partial Class NewPassword
         Me.GenerateCheckBox.TabIndex = 25
         Me.GenerateCheckBox.UseVisualStyleBackColor = True
         '
-        'Label1
+        'CheckBoxLabel
         '
-        Me.Label1.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.Label1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
-        Me.Label1.Location = New System.Drawing.Point(47, 83)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(210, 44)
-        Me.Label1.TabIndex = 26
-        Me.Label1.Text = "Generate a unique password for each firewall"
+        Me.CheckBoxLabel.Font = New System.Drawing.Font("Arial", 12.0!)
+        Me.CheckBoxLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
+        Me.CheckBoxLabel.Location = New System.Drawing.Point(47, 83)
+        Me.CheckBoxLabel.Name = "CheckBoxLabel"
+        Me.CheckBoxLabel.Size = New System.Drawing.Size(210, 44)
+        Me.CheckBoxLabel.TabIndex = 26
+        Me.CheckBoxLabel.Text = "Generate a unique password for each firewall"
         '
         'Label2
         '
@@ -228,14 +228,18 @@ Partial Class NewPassword
         Me.StrengthLabel.Text = "VERY WEAK"
         Me.StrengthLabel.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
-        'DetailsLabel
+        'ComplexityCheckBox
         '
-        Me.DetailsLabel.Font = New System.Drawing.Font("Arial", 10.0!)
-        Me.DetailsLabel.ForeColor = System.Drawing.Color.Gray
-        Me.DetailsLabel.Location = New System.Drawing.Point(354, 234)
-        Me.DetailsLabel.Name = "DetailsLabel"
-        Me.DetailsLabel.Size = New System.Drawing.Size(261, 52)
-        Me.DetailsLabel.TabIndex = 31
+        Me.ComplexityCheckBox.AutoSize = True
+        Me.ComplexityCheckBox.Checked = True
+        Me.ComplexityCheckBox.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ComplexityCheckBox.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
+        Me.ComplexityCheckBox.Location = New System.Drawing.Point(357, 243)
+        Me.ComplexityCheckBox.Name = "ComplexityCheckBox"
+        Me.ComplexityCheckBox.Size = New System.Drawing.Size(213, 17)
+        Me.ComplexityCheckBox.TabIndex = 31
+        Me.ComplexityCheckBox.Text = "Enforce default complexity requirements"
+        Me.ComplexityCheckBox.UseVisualStyleBackColor = True
         '
         'NewPassword
         '
@@ -243,11 +247,11 @@ Partial Class NewPassword
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(649, 300)
         Me.ControlBox = False
-        Me.Controls.Add(Me.DetailsLabel)
+        Me.Controls.Add(Me.ComplexityCheckBox)
         Me.Controls.Add(Me.StrengthLabel)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.CheckBoxLabel)
         Me.Controls.Add(Me.GenerateCheckBox)
         Me.Controls.Add(Me.StrengthProgressBar)
         Me.Controls.Add(Me.StatusLabel)
@@ -284,9 +288,9 @@ Partial Class NewPassword
     Friend WithEvents StatusLabel As Label
     Friend WithEvents StrengthProgressBar As ProgressBar
     Friend WithEvents GenerateCheckBox As CheckBox
-    Friend WithEvents Label1 As Label
+    Friend WithEvents CheckBoxLabel As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents Label5 As Label
     Friend WithEvents StrengthLabel As Label
-    Friend WithEvents DetailsLabel As Label
+    Friend WithEvents ComplexityCheckBox As CheckBox
 End Class

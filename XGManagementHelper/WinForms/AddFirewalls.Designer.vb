@@ -32,6 +32,7 @@ Partial Class AddFirewalls
         Me.Label4 = New System.Windows.Forms.Label()
         Me.AddAnotherCheckBox = New System.Windows.Forms.CheckBox()
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
+        Me.Button1 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'CommonPassCheckBox
@@ -54,7 +55,7 @@ Partial Class AddFirewalls
         Me.PasswordShowButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.PasswordShowButton.Font = New System.Drawing.Font("Arial", 12.0!)
         Me.PasswordShowButton.ForeColor = System.Drawing.Color.FromArgb(CType(CType(25, Byte), Integer), CType(CType(135, Byte), Integer), CType(CType(203, Byte), Integer))
-        Me.PasswordShowButton.Location = New System.Drawing.Point(303, 135)
+        Me.PasswordShowButton.Location = New System.Drawing.Point(305, 133)
         Me.PasswordShowButton.Name = "PasswordShowButton"
         Me.PasswordShowButton.Size = New System.Drawing.Size(60, 23)
         Me.PasswordShowButton.TabIndex = 6
@@ -152,12 +153,26 @@ Partial Class AddFirewalls
         Me.MyTitleBar1.Size = New System.Drawing.Size(366, 50)
         Me.MyTitleBar1.TabIndex = 53
         '
+        'Button1
+        '
+        Me.Button1.FlatAppearance.BorderSize = 0
+        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Button1.Font = New System.Drawing.Font("Arial", 8.0!)
+        Me.Button1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(25, Byte), Integer), CType(CType(135, Byte), Integer), CType(CType(203, Byte), Integer))
+        Me.Button1.Location = New System.Drawing.Point(259, 110)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(42, 22)
+        Me.Button1.TabIndex = 54
+        Me.Button1.Text = "Copy"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'AddFirewalls
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(370, 296)
         Me.ControlBox = False
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.MyTitleBar1)
         Me.Controls.Add(Me.AddAnotherCheckBox)
         Me.Controls.Add(Me.PasswordShowButton)
@@ -189,4 +204,5 @@ Partial Class AddFirewalls
     Friend WithEvents Label4 As Label
     Friend WithEvents AddAnotherCheckBox As CheckBox
     Friend WithEvents MyTitleBar1 As MyTitleBar
+    Friend WithEvents Button1 As Button
 End Class

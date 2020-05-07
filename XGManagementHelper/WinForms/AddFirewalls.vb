@@ -1,4 +1,11 @@
-﻿Public Class AddFirewalls
+﻿' Copyright 2020  Sophos Ltd.  All rights reserved.
+' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+' You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+' Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, 
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing 
+' permissions and limitations under the License.
+
+Public Class AddFirewalls
     Public Property SSHHost As String
         Get
             Return SSHHostTextBox.Text
@@ -108,5 +115,10 @@
 
     Private Sub SSHPassTextBox_GotFocus(sender As Object, e As EventArgs) Handles SSHPassTextBox.GotFocus
         SSHPassTextBox.SelectAll()
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Clipboard.SetText(SSHPassTextBox.Text)
+        Beep()
     End Sub
 End Class

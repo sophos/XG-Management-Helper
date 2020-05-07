@@ -42,10 +42,10 @@ Partial Class MainForm
         Me.CentralCredsButton = New System.Windows.Forms.Button()
         Me.ActionComboBox = New System.Windows.Forms.ComboBox()
         Me.TopPanel = New System.Windows.Forms.Panel()
+        Me.Button1 = New System.Windows.Forms.Button()
         Me.DeleteButton = New System.Windows.Forms.Button()
         Me.btnBrowse = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.Button1 = New System.Windows.Forms.Button()
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
         Me.StatusStrip1.SuspendLayout()
         Me.TopPanel.SuspendLayout()
@@ -132,9 +132,10 @@ Partial Class MainForm
         Me.ShellPassTextBox.Location = New System.Drawing.Point(429, 43)
         Me.ShellPassTextBox.Name = "ShellPassTextBox"
         Me.ShellPassTextBox.PasswordChar = Global.Microsoft.VisualBasic.ChrW(88)
-        Me.ShellPassTextBox.Size = New System.Drawing.Size(133, 26)
+        Me.ShellPassTextBox.Size = New System.Drawing.Size(181, 26)
         Me.ShellPassTextBox.TabIndex = 3
-        Me.ToolTip1.SetToolTip(Me.ShellPassTextBox, "Enter a shell password to try with each firewall listed")
+        Me.ToolTip1.SetToolTip(Me.ShellPassTextBox, "If no password is supplied for an individual firewall, this password will be atte" &
+        "mpted.")
         Me.ShellPassTextBox.UseSystemPasswordChar = True
         '
         'GoButton
@@ -227,6 +228,21 @@ Partial Class MainForm
         Me.TopPanel.Size = New System.Drawing.Size(958, 75)
         Me.TopPanel.TabIndex = 9
         '
+        'Button1
+        '
+        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button1.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Button1.FlatAppearance.BorderSize = 0
+        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button1.ForeColor = System.Drawing.Color.SteelBlue
+        Me.Button1.Location = New System.Drawing.Point(679, 15)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(135, 23)
+        Me.Button1.TabIndex = 44
+        Me.Button1.Text = "Password Change Logs"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'DeleteButton
         '
         Me.DeleteButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -270,28 +286,13 @@ Partial Class MainForm
         Me.Label3.TabIndex = 43
         Me.Label3.Text = "Action"
         '
-        'Button1
-        '
-        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button1.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.Button1.FlatAppearance.BorderSize = 0
-        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button1.ForeColor = System.Drawing.Color.SteelBlue
-        Me.Button1.Location = New System.Drawing.Point(679, 15)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(135, 23)
-        Me.Button1.TabIndex = 44
-        Me.Button1.Text = "Password Change Logs"
-        Me.Button1.UseVisualStyleBackColor = True
-        '
         'MyTitleBar1
         '
         Me.MyTitleBar1.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
-        Me.MyTitleBar1.MaximizeBox = False
-        Me.MyTitleBar1.MinimizeBox = False
+        Me.MyTitleBar1.MaximizeBox = True
+        Me.MyTitleBar1.MinimizeBox = True
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(958, 50)
         Me.MyTitleBar1.TabIndex = 44

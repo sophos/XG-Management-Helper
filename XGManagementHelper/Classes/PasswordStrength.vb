@@ -1,4 +1,11 @@
-﻿Imports System
+﻿' Copyright 2020  Sophos Ltd.  All rights reserved.
+' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+' You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+' Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, 
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing 
+' permissions and limitations under the License.
+
+Imports System
 Imports System.Collections
 Imports System.Data
 
@@ -51,6 +58,9 @@ Namespace PasswordMeter
 
             Return ret
         End Function
+
+        Public Property MinimumLength As Integer = 10
+        Public Property MinimumRequirements As Integer = 5
 
         Private Sub CheckPasswordWithDetails(ByVal pwd As String)
             Dim nScore As Integer '= 0
@@ -162,13 +172,13 @@ Namespace PasswordMeter
             nScore += (iMiddle * 2)
             AddDetailsRow(Math.Min(System.Threading.Interlocked.Increment(iLevel), iLevel - 1), "Middle Numbers or Symbols", "Flat", "+(n*2)", iMiddle, (iMiddle * 2))
             Dim requirments As Integer = 0
-            If pwd.Length >= 8 Then requirments += 1
+            If pwd.Length >= MinimumLength Then requirments += 1
             If iUpperCase > 0 Then requirments += 1
             If iLowerCase > 0 Then requirments += 1
             If iDigit > 0 Then requirments += 1
             If iSymbol > 0 Then requirments += 1
 
-            If requirments > 3 Then
+            If requirments >= MinimumRequirements Then
                 nScore += (requirments * 2)
                 AddDetailsRow(Math.Min(System.Threading.Interlocked.Increment(iLevel), iLevel - 1), "Requirments", "Flat", "+(n*2)", requirments, (requirments * 2))
             Else
@@ -211,6 +221,10 @@ Namespace PasswordMeter
                 nScore = 100
             ElseIf nScore < 0 Then
                 nScore = 0
+            End If
+
+            If requirments < MinimumRequirements Then
+                If nScore > 39 Then nScore = 39
             End If
 
             If nScore >= 0 AndAlso nScore < 20 Then
