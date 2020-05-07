@@ -46,6 +46,9 @@ Partial Class MainForm
         Me.DeleteButton = New System.Windows.Forms.Button()
         Me.btnBrowse = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.ToggleCheckButton = New System.Windows.Forms.Button()
+        Me.CheckAllButton = New System.Windows.Forms.Button()
+        Me.CheckNoneButton = New System.Windows.Forms.Button()
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
         Me.StatusStrip1.SuspendLayout()
         Me.TopPanel.SuspendLayout()
@@ -129,10 +132,10 @@ Partial Class MainForm
         '
         Me.ShellPassTextBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ShellPassTextBox.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.ShellPassTextBox.Location = New System.Drawing.Point(429, 43)
+        Me.ShellPassTextBox.Location = New System.Drawing.Point(626, 43)
         Me.ShellPassTextBox.Name = "ShellPassTextBox"
         Me.ShellPassTextBox.PasswordChar = Global.Microsoft.VisualBasic.ChrW(88)
-        Me.ShellPassTextBox.Size = New System.Drawing.Size(181, 26)
+        Me.ShellPassTextBox.Size = New System.Drawing.Size(91, 26)
         Me.ShellPassTextBox.TabIndex = 3
         Me.ToolTip1.SetToolTip(Me.ShellPassTextBox, "If no password is supplied for an individual firewall, this password will be atte" &
         "mpted.")
@@ -148,7 +151,7 @@ Partial Class MainForm
         Me.GoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.GoButton.Font = New System.Drawing.Font("Arial", 12.0!)
         Me.GoButton.ForeColor = System.Drawing.Color.White
-        Me.GoButton.Location = New System.Drawing.Point(907, 43)
+        Me.GoButton.Location = New System.Drawing.Point(907, 12)
         Me.GoButton.Name = "GoButton"
         Me.GoButton.Size = New System.Drawing.Size(48, 26)
         Me.GoButton.TabIndex = 20
@@ -160,7 +163,7 @@ Partial Class MainForm
         Me.Label2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.Label2.Location = New System.Drawing.Point(426, 22)
+        Me.Label2.Location = New System.Drawing.Point(436, 49)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(184, 18)
         Me.Label2.TabIndex = 3
@@ -175,7 +178,7 @@ Partial Class MainForm
         Me.AddHostButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.AddHostButton.Font = New System.Drawing.Font("Arial", 12.0!)
         Me.AddHostButton.ForeColor = System.Drawing.Color.White
-        Me.AddHostButton.Location = New System.Drawing.Point(3, 43)
+        Me.AddHostButton.Location = New System.Drawing.Point(3, 9)
         Me.AddHostButton.Name = "AddHostButton"
         Me.AddHostButton.Size = New System.Drawing.Size(129, 26)
         Me.AddHostButton.TabIndex = 38
@@ -190,9 +193,9 @@ Partial Class MainForm
         Me.CentralCredsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.CentralCredsButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CentralCredsButton.ForeColor = System.Drawing.Color.SteelBlue
-        Me.CentralCredsButton.Location = New System.Drawing.Point(820, 14)
+        Me.CentralCredsButton.Location = New System.Drawing.Point(835, 48)
         Me.CentralCredsButton.Name = "CentralCredsButton"
-        Me.CentralCredsButton.Size = New System.Drawing.Size(135, 23)
+        Me.CentralCredsButton.Size = New System.Drawing.Size(123, 23)
         Me.CentralCredsButton.TabIndex = 39
         Me.CentralCredsButton.Text = "Set Central Credentials"
         Me.CentralCredsButton.UseVisualStyleBackColor = True
@@ -205,13 +208,16 @@ Partial Class MainForm
         Me.ActionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ActionComboBox.Font = New System.Drawing.Font("Arial", 12.0!)
         Me.ActionComboBox.FormattingEnabled = True
-        Me.ActionComboBox.Location = New System.Drawing.Point(626, 43)
+        Me.ActionComboBox.Location = New System.Drawing.Point(626, 12)
         Me.ActionComboBox.Name = "ActionComboBox"
         Me.ActionComboBox.Size = New System.Drawing.Size(275, 26)
         Me.ActionComboBox.TabIndex = 40
         '
         'TopPanel
         '
+        Me.TopPanel.Controls.Add(Me.CheckNoneButton)
+        Me.TopPanel.Controls.Add(Me.CheckAllButton)
+        Me.TopPanel.Controls.Add(Me.ToggleCheckButton)
         Me.TopPanel.Controls.Add(Me.Button1)
         Me.TopPanel.Controls.Add(Me.GoButton)
         Me.TopPanel.Controls.Add(Me.Label2)
@@ -236,11 +242,11 @@ Partial Class MainForm
         Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Button1.ForeColor = System.Drawing.Color.SteelBlue
-        Me.Button1.Location = New System.Drawing.Point(679, 15)
+        Me.Button1.Location = New System.Drawing.Point(723, 48)
         Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(135, 23)
+        Me.Button1.Size = New System.Drawing.Size(117, 23)
         Me.Button1.TabIndex = 44
-        Me.Button1.Text = "Password Change Logs"
+        Me.Button1.Text = "View Password Logs"
         Me.Button1.UseVisualStyleBackColor = True
         '
         'DeleteButton
@@ -253,7 +259,7 @@ Partial Class MainForm
         Me.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.DeleteButton.Font = New System.Drawing.Font("Arial", 12.0!)
         Me.DeleteButton.ForeColor = System.Drawing.Color.White
-        Me.DeleteButton.Location = New System.Drawing.Point(138, 43)
+        Me.DeleteButton.Location = New System.Drawing.Point(138, 9)
         Me.DeleteButton.Name = "DeleteButton"
         Me.DeleteButton.Size = New System.Drawing.Size(129, 26)
         Me.DeleteButton.TabIndex = 41
@@ -268,7 +274,7 @@ Partial Class MainForm
         Me.btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnBrowse.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnBrowse.ForeColor = System.Drawing.Color.White
-        Me.btnBrowse.Location = New System.Drawing.Point(273, 43)
+        Me.btnBrowse.Location = New System.Drawing.Point(273, 9)
         Me.btnBrowse.Name = "btnBrowse"
         Me.btnBrowse.Size = New System.Drawing.Size(129, 26)
         Me.btnBrowse.TabIndex = 42
@@ -280,11 +286,56 @@ Partial Class MainForm
         Me.Label3.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.Label3.Location = New System.Drawing.Point(623, 22)
+        Me.Label3.Location = New System.Drawing.Point(558, 17)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(52, 18)
         Me.Label3.TabIndex = 43
         Me.Label3.Text = "Action"
+        '
+        'ToggleCheckButton
+        '
+        Me.ToggleCheckButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ToggleCheckButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.ToggleCheckButton.FlatAppearance.BorderSize = 0
+        Me.ToggleCheckButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.ToggleCheckButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToggleCheckButton.ForeColor = System.Drawing.Color.SteelBlue
+        Me.ToggleCheckButton.Location = New System.Drawing.Point(81, 48)
+        Me.ToggleCheckButton.Name = "ToggleCheckButton"
+        Me.ToggleCheckButton.Size = New System.Drawing.Size(51, 23)
+        Me.ToggleCheckButton.TabIndex = 45
+        Me.ToggleCheckButton.Text = "Toggle"
+        Me.ToggleCheckButton.UseVisualStyleBackColor = True
+        '
+        'CheckAllButton
+        '
+        Me.CheckAllButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CheckAllButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.CheckAllButton.FlatAppearance.BorderSize = 0
+        Me.CheckAllButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.CheckAllButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CheckAllButton.ForeColor = System.Drawing.Color.SteelBlue
+        Me.CheckAllButton.Location = New System.Drawing.Point(3, 48)
+        Me.CheckAllButton.Name = "CheckAllButton"
+        Me.CheckAllButton.Size = New System.Drawing.Size(32, 23)
+        Me.CheckAllButton.TabIndex = 46
+        Me.CheckAllButton.Text = "All"
+        Me.CheckAllButton.UseVisualStyleBackColor = True
+        '
+        'CheckNoneButton
+        '
+        Me.CheckNoneButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CheckNoneButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.CheckNoneButton.FlatAppearance.BorderSize = 0
+        Me.CheckNoneButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.CheckNoneButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CheckNoneButton.ForeColor = System.Drawing.Color.SteelBlue
+        Me.CheckNoneButton.Location = New System.Drawing.Point(41, 48)
+        Me.CheckNoneButton.Name = "CheckNoneButton"
+        Me.CheckNoneButton.Size = New System.Drawing.Size(42, 23)
+        Me.CheckNoneButton.TabIndex = 47
+        Me.CheckNoneButton.Text = "None"
+        Me.CheckNoneButton.UseVisualStyleBackColor = True
         '
         'MyTitleBar1
         '
@@ -292,7 +343,7 @@ Partial Class MainForm
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
         Me.MyTitleBar1.MaximizeBox = True
-        Me.MyTitleBar1.MinimizeBox = True
+        Me.MyTitleBar1.MinimizeBox = False
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(958, 50)
         Me.MyTitleBar1.TabIndex = 44
@@ -347,4 +398,7 @@ Partial Class MainForm
     Friend WithEvents Label3 As Label
     Friend WithEvents MyTitleBar1 As MyTitleBar
     Friend WithEvents Button1 As Button
+    Friend WithEvents CheckNoneButton As Button
+    Friend WithEvents CheckAllButton As Button
+    Friend WithEvents ToggleCheckButton As Button
 End Class

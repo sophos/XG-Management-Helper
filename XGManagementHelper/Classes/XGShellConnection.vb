@@ -93,7 +93,6 @@ Public Class XGShellConnection
                 Else
                     nfo.Success = False
                     WriteToLog(LogSeverity.Error, String.Format("action='registration check' host='{0}' result=False message='{1}'", Host, nfo.Summary))
-                    nfo.Reply = "E08450:" & nfo.Summary 'leave nfo value to return to the UI
                 End If
 
             ElseIf nfo.reply.Contains("currently registered") Then
@@ -102,7 +101,6 @@ Public Class XGShellConnection
             Else
                 nfo.Success = False
                 WriteToLog(LogSeverity.Debug, String.Format("action='registration check' host='{0}' result='unknown' message='{1}'", Host, nfo.Summary))
-                nfo.Reply = "E2450:" & nfo.Summary
             End If
 
             'device is registered - now set management, reporting, backup services
@@ -139,18 +137,20 @@ Public Class XGShellConnection
                             ElseIf nfo.reply.Contains("approved_by_customer") Then
                                 nfo.Reply = "Central Service(s) enabled"
                             Else
-                                nfo.Reply = "E4:" & nfo.Summary 'leave nfo value to return to the UI
+                                nfo.Success = False
                             End If
                         ElseIf nfo.reply.Contains("sophos_central_enable failed") Then
                             nfo.Reply = "Could not register with Central. Connectivity problem?"
                         Else
-                            nfo.Reply = "E598459:" & nfo.Summary 'leave nfo value to return to the UI
+                            nfo.Success = False
                         End If
                     Else 'some other version..
-                        nfo.Reply = "E1009433:" & nfo.Summary 'leave nfo value to return to the UI
+                        nfo.Success = False
+                        nfo.Reply = "Unsupported version"
+
                     End If
                 Else
-                    nfo.Reply = "E1432231:" & nfo.Summary 'leave nfo value to return to the UI
+                    '
                 End If
             End If
             xg.Disconnect()

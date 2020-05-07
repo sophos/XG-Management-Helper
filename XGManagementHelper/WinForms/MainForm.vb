@@ -893,6 +893,24 @@ Public Class MainForm
         SaveHosts(FormIsDirty)
     End Sub
 
+    Private Sub CheckAllButton_Click(sender As Object, e As EventArgs) Handles CheckAllButton.Click
+        For Each lvi As ListViewItem In ResultsListView.Items
+            lvi.Checked = True
+        Next
+    End Sub
+
+    Private Sub CheckNoneButton_Click(sender As Object, e As EventArgs) Handles CheckNoneButton.Click
+        For Each lvi As ListViewItem In ResultsListView.Items
+            lvi.Checked = False
+        Next
+    End Sub
+
+    Private Sub ToggleCheckButton_Click(sender As Object, e As EventArgs) Handles ToggleCheckButton.Click
+        For Each lvi As ListViewItem In ResultsListView.Items
+            lvi.Checked = Not lvi.Checked
+        Next
+    End Sub
+
 #End Region
 
 End Class
