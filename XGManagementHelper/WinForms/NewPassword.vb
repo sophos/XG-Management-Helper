@@ -162,4 +162,5 @@ Public Class NewPassword
     Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles ComplexityCheckBox.CheckedChanged
         EnableDisable()
     End Sub
+
 End Class

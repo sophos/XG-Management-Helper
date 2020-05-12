@@ -6,12 +6,21 @@
 ' permissions and limitations under the License.
 
 Public Class AddFirewalls
+    Public Property CommonPassword As String
+    Private IsLoading As Boolean = False
+
     Public Property SSHHost As String
         Get
             Return SSHHostTextBox.Text
         End Get
         Set(value As String)
             SSHHostTextBox.Text = value
+            IsLoading = True
+            Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & value)
+                FingerprintTextBox.Text = key.GetValue("Fingerprint", "<No Fingerprint>")
+                WebadminPortTextBox.Text = key.GetValue("Webadmin", "4444")
+            End Using
+            IsLoading = False
             EnableDisable()
         End Set
     End Property
@@ -85,6 +94,9 @@ Public Class AddFirewalls
     End Sub
 
     Private Sub SSHHostTextBox_TextChanged(sender As Object, e As EventArgs) Handles SSHHostTextBox.TextChanged, SSHPassTextBox.TextChanged
+        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & SSHHostTextBox.Text)
+            FingerprintTextBox.Text = key.GetValue("Fingerprint", "<No Fingerprint>")
+        End Using
         EnableDisable()
     End Sub
 
@@ -121,4 +133,52 @@ Public Class AddFirewalls
         Clipboard.SetText(SSHPassTextBox.Text)
         Beep()
     End Sub
+
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim xg As New XGShellConnection(True)
+        Dim pass As String = If(SSHPassTextBox.Text.Length > 0, SSHPassTextBox.Text, CommonPassword)
+        Dim result As XGShellConnection.ExpectResult = xg.CheckCurrentFirmwareVersion(SSHHostTextBox.Text, "admin", pass, XGShellConnection.LogSeverity.Critical)
+        If result.Success Then
+            Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & SSHHostTextBox.Text)
+                FingerprintTextBox.Text = key.GetValue("Fingerprint", "<No Fingerprint>")
+            End Using
+        Else
+            MsgBox("Connection Failed: " & vbNewLine & result.Summary)
+
+        End If
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Process.Start(String.Format("https://{0}:{1}/", SSHHostTextBox.Text, WebadminPortTextBox.Text))
+    End Sub
+
+    Private Sub WebadminPortTextBox_TextChanged(sender As Object, e As EventArgs) Handles WebadminPortTextBox.TextChanged
+        If isloading Then Exit Sub
+        If WebadminPortTextBox.Text.Length = 0 Then
+            WebadminPortTextBox.Text = "4444"
+            WebadminPortTextBox.SelectAll()
+        ElseIf Not IsNumeric(WebadminPortTextBox.Text) Then
+            WebadminPortTextBox.Text = "4444"
+            WebadminPortTextBox.SelectAll()
+        Else
+
+        End If
+        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & SSHHostTextBox.Text)
+            key.SetValue("WebAdmin", WebadminPortTextBox.Text)
+        End Using
+
+    End Sub
+
+
+    Private Sub WebadminPortTextBox_KeyUp(sender As Object, e As KeyEventArgs) Handles WebadminPortTextBox.KeyUp, WebadminPortTextBox.KeyDown
+        Select Case e.KeyCode
+            Case Keys.D0 To Keys.D9
+            Case Keys.Left, Keys.Right, Keys.Back, Keys.Delete
+            Case Else
+                e.SuppressKeyPress = True
+                e.Handled = True
+        End Select
+    End Sub
+
 End Class

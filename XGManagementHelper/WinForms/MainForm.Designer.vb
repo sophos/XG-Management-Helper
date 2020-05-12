@@ -42,13 +42,13 @@ Partial Class MainForm
         Me.CentralCredsButton = New System.Windows.Forms.Button()
         Me.ActionComboBox = New System.Windows.Forms.ComboBox()
         Me.TopPanel = New System.Windows.Forms.Panel()
+        Me.CheckNoneButton = New System.Windows.Forms.Button()
+        Me.CheckAllButton = New System.Windows.Forms.Button()
+        Me.ToggleCheckButton = New System.Windows.Forms.Button()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.DeleteButton = New System.Windows.Forms.Button()
         Me.btnBrowse = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.ToggleCheckButton = New System.Windows.Forms.Button()
-        Me.CheckAllButton = New System.Windows.Forms.Button()
-        Me.CheckNoneButton = New System.Windows.Forms.Button()
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
         Me.StatusStrip1.SuspendLayout()
         Me.TopPanel.SuspendLayout()
@@ -234,6 +234,51 @@ Partial Class MainForm
         Me.TopPanel.Size = New System.Drawing.Size(958, 75)
         Me.TopPanel.TabIndex = 9
         '
+        'CheckNoneButton
+        '
+        Me.CheckNoneButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CheckNoneButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.CheckNoneButton.FlatAppearance.BorderSize = 0
+        Me.CheckNoneButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.CheckNoneButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CheckNoneButton.ForeColor = System.Drawing.Color.SteelBlue
+        Me.CheckNoneButton.Location = New System.Drawing.Point(41, 48)
+        Me.CheckNoneButton.Name = "CheckNoneButton"
+        Me.CheckNoneButton.Size = New System.Drawing.Size(42, 23)
+        Me.CheckNoneButton.TabIndex = 47
+        Me.CheckNoneButton.Text = "None"
+        Me.CheckNoneButton.UseVisualStyleBackColor = True
+        '
+        'CheckAllButton
+        '
+        Me.CheckAllButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CheckAllButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.CheckAllButton.FlatAppearance.BorderSize = 0
+        Me.CheckAllButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.CheckAllButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CheckAllButton.ForeColor = System.Drawing.Color.SteelBlue
+        Me.CheckAllButton.Location = New System.Drawing.Point(3, 48)
+        Me.CheckAllButton.Name = "CheckAllButton"
+        Me.CheckAllButton.Size = New System.Drawing.Size(32, 23)
+        Me.CheckAllButton.TabIndex = 46
+        Me.CheckAllButton.Text = "All"
+        Me.CheckAllButton.UseVisualStyleBackColor = True
+        '
+        'ToggleCheckButton
+        '
+        Me.ToggleCheckButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ToggleCheckButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.ToggleCheckButton.FlatAppearance.BorderSize = 0
+        Me.ToggleCheckButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.ToggleCheckButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToggleCheckButton.ForeColor = System.Drawing.Color.SteelBlue
+        Me.ToggleCheckButton.Location = New System.Drawing.Point(81, 48)
+        Me.ToggleCheckButton.Name = "ToggleCheckButton"
+        Me.ToggleCheckButton.Size = New System.Drawing.Size(51, 23)
+        Me.ToggleCheckButton.TabIndex = 45
+        Me.ToggleCheckButton.Text = "Toggle"
+        Me.ToggleCheckButton.UseVisualStyleBackColor = True
+        '
         'Button1
         '
         Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -292,58 +337,13 @@ Partial Class MainForm
         Me.Label3.TabIndex = 43
         Me.Label3.Text = "Action"
         '
-        'ToggleCheckButton
-        '
-        Me.ToggleCheckButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ToggleCheckButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ToggleCheckButton.FlatAppearance.BorderSize = 0
-        Me.ToggleCheckButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.ToggleCheckButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ToggleCheckButton.ForeColor = System.Drawing.Color.SteelBlue
-        Me.ToggleCheckButton.Location = New System.Drawing.Point(81, 48)
-        Me.ToggleCheckButton.Name = "ToggleCheckButton"
-        Me.ToggleCheckButton.Size = New System.Drawing.Size(51, 23)
-        Me.ToggleCheckButton.TabIndex = 45
-        Me.ToggleCheckButton.Text = "Toggle"
-        Me.ToggleCheckButton.UseVisualStyleBackColor = True
-        '
-        'CheckAllButton
-        '
-        Me.CheckAllButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.CheckAllButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.CheckAllButton.FlatAppearance.BorderSize = 0
-        Me.CheckAllButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.CheckAllButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CheckAllButton.ForeColor = System.Drawing.Color.SteelBlue
-        Me.CheckAllButton.Location = New System.Drawing.Point(3, 48)
-        Me.CheckAllButton.Name = "CheckAllButton"
-        Me.CheckAllButton.Size = New System.Drawing.Size(32, 23)
-        Me.CheckAllButton.TabIndex = 46
-        Me.CheckAllButton.Text = "All"
-        Me.CheckAllButton.UseVisualStyleBackColor = True
-        '
-        'CheckNoneButton
-        '
-        Me.CheckNoneButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.CheckNoneButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.CheckNoneButton.FlatAppearance.BorderSize = 0
-        Me.CheckNoneButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.CheckNoneButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CheckNoneButton.ForeColor = System.Drawing.Color.SteelBlue
-        Me.CheckNoneButton.Location = New System.Drawing.Point(41, 48)
-        Me.CheckNoneButton.Name = "CheckNoneButton"
-        Me.CheckNoneButton.Size = New System.Drawing.Size(42, 23)
-        Me.CheckNoneButton.TabIndex = 47
-        Me.CheckNoneButton.Text = "None"
-        Me.CheckNoneButton.UseVisualStyleBackColor = True
-        '
         'MyTitleBar1
         '
         Me.MyTitleBar1.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
         Me.MyTitleBar1.MaximizeBox = True
-        Me.MyTitleBar1.MinimizeBox = False
+        Me.MyTitleBar1.MinimizeBox = True
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(958, 50)
         Me.MyTitleBar1.TabIndex = 44

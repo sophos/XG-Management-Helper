@@ -98,6 +98,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\PasswordDerivedBytes.vb" />
     <Compile Include="Classes\RandomStringGenerator.vb" />
     <Compile Include="WinForms\AddFirewalls.Designer.vb">
       <DependentUpon>AddFirewalls.vb</DependentUpon>
@@ -114,6 +115,18 @@
     <Compile Include="Classes\FileHelpers.vb" />
     <Compile Include="Classes\KeyComparer.vb" />
     <Compile Include="Classes\ListViewItemComparer.vb" />
+    <Compile Include="WinForms\FingerprintConfirmation.Designer.vb">
+      <DependentUpon>FingerprintConfirmation.vb</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\FingerprintConfirmation.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Login.Designer.vb">
+      <DependentUpon>Login.vb</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Login.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="WinForms\LogViewer.Designer.vb">
       <DependentUpon>LogViewer.vb</DependentUpon>
     </Compile>
@@ -172,6 +185,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\CentralLogin.resx">
       <DependentUpon>CentralLogin.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\FingerprintConfirmation.resx">
+      <DependentUpon>FingerprintConfirmation.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Login.resx">
+      <DependentUpon>Login.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\LogViewer.resx">
       <DependentUpon>LogViewer.vb</DependentUpon>

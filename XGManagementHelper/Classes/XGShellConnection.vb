@@ -8,9 +8,10 @@
 Imports System.IO
 Imports System.Text.RegularExpressions
 Imports Renci.SshNet
+Imports Renci.SshNet.Common
 
 Public Class XGShellConnection
-    Private xg As SshClient
+    Private WithEvents XG As SshClient
     Public Shared LogFile As String = "action.log"
     Public LogLevel As LogSeverity = LogSeverity.Debug
     Private AdvancedShell As Boolean = False
@@ -20,6 +21,11 @@ Public Class XGShellConnection
     Public DisplayVersion As String = "UNKNOWN"
     Public MRVersion As String = "UNKNOWN"
     Public Property Timeout As Integer = 60
+
+    Public Property FingerprintReceived As String
+    Public Property ErrorReceived As String
+    Private Property Host As String
+    Public Property AutoTrust As Boolean = False
 
     Public Enum LogSeverity
         'Emergency = 0
@@ -33,6 +39,12 @@ Public Class XGShellConnection
     End Enum
 
 #Region "Public Methods"
+    Sub New()
+
+    End Sub
+    Sub New(Autotrust As Boolean)
+        Me.AutoTrust = Autotrust
+    End Sub
 
 #Region "WriteLog"
 
@@ -95,7 +107,7 @@ Public Class XGShellConnection
                     WriteToLog(LogSeverity.Error, String.Format("action='registration check' host='{0}' result=False message='{1}'", Host, nfo.Summary))
                 End If
 
-            ElseIf nfo.reply.Contains("currently registered") Then
+            ElseIf nfo.Reply.Contains("currently registered") Then
                 WriteToLog(LogSeverity.Debug, String.Format("action='registration check' host='{0}' result=True message='{1}'", Host, nfo.Summary))
                 nfo.Reply = "Registered"
             Else
@@ -134,12 +146,12 @@ Public Class XGShellConnection
                             nfo = ExtendedExpect("central-connect --check_status", "#", Shell)
                             If nfo.Reply.Contains("approval_pending") Then
                                 nfo.Reply = "Approval Pending"
-                            ElseIf nfo.reply.Contains("approved_by_customer") Then
+                            ElseIf nfo.Reply.Contains("approved_by_customer") Then
                                 nfo.Reply = "Central Service(s) enabled"
                             Else
                                 nfo.Success = False
                             End If
-                        ElseIf nfo.reply.Contains("sophos_central_enable failed") Then
+                        ElseIf nfo.Reply.Contains("sophos_central_enable failed") Then
                             nfo.Reply = "Could not register with Central. Connectivity problem?"
                         Else
                             nfo.Success = False
@@ -285,6 +297,17 @@ Public Class XGShellConnection
 
 #Region "Private Methods"
 
+    Private Function ByteArrayToHex(ByRef ByteArray() As Byte) As String
+        Dim l As Long, strRet As String
+
+        For l = LBound(ByteArray) To UBound(ByteArray)
+            strRet = strRet & Hex$(ByteArray(l)) & " "
+        Next l
+
+        'Remove last space at end.
+        ByteArrayToHex = Left$(strRet, Len(strRet) - 1)
+    End Function
+
     Private Function InterpretError(ex As Exception, action As String) As ExpectResult
         If ex.Message.Contains("after a period of time") Then
             Return New ExpectResult(New TimeoutException(ex.Message, ex), "Timeout", action, "")
@@ -301,15 +324,22 @@ Public Class XGShellConnection
         WriteToLog(Severity, Message, LogLevel, knownpassword)
     End Sub
 
+    Private Function HostKeyReceived(Sender As Object, e As EventArgs)
+
+    End Function
+
     Private Function GetShellMenu(Host As String, shell_user As String, shell_pass As String) As ShellStream
         xg = New SshClient(Host, shell_user, shell_pass)
+        Me.Host = Host
         WriteToLog(LogSeverity.Debug, String.Format("action='showArgs' host='{0}' shell_user='{1}' shell_pass='{2}'", Host, shell_user, shell_pass.Length & " chars"))
 
-            xg.Connect()
+        xg.Connect()
+
         'Dim Version As String = xg.ConnectionInfo.ServerVersion
         Dim nfo As ExpectResult '= "Not Connected"
         If xg.IsConnected Then
             Dim shell As ShellStream = xg.CreateShellStream("dumb", 80, 24, 800, 600, 1024)
+
             Threading.Thread.Sleep(100)
             Dim r As New StreamReader(shell)
             nfo = ExtendedExpect("Login", ":", shell, r)
@@ -378,6 +408,37 @@ Public Class XGShellConnection
         Return reader.ReadToEnd()
     End Function
 
+    Private Sub XG_HostKeyReceived(sender As Object, e As HostKeyEventArgs) Handles XG.HostKeyReceived
+        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & Me.Host)
+            Dim ExpectedFingerprint As String = key.GetValue("Fingerprint")
+            FingerprintReceived = ByteArrayToHex(e.FingerPrint)
+            If ExpectedFingerprint IsNot Nothing Then
+                If ExpectedFingerprint.Equals(FingerprintReceived) Then
+                    e.CanTrust = True
+                Else
+                    Dim fc As New FingerprintConfirmation(FingerprintReceived, True, Host)
+                    e.CanTrust = fc.ShowDialog = DialogResult.OK
+                End If
+            Else
+                If AutoTrust Then
+                    e.CanTrust = True
+                Else
+                    Dim fc As New FingerprintConfirmation(FingerprintReceived, False, Host)
+                    e.CanTrust = fc.ShowDialog = DialogResult.OK
+                End If
+            End If
+            If e.CanTrust Then
+                key.SetValue("Fingerprint", FingerprintReceived)
+            End If
+        End Using
+
+
+    End Sub
+
+    Private Sub XG_ErrorOccurred(sender As Object, e As ExceptionEventArgs) Handles XG.ErrorOccurred
+        ErrorReceived = e.Exception.Message
+    End Sub
+
 #End Region
 
 #Region "Expect"
@@ -436,6 +497,7 @@ Public Class XGShellConnection
             Me.LookingFor = """" & Join(LookingFor, """,""") & """"
             Me.Exception = Exception
         End Sub
+
     End Class
 
     'Public Function Expect(cmd As String, WaitFor As String, sh As ShellStream, Optional Timeout As Integer = 0) As String

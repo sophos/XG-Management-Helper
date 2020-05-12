@@ -15,30 +15,40 @@ Imports System.Text
 'written by APE-Germany
 'License: CPOL https://www.codeproject.com/info/cpol10.aspx
 Class AES256Wrapper
-#Disable Warning IDE0044 ' Add readonly modifier
-    Private Key As String
-#Enable Warning IDE0044 ' Add readonly modifier
+    Implements IDisposable
 
-    Sub New(key As String)
+#Disable Warning IDE0044 ' Add readonly modifier
+    Private Key As Byte()
+    Private IV As Byte()
+#Enable Warning IDE0044 ' Add readonly modifier
+    Sub New(key As Byte(), IV As Byte())
         If key Is Nothing Then Throw New Exception("Key is required")
         If key.Length = 0 Then Throw New ArgumentNullException("Key cannot be blank")
         Me.Key = key
+        Me.IV = IV
+    End Sub
+
+    Sub New(key As String, IV As String)
+        If key Is Nothing Then Throw New Exception("Key is required")
+        If key.Length = 0 Then Throw New ArgumentNullException("Key cannot be blank")
+        Me.Key = Convert.FromBase64String(key)
+        Me.IV = Convert.FromBase64String(IV)
     End Sub
 
     Public Function Encrypt(data As String) As String
-        Return Encrypt(Key, data)
+        Return Encrypt(Key, IV, data)
     End Function
 
     Public Function Decrypt(data As String) As String
         If Key Is Nothing Then Throw New ArgumentNullException("Must set key at instantiation to use this method")
-        Return Decrypt(Key, data)
+        Return Decrypt(Key, IV, data)
     End Function
 
-    Public Function Encrypt(ByVal key As String, ByVal data As String) As String
+    Public Function Encrypt(ByVal Key As Byte(), ByVal IV As Byte(), ByVal data As String) As String
         Dim EncryptedData As String
-        Dim keys As Byte()() = GetHashKeys(key)
+
         Try
-            EncryptedData = AESEncryptBytes(data, keys(0), keys(1))
+            EncryptedData = AESEncryptBytes(data, Key, IV)
             Return EncryptedData
         Catch ex As Exception
             'failures should be handled by throwing away the data, and returning an empty string       
@@ -48,13 +58,12 @@ Class AES256Wrapper
         Return ""
     End Function
 
-    Public Function Decrypt(ByVal key As String, ByVal data As String) As String
+    Public Function Decrypt(ByVal key As Byte(), IV As Byte(), ByVal data As String) As String
         Dim DecryptedData As String
-        Dim Keys As Byte()() = GetHashKeys(key)
         If data Is Nothing Then Return ""
 
         Try
-            DecryptedData = AESDecryptBytes(data, Keys(0), Keys(1))
+            DecryptedData = AESDecryptBytes(data, key, IV)
             Return DecryptedData
         Catch ex As Exception
             'failures should be handled by throwing away the data, and returning an empty string
@@ -85,6 +94,34 @@ Class AES256Wrapper
         Return Convert.ToBase64String(EncryptedBytes)
     End Function
 
+    Public Shared Function AESEncryptBytes(ByVal PlainText As Byte(), ByVal Key As Byte(), ByVal IV As Byte(), Iterations As Integer) As String
+        If PlainText Is Nothing OrElse PlainText.Length <= 0 Then Return "" 'Throw New ArgumentNullException("plainText")
+        If Key Is Nothing OrElse Key.Length <= 0 Then Throw New ArgumentNullException("Key")
+
+
+        If IV Is Nothing OrElse IV.Length <= 0 Then Throw New ArgumentNullException("IV")
+        If Iterations < 1 Then Throw New ArgumentException("Iterations must be a positive integer greater than 0")
+        Dim EncryptedBytes As Byte()
+        '
+        For x As Integer = 1 To Iterations
+            Using MyAES As AesManaged = New AesManaged() With {.Key = Key, .IV = IV}
+                Dim MyCryptoTransform As ICryptoTransform = MyAES.CreateEncryptor(MyAES.Key, MyAES.IV)
+                Using MyMemoryStream As MemoryStream = New MemoryStream()
+                    Using MyCryptoStream As CryptoStream = New CryptoStream(MyMemoryStream, MyCryptoTransform, CryptoStreamMode.Write)
+                        Using MyMemoryWriter As StreamWriter = New StreamWriter(MyCryptoStream)
+                            MyMemoryWriter.Write(PlainText)
+                        End Using
+                        EncryptedBytes = MyMemoryStream.ToArray()
+                    End Using
+                End Using
+                ReDim PlainText(EncryptedBytes.GetUpperBound(0))
+                EncryptedBytes.CopyTo(PlainText, 0)
+            End Using
+        Next
+        '
+        Return Convert.ToBase64String(EncryptedBytes)
+    End Function
+
     Private Shared Function AESDecryptBytes(ByVal cipherTextString As String, ByVal Key As Byte(), ByVal IV As Byte()) As String
         Try
             Dim EncryptedBytes As Byte() = Convert.FromBase64String(cipherTextString)
@@ -96,6 +133,7 @@ Class AES256Wrapper
             Using MyAES As Aes = Aes.Create()
                 MyAES.Key = Key
                 MyAES.IV = IV
+
                 Dim MyDecryptor As ICryptoTransform = MyAES.CreateDecryptor(MyAES.Key, MyAES.IV)
                 Using MyMemoryStream As MemoryStream = New MemoryStream(EncryptedBytes)
                     Using MyCryptoStream As CryptoStream = New CryptoStream(MyMemoryStream, MyDecryptor, CryptoStreamMode.Read)
@@ -105,29 +143,76 @@ Class AES256Wrapper
                     End Using
                 End Using
             End Using
-
             '
             Return plaintext
         Catch ex As Exception
-            MsgBox(ex.ToString & vbNewLine & vbNewLine & cipherTextString.Length)
+            'MsgBox(ex.ToString & vbNewLine & vbNewLine & cipherTextString.Length)
             Return ""
         End Try
     End Function
 
-    Private Function GetHashKeys(ByVal key As String) As Byte()()
-        Dim Result As Byte()() = New Byte(1)() {}
-        Dim Hasher As SHA256 = New SHA256CryptoServiceProvider()
-        Dim Encoder As Encoding = Encoding.UTF8
-        Dim IVBytes As Byte() = Encoder.GetBytes(key)
-        Dim KeyBytes As Byte() = Encoder.GetBytes(key)
-        Dim HashedIV As Byte() = Hasher.ComputeHash(IVBytes)
-        Dim HashedKey As Byte() = Hasher.ComputeHash(KeyBytes)
-        '
-        Array.Resize(HashedIV, 16)
-        Result(0) = HashedKey
-        Result(1) = HashedIV
-        '
-        Return Result
+    Public Shared Function AESDecryptBytes(ByVal cipherTextString As String, ByVal Key As Byte(), ByVal IV As Byte(), Iterations As Integer) As Byte()
+        Try
+            Dim EncryptedBytes As Byte() = Convert.FromBase64String(cipherTextString)
+            If EncryptedBytes Is Nothing OrElse EncryptedBytes.Length <= 0 Then Return Nothing 'Throw New ArgumentNullException("EncryptedBytes")
+            If Key Is Nothing OrElse Key.Length <= 0 Then Throw New ArgumentNullException("Key")
+            If IV Is Nothing OrElse IV.Length <= 0 Then Throw New ArgumentNullException("IV")
+            Dim plaintext As Byte() = {}
+            '
+            For x As Integer = 1 To Iterations
+                Using MyAES As Aes = Aes.Create()
+                    MyAES.Key = Key
+                    MyAES.IV = IV
+
+                    Dim MyDecryptor As ICryptoTransform = MyAES.CreateDecryptor(MyAES.Key, MyAES.IV)
+                    Using MyMemoryStream As MemoryStream = New MemoryStream(EncryptedBytes)
+                        Using MyCryptoStream As CryptoStream = New CryptoStream(MyMemoryStream, MyDecryptor, CryptoStreamMode.Read)
+                            ReDim plaintext(MyCryptoStream.Length - 1)
+                            MyCryptoStream.Read(plaintext, 0, MyCryptoStream.Length)
+                        End Using
+                    End Using
+                    ReDim plaintext(EncryptedBytes.GetUpperBound(0))
+                    EncryptedBytes.CopyTo(plaintext, 0)
+                End Using
+            Next
+            '
+            Return plaintext
+        Catch ex As Exception
+            MsgBox(ex.ToString & vbNewLine & vbNewLine & cipherTextString.Length)
+            Return Nothing
+        End Try
     End Function
+
+#Region "IDisposable Support"
+    Private disposedValue As Boolean ' To detect redundant calls
+
+    ' IDisposable
+    Protected Overridable Sub Dispose(disposing As Boolean)
+        If Not disposedValue Then
+            If disposing Then
+                ' TODO: dispose managed state (managed objects).
+            End If
+
+            ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+            ' TODO: set large fields to null.
+        End If
+        disposedValue = True
+    End Sub
+
+    ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
+    'Protected Overrides Sub Finalize()
+    '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+    '    Dispose(False)
+    '    MyBase.Finalize()
+    'End Sub
+
+    ' This code added by Visual Basic to correctly implement the disposable pattern.
+    Public Sub Dispose() Implements IDisposable.Dispose
+        ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+        Dispose(True)
+        ' TODO: uncomment the following line if Finalize() is overridden above.
+        ' GC.SuppressFinalize(Me)
+    End Sub
+#End Region
 
 End Class

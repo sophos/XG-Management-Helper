@@ -7,13 +7,13 @@
 
 Public Class LogViewer
 
-    Sub New(Key As String)
+    Sub New(Key As String, IV As String)
 
         ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        AESWrapper = New AES256Wrapper(Key)
+        AESWrapper = New AES256Wrapper(Key, IV)
         ListLogs()
     End Sub
 

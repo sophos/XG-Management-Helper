@@ -1,4 +1,5 @@
-﻿' Copyright 2020  Sophos Ltd.  All rights reserved.
+﻿
+' Copyright 2020  Sophos Ltd.  All rights reserved.
 ' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 ' You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 ' Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, 
@@ -9,19 +10,20 @@ Imports System.Management
 Imports System.Security.Cryptography
 Imports System.IO.Compression
 Imports System.ComponentModel
-Imports XGManagementHelper.RandomStringGenerator
+Imports XGManagementHelper.Randomness
+Imports System.Security.AccessControl
+Imports System.Security.Principal
+Imports Microsoft.Win32
 
 Public Class MainForm
     'temporary quick encryption, replaced now
     'ReadOnly ENC As New Hider(My.Computer.Name & "wertyuj3k4er8foji4rewfoyiczld4d53ads6assad7")
 
     'AES256 SHA2
-    ReadOnly Key1 As String = "9P5xruz;=FH""Q^Xzj'1[#nbKY7vwgGVl7Q$(=N?Pyw\gnM,])2*7jJmPK[qdMJu"
-    ReadOnly key2 As String = My.Computer.Name & SerialNumbers()
-    Private key3 As String
-    Const Iterations As Integer = 1
+
+    Private DataKey As String
+    Private DataIV As String
     Private AESWrapper As AES256Wrapper
-    ReadOnly AESINIT As New AES256Wrapper(Key1 & key2)
     ReadOnly NewHosts As New List(Of KeyValuePair(Of String, String))
     ReadOnly IncrementalAutoSave As Boolean = True
     Private FormIsDirty As Boolean
@@ -96,6 +98,11 @@ Public Class MainForm
                 DoDeRegister(LogLevel)
             Case ActionOptions.Change_admin_password
                 DoSetAdminPassword(LogLevel)
+
+            Case Else
+                If ActionComboBox.Text = "Backup local encryption key" Then
+                    BackupKey()
+                End If
         End Select
 
         If DoMigrate Then
@@ -148,6 +155,8 @@ Public Class MainForm
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadingBool = True
+        SetRegistryPermissions()
+
         Dim MyActionOption As ActionOptions = 0
         ActionComboBox.Items.Clear()
         Do
@@ -156,9 +165,12 @@ Public Class MainForm
             ActionComboBox.Items.Add(ThisAction)
             MyActionOption += 1
         Loop
+        ActionComboBox.Items.Add("-----")
+        ActionComboBox.Items.Add("Backup local encryption key")
         ActionComboBox.Text = ActionComboBox.Items(0)
         SerialNumbers()
         LoadSavedValues()
+        UpdateHostsList()
         '
     End Sub
 
@@ -261,7 +273,7 @@ Public Class MainForm
             Dim lvi As ListViewItem = GetListViewItemForHost(Host)
             lvi.ImageKey = "wait"
 
-            Dim SSH As New XGShellConnection
+            Dim SSH As New XGShellConnection("")
             Dim pass As String = Host.Value
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
@@ -318,12 +330,11 @@ Public Class MainForm
             Dim lvi As ListViewItem = GetListViewItemForHost(Host)
             lvi.ImageKey = "wait"
 
-            Dim SSH As New XGShellConnection
+            Dim SSH As New XGShellConnection()
             Dim pass As String = Host.Value
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
             Dim result As XGShellConnection.ExpectResult = SSH.CheckCurrentFirmwareVersion(Host.Key, "admin", pass, loglevel)
-
             lvi.SubItems.Add(result.Summary)
             lvi.SubItems.Add(Now.ToString("yyyy-MM-dd h:mm:ss tt"))
 
@@ -537,7 +548,9 @@ Public Class MainForm
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
             If Generate OrElse Not newpass = pass Then
-                If Generate Then newpass = RandomString(32, np.EnforceComplexity)
+                If Generate Then newpass = GetRandomString(32, np.EnforceComplexity)
+                loglines &= String.Format("""{0}"",""{1}"",""{2}"",""{3}""{4}", Now.ToString("yyyy-MM-dd h:mm:ss tt"), Host.Key, newpass, "Setting password", vbNewLine)
+                System.IO.File.WriteAllText(Logfilename, AESWrapper.Encrypt(loglines))
                 Dim result As XGShellConnection.ExpectResult = SSH.SetAdminPassword(Host.Key, "admin", pass, newpass, loglevel)
                 loglines &= String.Format("""{0}"",""{1}"",""{2}"",""{3}""{4}", Now.ToString("yyyy-MM-dd h:mm:ss tt"), Host.Key, newpass, result.Summary, vbNewLine)
                 System.IO.File.WriteAllText(Logfilename, AESWrapper.Encrypt(loglines))
@@ -579,9 +592,7 @@ Public Class MainForm
             ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
             '
         Next
-
-
-        Dim lv As New LogViewer(key2 & Key1 & key3)
+        Dim lv As New LogViewer(DataKey, DataIV)
         lv.ShowLog(Logname)
         lv.ShowDialog()
 
@@ -590,10 +601,12 @@ Public Class MainForm
         UpdateHostsList()
 
         If Not Generate Then
-            If MsgBox("Update complete. do you want to update your common firewall password to match the psasword you just set?", MsgBoxStyle.YesNo + MsgBoxStyle.Question) = MsgBoxResult.Yes Then
-                ShellCommonPass = newpass
-                ShellPassTextBox.Text = newpass
-                SaveSettings(IncrementalAutoSave)
+            If Not newpass.Equals(ShellCommonPass) Then
+                If MsgBox("Update complete. do you want to update your common firewall password to match the psasword you just set?", MsgBoxStyle.YesNo + MsgBoxStyle.Question) = MsgBoxResult.Yes Then
+                    ShellCommonPass = newpass
+                    ShellPassTextBox.Text = newpass
+                    SaveSettings(IncrementalAutoSave)
+                End If
             End If
         End If
         'finished. update status and clean up
@@ -606,48 +619,99 @@ Public Class MainForm
 
 #Region "Private Methods"
 
-    Private Sub LoadSavedValues()
-        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Sophos\XGManagementMigration")
-            key3 = AESINIT.Decrypt(key.GetValue("telemetry", AESINIT.Encrypt(Guid.NewGuid.ToString)))
-            'If key3 Is Nothing Then key3 = key.GetValue("telemetry", Guid.NewGuid.ToString)
-            If key3.Length = 0 Then key3 = Guid.NewGuid.ToString
-            '
-            key.SetValue("telemetry", AESINIT.Encrypt(key3))
-            AESWrapper = New AES256Wrapper(key2 & Key1 & key3)
-            '
-            Try
-                ShellCommonPass = AESWrapper.Decrypt(key.GetValue("CommonShell", ""))
-                CentralUser = key.GetValue("LastEmail", "")
-                CentralPass = AESWrapper.Decrypt(key.GetValue("LastEmailPass", ""))
-            Catch ex As Exception
-                MsgBox(ex.ToString)
-            End Try
-            '
-            ShellPassTextBox.Text = ShellCommonPass
-            '
-            Using hostskey = key.CreateSubKey("Hosts")
-                Dim reg_hosts As String() = hostskey.GetValueNames()
-                Hosts.Clear()
-                For Each hostname As String In reg_hosts
-                    If hostname.Length > 0 Then
-                        Dim rawpass As String = hostskey.GetValue(hostname)
-                        Dim pass As String = AESWrapper.Decrypt(rawpass)
-                        Dim host As New KeyValuePair(Of String, String)(hostname, pass)
-                        Debug.Print("Loading {0} - epass:'{1}' dpass:'{2}'", hostname, rawpass, pass)
-                        Hosts.Add(host)
-                    End If
-                Next
+    Private Sub SetRegistryPermissions()
+        Try
+            Dim user As String = Environment.UserDomainName + "\\" + Environment.UserName
+
+            Dim rs As New RegistrySecurity
+            rs.SetAccessRuleProtection(True, False)
+            rs.AddAccessRule(New RegistryAccessRule(user, RegistryRights.FullControl, InheritanceFlags.None, PropagationFlags.None, AccessControlType.Allow))
+            Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper", RegistryKeyPermissionCheck.Default, rs)
+                key.SetAccessControl(rs)
             End Using
+            Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts")
+                key.SetAccessControl(rs)
+            End Using
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
+
+    Private Sub BackupKey()
+        Dim sfd As New SaveFileDialog With {.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments,
+                                            .DefaultExt = ".recovery",
+                                            .OverwritePrompt = True,
+                                            .AddExtension = True,
+                                            .FileName = "XGManagementHelper",
+                                            .Filter = "XG Management Helper Recovery File|*.recovery"}
+        If sfd.ShowDialog = DialogResult.OK Then
+            Dim ekey As Byte() = Convert.FromBase64String(DataKey)
+            Dim iv As Byte() = Convert.FromBase64String(DataIV)
+            Dim output As Byte()
+            ReDim output(ekey.Length + iv.Length - 1)
+            ekey.CopyTo(output, 0)
+            iv.CopyTo(output, ekey.Length)
+            IO.File.WriteAllBytes(sfd.FileName, output)
+        End If
+    End Sub
+
+    Private Sub LoadSavedValues()
+        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
+            DataIV = key.GetValue("Init3")
+            If DataIV Is Nothing OrElse DataIV.Length < 16 Then
+                DataIV = Convert.ToBase64String(GetRandomBytes(16))
+                key.SetValue("Init3", DataIV)
+            End If
+            Dim login As New Login
+
+            If login.ShowDialog() = DialogResult.OK Then
+                DataKey = login.Key
+                If login.NewPassword Then
+                    If MsgBox("Do you want to backup your key, in case you ever lose the password?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, "Backup") = MsgBoxResult.Yes Then
+                        BackupKey()
+
+                    End If
+                End If
+                login.Dispose()
+                'If DataKey Is Nothing OrElse DataKey.Length = 0 Then Exit Sub
+                AESWrapper = New AES256Wrapper(DataKey, DataIV)
+                '
+                Try
+                    ShellCommonPass = AESWrapper.Decrypt(key.GetValue("CommonShell", ""))
+                    CentralUser = key.GetValue("LastEmail", "")
+                    CentralPass = AESWrapper.Decrypt(key.GetValue("LastEmailPass", ""))
+                Catch ex As Exception
+                    MsgBox(ex.ToString)
+                End Try
+                '
+                ShellPassTextBox.Text = ShellCommonPass
+                '
+                Using hostskey = key.CreateSubKey("Hosts")
+                    Dim reg_hosts As String() = hostskey.GetValueNames()
+                    Hosts.Clear()
+                    For Each hostname As String In reg_hosts
+                        If hostname.Length > 0 Then
+                            Dim rawpass As String = hostskey.GetValue(hostname)
+                            Dim pass As String = AESWrapper.Decrypt(rawpass)
+                            Dim host As New KeyValuePair(Of String, String)(hostname, pass)
+                            Hosts.Add(host)
+                        End If
+                    Next
+                End Using
+            Else
+                Application.Exit()
+            End If
+            LoadingBool = False
         End Using
         ListHosts()
         EnableDisable()
-        LoadingBool = False
     End Sub
 
     Private Sub SaveSettings(Optional Force As Boolean = False)
         If Force Then
             Dim key As Microsoft.Win32.RegistryKey
-            key = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Sophos\XGManagementMigration")
+            key = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
             Try
                 If CentralUser.Length Then
                     key.SetValue("LastEmail", CentralUser)
@@ -684,20 +748,22 @@ Public Class MainForm
 
     Private Sub SaveHosts(Optional Force As Boolean = False)
         If Force Then
-            Dim key As Microsoft.Win32.RegistryKey
-            Try
-                My.Computer.Registry.CurrentUser.DeleteSubKeyTree("Software\Sophos\XGManagementMigration\Hosts")
-            Catch ex As Exception
-                Debug.Print("E082432:" & ex.Message)
-            End Try
-            Try
-                key = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Sophos\XGManagementMigration\Hosts")
-                For Each host As KeyValuePair(Of String, String) In Hosts
-                    key.SetValue(host.Key, AESWrapper.Encrypt(host.Value))
-                Next
-            Catch ex As Exception
-                Debug.Print("E9348" & ex.Message)
-            End Try
+            Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts")
+                Try
+                    For Each hostname As String In key.GetSubKeyNames
+                        key.DeleteValue(hostname)
+                    Next
+                Catch ex As Exception
+                    Debug.Print("E082432:" & ex.Message)
+                End Try
+                Try
+                    For Each host As KeyValuePair(Of String, String) In Hosts
+                        key.SetValue(host.Key, AESWrapper.Encrypt(host.Value))
+                    Next
+                Catch ex As Exception
+                    Debug.Print("E9348" & ex.Message)
+                End Try
+            End Using
         Else
             FormIsDirty = True
         End If
@@ -718,7 +784,7 @@ Public Class MainForm
         Dim another As Boolean = False
         If defaultpass = Nothing Then defaultpass = ""
         Do
-            af = New AddFirewalls
+            af = New AddFirewalls With {.CommonPassword = ShellCommonPass}
             If defaulthost.Length > 0 Then af.SSHHost = defaulthost
             If Not defaultpass.Equals("*") Then af.SSHPass = defaultpass
             af.AddAnother = another
@@ -838,6 +904,7 @@ Public Class MainForm
     End Sub
 
     Private Sub UpdateHostsList()
+
         Dim DeletedItems As New List(Of ListViewItem)
         For Each lvi As ListViewItem In ResultsListView.Items
             Dim Host As KeyValuePair(Of String, String) = GetHostByName(lvi.Text)
@@ -847,7 +914,15 @@ Public Class MainForm
                 lvi.SubItems(1).Text = If(Host.Value = "", "-", "*****")
             End If
         Next
-
+        '
+        For Each host As KeyValuePair(Of String, String) In Hosts
+            If GetListViewItemForHost(host) Is Nothing Then
+                Dim lvi As ListViewItem = ResultsListView.Items.Add(host.Key)
+                lvi.SubItems.Add(If(host.Value = "", "-", "*****"))
+                lvi.ImageKey = ""
+            End If
+        Next
+        '
         For Each lvi As ListViewItem In DeletedItems
             ResultsListView.Items.Remove(lvi)
         Next
@@ -883,7 +958,7 @@ Public Class MainForm
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Dim lv As New LogViewer(key2 & Key1 & key3)
+        Dim lv As New LogViewer(DataKey, DataIV)
         lv.ShowDialog()
 
     End Sub
