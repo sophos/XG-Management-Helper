@@ -22,6 +22,7 @@ Partial Class Login
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Login))
         Me.StrengthLabel = New System.Windows.Forms.Label()
         Me.StrengthProgressBar = New System.Windows.Forms.ProgressBar()
         Me.StatusLabel = New System.Windows.Forms.Label()
@@ -287,7 +288,7 @@ Partial Class Login
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
         Me.MyTitleBar1.MaximizeBox = False
-        Me.MyTitleBar1.MinimizeBox = False
+        Me.MyTitleBar1.MinimizeBox = True
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(374, 50)
         Me.MyTitleBar1.TabIndex = 42
@@ -302,6 +303,7 @@ Partial Class Login
         Me.Controls.Add(Me.SetPasswordPanel)
         Me.Controls.Add(Me.MyTitleBar1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "Login"

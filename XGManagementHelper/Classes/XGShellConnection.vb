@@ -21,12 +21,12 @@ Public Class XGShellConnection
     Public DisplayVersion As String = "UNKNOWN"
     Public MRVersion As String = "UNKNOWN"
     Public Property Timeout As Integer = 60
-
     Public Property FingerprintReceived As String
     Public Property ErrorReceived As String
     Private Property Host As String
     Public Property AutoTrust As Boolean = False
-
+    ReadOnly DataKey As String
+    ReadOnly DataIV As String
     Public Enum LogSeverity
         'Emergency = 0
         'Alert = 1
@@ -39,11 +39,11 @@ Public Class XGShellConnection
     End Enum
 
 #Region "Public Methods"
-    Sub New()
 
-    End Sub
-    Sub New(Autotrust As Boolean)
+    Sub New(Autotrust As Boolean, Key As String, IV As String)
         Me.AutoTrust = Autotrust
+        DataKey = Key
+        DataIV = IV
     End Sub
 
 #Region "WriteLog"
@@ -409,29 +409,38 @@ Public Class XGShellConnection
     End Function
 
     Private Sub XG_HostKeyReceived(sender As Object, e As HostKeyEventArgs) Handles XG.HostKeyReceived
-        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & Me.Host)
-            Dim ExpectedFingerprint As String = key.GetValue("Fingerprint")
-            FingerprintReceived = ByteArrayToHex(e.FingerPrint)
-            If ExpectedFingerprint IsNot Nothing Then
-                If ExpectedFingerprint.Equals(FingerprintReceived) Then
-                    e.CanTrust = True
-                Else
-                    Dim fc As New FingerprintConfirmation(FingerprintReceived, True, Host)
-                    e.CanTrust = fc.ShowDialog = DialogResult.OK
+        Using AESWrapper As New AES256Wrapper(DataKey, DataIV)
+            Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & Me.Host)
+                Dim ExpectedFingerprint As String = AESWrapper.Decrypt(key.GetValue("Fingerprint"))
+                If ExpectedFingerprint IsNot Nothing Then
+                    If ExpectedFingerprint.StartsWith(Me.Host) Then
+                        ExpectedFingerprint = ExpectedFingerprint.Substring(Me.Host.Length)
+                    Else
+                        ExpectedFingerprint = Nothing
+                    End If
                 End If
-            Else
-                If AutoTrust Then
-                    e.CanTrust = True
+                    If ExpectedFingerprint = "" Then ExpectedFingerprint = Nothing
+                FingerprintReceived = ByteArrayToHex(e.FingerPrint)
+                If ExpectedFingerprint IsNot Nothing Then
+                    If ExpectedFingerprint.Equals(FingerprintReceived) Then
+                        e.CanTrust = True
+                    Else
+                        Dim fc As New FingerprintConfirmation(FingerprintReceived, True, Host)
+                        e.CanTrust = fc.ShowDialog = DialogResult.OK
+                    End If
                 Else
-                    Dim fc As New FingerprintConfirmation(FingerprintReceived, False, Host)
-                    e.CanTrust = fc.ShowDialog = DialogResult.OK
+                    If AutoTrust Then
+                        e.CanTrust = True
+                    Else
+                        Dim fc As New FingerprintConfirmation(FingerprintReceived, False, Host)
+                        e.CanTrust = fc.ShowDialog = DialogResult.OK
+                    End If
                 End If
-            End If
-            If e.CanTrust Then
-                key.SetValue("Fingerprint", FingerprintReceived)
-            End If
+                If e.CanTrust Then
+                    key.SetValue("Fingerprint", AESWrapper.Encrypt(Me.Host & FingerprintReceived))
+                End If
+            End Using
         End Using
-
 
     End Sub
 
@@ -499,65 +508,6 @@ Public Class XGShellConnection
         End Sub
 
     End Class
-
-    'Public Function Expect(cmd As String, WaitFor As String, sh As ShellStream, Optional Timeout As Integer = 0) As String
-    '    Dim reader As StreamReader ' = Nothing
-    '    If Timeout = 0 Then Timeout = Me.Timeout
-    '    Try
-    '        reader = New StreamReader(sh)
-    '        Dim writer As New StreamWriter(sh) With {.NewLine = vbLf, .AutoFlush = True}
-    '        writer.WriteLine(cmd)
-    '        Dim expiry As DateTime = Now.AddSeconds(Timeout)
-
-    '        'read response
-    '        Dim ret As String = Expect(cmd, WaitFor, sh, reader, expiry) '.Substring(cmd.Length).Trim
-    '        If ret.StartsWith(cmd) Then ret = ret.Trim.Substring(cmd.Length).Trim
-    '        If ret.Contains(vbLf) Then ret = ret.Substring(0, ret.LastIndexOf(vbLf) - 1)
-    '        If ret.Contains(WaitFor) Then
-    '            ret = ret.Substring(ret.IndexOf(WaitFor) + WaitFor.Length)
-    '        End If
-
-    '        WriteToLog(LogSeverity.Debug, String.Format("action='{0}' waitfor='{1}' timeout={2} result='{3}'", cmd, WaitFor, Timeout, ret))
-    '        Return ret
-
-    '    Catch ex As Exception
-    '        MsgBox(ex.ToString)
-    '        WriteToLog(LogSeverity.Debug, String.Format("action='{0}' waitfor='{1}' timeout={2} result='error' error=''", cmd, WaitFor, Timeout, ex.Message))
-    '        Return "Application Error: " & ex.Message
-    '    End Try
-
-    'End Function
-
-    'Private Function Expect(cmd As String, WaitFor As String, sh As ShellStream, reader As StreamReader, expiry As DateTime) As String
-    '    Return Expect(cmd, WaitFor, sh, reader, expiry, 0)
-    'End Function
-
-    'Private Function Expect(cmd As String, WaitFor As String, sh As ShellStream, reader As StreamReader, expiry As DateTime, loops As Integer) As String
-    '    loops += 1
-
-    '    If Now > expiry Then Throw New TimeoutException
-
-    '    'wait for something to read
-    '    While (sh.Length = 0)
-    '        Threading.Thread.Sleep(200)
-    '        If Now > expiry Then Throw New TimeoutException
-    '    End While
-    '    WriteToLog(LogSeverity.Debug, String.Format("waitfor='{0}' timeout_at='{1}' reply='no reply yet' result='waiting for reply' cycles={2}", WaitFor, expiry.ToString, loops))
-    '    '
-    '    Dim ret As String = reader.ReadToEnd
-    '    If ret IsNot Nothing Then
-    '        If Regex.IsMatch(ret, WaitFor, RegexOptions.IgnoreCase + RegexOptions.Multiline) Then
-    '            WriteToLog(LogSeverity.Debug, String.Format("waitfor='{0}' reply='{1}' result='match found' cycles={2}", WaitFor, ret.Replace(cmd, ""), loops))
-    '            Return ret '.Replace(cmd, "")
-    '        End If
-    '        WriteToLog(LogSeverity.Debug, String.Format("waitfor='{0}' reply='{1}' result='waiting for value' cycles={2}", WaitFor, ret.Replace(cmd, ""), loops))
-    '        Return ret & Expect(cmd, WaitFor, sh, reader, expiry, loops)
-    '    Else
-    '        WriteToLog(LogSeverity.Debug, String.Format("waitfor='{0}' reply='no reply yet' result='waiting for reply' cycles={1}", WaitFor, loops))
-    '        Return Expect(cmd, WaitFor, sh, reader, expiry, loops)
-    '    End If
-    '    '
-    'End Function
 
     Public Function ExtendedExpect(cmd As String, WaitFor As String, sh As ShellStream) As ExpectResult
         Return ExtendedExpect(cmd, New String() {WaitFor}, sh)

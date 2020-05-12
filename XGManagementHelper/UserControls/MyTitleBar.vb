@@ -159,5 +159,7 @@ Public Class MyTitleBar
         Me.ParentForm.Invalidate()
     End Sub
 
+    Private Sub TitleLabel_Click(sender As Object, e As EventArgs) Handles TitleLabel.Click
 
+    End Sub
 End Class

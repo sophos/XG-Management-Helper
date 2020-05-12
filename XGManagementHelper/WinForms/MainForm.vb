@@ -16,10 +16,6 @@ Imports System.Security.Principal
 Imports Microsoft.Win32
 
 Public Class MainForm
-    'temporary quick encryption, replaced now
-    'ReadOnly ENC As New Hider(My.Computer.Name & "wertyuj3k4er8foji4rewfoyiczld4d53ads6assad7")
-
-    'AES256 SHA2
 
     Private DataKey As String
     Private DataIV As String
@@ -31,28 +27,34 @@ Public Class MainForm
     Private CentralUser As String = ""
     Private CentralPass As String = ""
     Private ShellCommonPass As String = ""
-    Private CM As Boolean = True
-    Private CMBackup As Boolean = True
-    Private CR As Boolean = True
     Private LoadingBool As Boolean = False
 
-    Private Enum ActionOptions
-        'Asnarök_Activity_Check
-        Change_admin_password
-        Check_Current_Version
-        Install_Available_Hotfixes
-        Enable_All_Central_Services
-        Disable_All_Central_Services
-        Enable_Central_Management
-        Enable_Central_Management_and_Backups
-        Enable_Central_Reporting
-        Deregister_from_Central
-    End Enum
+#Region "Form Events"
+
+    Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        LoadingBool = True
+        SetRegistryPermissions()
+        LoadSavedValues()
+        UpdateHostsList()
+        LoadingBool = False
+        Me.MaximumSize = Screen.FromRectangle(Me.Bounds).WorkingArea.Size
+        '
+    End Sub
+
+    Private Sub MainForm_Move(sender As Object, e As EventArgs) Handles Me.Move
+        Me.MaximumSize = Screen.FromRectangle(Me.Bounds).WorkingArea.Size
+    End Sub
+
+    Private Sub MainForm_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        SaveSettings(FormIsDirty)
+        SaveHosts(FormIsDirty)
+    End Sub
+
+#End Region
 
 #Region "Form Control Events"
 
-    Private Sub GoButton_Click(sender As Object, e As EventArgs) Handles GoButton.Click
-
+    Private Function GetSet() As XGShellConnection.LogSeverity
         Dim LogLevel As XGShellConnection.LogSeverity = XGShellConnection.LogSeverity.Informational
         '
         If My.Computer.Keyboard.CtrlKeyDown Then
@@ -61,83 +63,18 @@ Public Class MainForm
         '
         Dim sfcount As Integer = ResultsListView.CheckedItems.Count
         If sfcount = 0 Then sfcount = Hosts.Count
-        If sfcount = 0 Then Exit Sub
+        If sfcount = 0 Then Return Nothing
         '
         StatusToolStripStatusLabel.Text = "Status: Getting ready"
         TopPanel.Enabled = False
-        Dim DoMigrate As Boolean = False
-        Select Case ActionComboBox.SelectedIndex
-            Case ActionOptions.Check_Current_Version '"Check Current Version"
-                DoVersionCheck(LogLevel)
-
-            Case ActionOptions.Install_Available_Hotfixes '"Install Available Hotfix(es)"                
-                DoHotfixInstall(LogLevel)
-
-            Case ActionOptions.Enable_All_Central_Services '"Enable All Central Services"
-                CM = True : CR = True : CMBackup = True
-                DoMigrate = True
-
-            Case ActionOptions.Enable_Central_Management '"Enable Central Management"
-                CM = True : CR = False : CMBackup = False
-                DoMigrate = True
-
-            Case ActionOptions.Enable_Central_Management_and_Backups ' "Enable Central Management + Backups"
-                CM = True : CR = False : CMBackup = True
-                DoMigrate = True
-
-            Case ActionOptions.Enable_Central_Reporting '"Enable Central Reporting"
-                CM = False : CR = True : CMBackup = False
-                DoMigrate = True
-
-            Case ActionOptions.Disable_All_Central_Services '"Disable All Central Services"
-                CM = False : CR = False : CMBackup = False
-                DoMigrate = True
-
-            Case ActionOptions.Deregister_from_Central '"De-Register from Central"
-
-                DoDeRegister(LogLevel)
-            Case ActionOptions.Change_admin_password
-                DoSetAdminPassword(LogLevel)
-
-            Case Else
-                If ActionComboBox.Text = "Backup local encryption key" Then
-                    BackupKey()
-                End If
-        End Select
-
-        If DoMigrate Then
-            DoMigration(LogLevel)
-        End If
-
-        TopPanel.Enabled = True
-    End Sub
+        Return LogLevel
+    End Function
 
     Private Function GetListViewItemForHost(host As KeyValuePair(Of String, String)) As ListViewItem
         For Each this As ListViewItem In ResultsListView.Items
             If this.Text = host.Key Then Return this
         Next
         Return Nothing
-    End Function
-
-    Private Function GetSelectedHosts() As KeyValuePair(Of String, String)()
-        Dim Selection As IEnumerable
-        Dim SelectedHosts() As KeyValuePair(Of String, String) = {}
-        If ResultsListView.CheckedItems.Count > 0 Then
-            Selection = ResultsListView.CheckedItems
-        Else
-            Selection = ResultsListView.Items
-        End If
-
-        For Each itm As ListViewItem In Selection
-            Dim Host As KeyValuePair(Of String, String) = GetHostByName(itm.Text)
-            If Not IsNothing(Host) Then
-                ReDim Preserve SelectedHosts(SelectedHosts.Count)
-                SelectedHosts(SelectedHosts.GetUpperBound(0)) = Host
-            End If
-        Next
-
-        Return SelectedHosts
-
     End Function
 
     Private Sub CentralUserTextBox_TextChanged(sender As Object, e As EventArgs) Handles ShellPassTextBox.TextChanged
@@ -149,87 +86,23 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub AddHostButton_Click(sender As Object, e As EventArgs) Handles AddHostButton.Click
-        AddHost()
-    End Sub
-
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        LoadingBool = True
-        SetRegistryPermissions()
-
-        Dim MyActionOption As ActionOptions = 0
-        ActionComboBox.Items.Clear()
-        Do
-            Dim ThisAction As String = MyActionOption.ToString.Replace("_", " ")
-            If IsNumeric(ThisAction) Then Exit Do
-            ActionComboBox.Items.Add(ThisAction)
-            MyActionOption += 1
-        Loop
-        ActionComboBox.Items.Add("-----")
-        ActionComboBox.Items.Add("Backup local encryption key")
-        ActionComboBox.Text = ActionComboBox.Items(0)
-        SerialNumbers()
-        LoadSavedValues()
-        UpdateHostsList()
-        '
-    End Sub
-
-    Private Sub CentralCredsButton_Click(sender As Object, e As EventArgs) Handles CentralCredsButton.Click
-        SetCentralCreds()
-
-    End Sub
-
-    Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click
-        Dim selected As KeyValuePair(Of String, String)() = GetSelectedHosts()
-        Dim removedlist As New List(Of KeyValuePair(Of String, String))
-        '
-        For Each host As KeyValuePair(Of String, String) In Hosts
-            If Not selected.Contains(host) Then removedlist.Add(host)
-        Next
-        '
-        Hosts.Clear()
-        Hosts.AddRange(removedlist)
-        SaveHosts(IncrementalAutoSave)
-        UpdateHostsList()
-        '
-    End Sub
 
     Private Sub ResultsListView_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles ResultsListView.ItemChecked
         EnableDisable()
     End Sub
 
-    Private Sub BrowseButton_Click(sender As Object, e As EventArgs) Handles btnBrowse.Click
-        Dim ofd As New OpenFileDialog With {.Filter = "Text files (*.txt)|*.txt"}
-        If ofd.ShowDialog() = DialogResult.OK Then
-            Try
-                Dim ImportedList As String = IO.File.ReadAllText(ofd.FileName)
-                Dim ImportedListArray As String() = Split(ImportedList.Replace(vbCrLf, vbLf), vbLf)
-                For Each ListLine As String In ImportedListArray
-                    Dim ImportedHostLine As String = ListLine.Trim
-                    If Trim(ImportedHostLine).Length > 0 Then
-                        If ImportedHostLine.Contains(" ") Then
-                            Dim HostString As String = ImportedHostLine.Substring(0, ImportedHostLine.IndexOf(" ")).Trim
-                            Dim Password As String = ImportedHostLine.Substring(ImportedHostLine.IndexOf(" ") + 1).Trim
-                            Dim Host As New KeyValuePair(Of String, String)(HostString, Password)
-                            AddNewHost(Host)
 
-                        Else
-                            Dim Host As New KeyValuePair(Of String, String)(ImportedHostLine, "")
-                            AddNewHost(Host)
+    Private Sub AllCheckBox_CheckedChanged(sender As Object, e As EventArgs) Handles AllCheckBox.CheckedChanged
 
-                        End If
-                    End If
-                Next
+        For Each lvi As ListViewItem In ResultsListView.Items
+            lvi.Checked = sender.checked
+        Next
+    End Sub
 
-                'combine unique entries
-                FinishAddNewHosts()
-                SaveHosts(IncrementalAutoSave)
-                UpdateHostsList()
-            Catch ex As Exception
-                Debug.Print("E04683" & ex.Message)
-            End Try
-
-        End If
+    Private Sub ToggleCheckButton_Click(sender As Object, e As EventArgs) Handles ToggleCheckButton.Click
+        For Each lvi As ListViewItem In ResultsListView.Items
+            lvi.Checked = Not lvi.Checked
+        Next
     End Sub
 
     Private Sub ResultsListView_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles ResultsListView.MouseDoubleClick
@@ -249,6 +122,18 @@ Public Class MainForm
 #End Region
 
 #Region "Main Methods"
+    Private Sub AddResultsLog(Host As String, result As String, message As String)
+        Splitter1.Visible = True
+        LogsLabel.Visible = True
+        LogListView.Visible = True
+        Dim lvi As ListViewItem = LogListView.Items.Add(Now.ToString("yyyy-MM-dd h:mm:ss tt"))
+        lvi.SubItems.Add(Host)
+        lvi.SubItems.Add(message)
+        lvi.ImageKey = result
+        LogListView.Sorting = SortOrder.Descending
+        LogListView.Sort()
+        LogListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+    End Sub
 
     Private Sub DoHotfixInstall(loglevel As XGShellConnection.LogSeverity)
 
@@ -257,7 +142,7 @@ Public Class MainForm
         If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
         If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
 
-        GoButton.Enabled = False
+        ActionToolStripMenuItem.Enabled = False
         ToolStripProgressBar.Maximum = SelectedHosts.Count
         ToolStripProgressBar.Minimum = 0
         ToolStripProgressBar.Value = 0
@@ -273,7 +158,7 @@ Public Class MainForm
             Dim lvi As ListViewItem = GetListViewItemForHost(Host)
             lvi.ImageKey = "wait"
 
-            Dim SSH As New XGShellConnection("")
+            Dim SSH As New XGShellConnection(TrustInitialSSHFingerprintToolStripMenuItem.Checked, DataKey, DataIV)
             Dim pass As String = Host.Value
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
@@ -301,20 +186,20 @@ Public Class MainForm
                 End Select
                 XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
             End If
-
+            AddResultsLog(Host.Key, lvi.ImageKey, result.Summary)
 
             ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent) 'And ColumnHeaderAutoResizeStyle.HeaderSize)
         Next
         'finished. update status and clean up
         StatusToolStripStatusLabel.Text = "Finished"
         ToolStripProgressBar.Visible = False
-        GoButton.Enabled = True
+        ActionToolStripMenuItem.Enabled = True
     End Sub
 
     Private Sub DoVersionCheck(loglevel As XGShellConnection.LogSeverity)
 
         Dim SelectedHosts() As KeyValuePair(Of String, String) = GetSelectedHosts()
-        GoButton.Enabled = False
+        ActionToolStripMenuItem.Enabled = False
         ToolStripProgressBar.Maximum = SelectedHosts.Count
         ToolStripProgressBar.Minimum = 0
         ToolStripProgressBar.Value = 0
@@ -330,7 +215,7 @@ Public Class MainForm
             Dim lvi As ListViewItem = GetListViewItemForHost(Host)
             lvi.ImageKey = "wait"
 
-            Dim SSH As New XGShellConnection()
+            Dim SSH As New XGShellConnection(TrustInitialSSHFingerprintToolStripMenuItem.Checked, DataKey, DataIV)
             Dim pass As String = Host.Value
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
@@ -354,17 +239,17 @@ Public Class MainForm
                 End Select
                 XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
             End If
-
+            AddResultsLog(Host.Key, lvi.ImageKey, result.Summary)
 
             ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent) 'And ColumnHeaderAutoResizeStyle.HeaderSize)
         Next
         'finished. update status and clean up
         StatusToolStripStatusLabel.Text = "Finished"
         ToolStripProgressBar.Visible = False
-        GoButton.Enabled = True
+        ActionToolStripMenuItem.Enabled = True
     End Sub
 
-    Private Sub DoMigration(loglevel As XGShellConnection.LogSeverity)
+    Private Sub DoMigration(loglevel As XGShellConnection.LogSeverity, CM As Boolean, CMBackup As Boolean, CR As Boolean)
         If CentralUser.Length = 0 Or CentralPass.Length = 0 Then SetCentralCreds()
         If CentralUser.Length = 0 Or CentralPass.Length = 0 Then
             MsgBox("Cannot proceed without Sophos Central credentals.", MsgBoxStyle.Exclamation, "Credentials needed")
@@ -379,7 +264,7 @@ Public Class MainForm
         If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
         If ResultsListView.CheckedItems.Count > 0 Then Selection = ResultsListView.CheckedItems
 
-        GoButton.Enabled = False
+        ActionToolStripMenuItem.Enabled = False
         ToolStripProgressBar.Maximum = SelectedHosts.Count
         ToolStripProgressBar.Minimum = 0
         ToolStripProgressBar.Value = 0
@@ -389,7 +274,7 @@ Public Class MainForm
 
         For Each Host As KeyValuePair(Of String, String) In SelectedHosts
 
-            Dim SSH As New XGShellConnection
+            Dim SSH As New XGShellConnection(TrustInitialSSHFingerprintToolStripMenuItem.Checked, DataKey, DataIV)
             'prep everything for this host. update progress bar, status, find the right entry in the results list to update,...
             count += 1
             ToolStripProgressBar.Value += 1
@@ -442,13 +327,14 @@ Public Class MainForm
                 End Select
                 XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
             End If
+            AddResultsLog(Host.Key, lvi.ImageKey, result.Summary)
             ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent) 'And ColumnHeaderAutoResizeStyle.HeaderSize)
         Next
 
         'finished. update status and clean up
         StatusToolStripStatusLabel.Text = "Finished"
         ToolStripProgressBar.Visible = False
-        GoButton.Enabled = True
+        ActionToolStripMenuItem.Enabled = True
     End Sub
 
     Private Sub DoDeRegister(loglevel As XGShellConnection.LogSeverity)
@@ -460,7 +346,7 @@ Public Class MainForm
         If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
         If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
 
-        GoButton.Enabled = False
+        ActionToolStripMenuItem.Enabled = False
         ToolStripProgressBar.Maximum = SelectedHosts.Count
         ToolStripProgressBar.Minimum = 0
         ToolStripProgressBar.Value = 0
@@ -476,7 +362,7 @@ Public Class MainForm
             Dim lvi As ListViewItem = GetListViewItemForHost(Host)
             lvi.ImageKey = "wait"
 
-            Dim SSH As New XGShellConnection
+            Dim SSH As New XGShellConnection(TrustInitialSSHFingerprintToolStripMenuItem.Checked, DataKey, DataIV)
             Dim pass As String = Host.Value
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
@@ -498,13 +384,14 @@ Public Class MainForm
                     lvi.ImageKey = "fail"
 
             End Select
+            AddResultsLog(Host.Key, lvi.ImageKey, result.Summary)
             ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
 
         Next
         'finished. update status and clean up
         StatusToolStripStatusLabel.Text = "Finished"
         ToolStripProgressBar.Visible = False
-        GoButton.Enabled = True
+        ActionToolStripMenuItem.Enabled = True
     End Sub
 
     Private Sub DoSetAdminPassword(loglevel As XGShellConnection.LogSeverity)
@@ -523,7 +410,7 @@ Public Class MainForm
         If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
         If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
 
-        GoButton.Enabled = False
+        ActionToolStripMenuItem.Enabled = False
         ToolStripProgressBar.Maximum = SelectedHosts.Count
         ToolStripProgressBar.Minimum = 0
         ToolStripProgressBar.Value = 0
@@ -543,7 +430,7 @@ Public Class MainForm
             Dim lvi As ListViewItem = GetListViewItemForHost(Host)
             lvi.ImageKey = "wait"
 
-            Dim SSH As New XGShellConnection
+            Dim SSH As New XGShellConnection(TrustInitialSSHFingerprintToolStripMenuItem.Checked, DataKey, DataIV)
             Dim pass As String = Host.Value
             If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
 
@@ -581,6 +468,8 @@ Public Class MainForm
                         Case Else
                             lvi.ImageKey = "fail"
                     End Select
+
+                    AddResultsLog(Host.Key, lvi.ImageKey, result.Summary)
                     XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
                 End If
             Else
@@ -609,15 +498,86 @@ Public Class MainForm
                 End If
             End If
         End If
+
         'finished. update status and clean up
         StatusToolStripStatusLabel.Text = "Finished"
         ToolStripProgressBar.Visible = False
-        GoButton.Enabled = True
+        ActionToolStripMenuItem.Enabled = True
     End Sub
 
 #End Region
 
 #Region "Private Methods"
+
+    Private Function GetSelectedHosts() As KeyValuePair(Of String, String)()
+        Dim Selection As IEnumerable
+        Dim SelectedHosts() As KeyValuePair(Of String, String) = {}
+        If ResultsListView.CheckedItems.Count > 0 Then
+            Selection = ResultsListView.CheckedItems
+        Else
+            Selection = ResultsListView.Items
+        End If
+
+        For Each itm As ListViewItem In Selection
+            Dim Host As KeyValuePair(Of String, String) = GetHostByName(itm.Text)
+            If Not IsNothing(Host) Then
+                ReDim Preserve SelectedHosts(SelectedHosts.Count)
+                SelectedHosts(SelectedHosts.GetUpperBound(0)) = Host
+            End If
+        Next
+
+        Return SelectedHosts
+
+    End Function
+
+    Private Sub DeleteSelected()
+        Dim selected As KeyValuePair(Of String, String)() = GetSelectedHosts()
+        Dim removedlist As New List(Of KeyValuePair(Of String, String))
+        '
+        For Each host As KeyValuePair(Of String, String) In Hosts
+            If Not selected.Contains(host) Then removedlist.Add(host)
+        Next
+        '
+        Hosts.Clear()
+        Hosts.AddRange(removedlist)
+        SaveHosts(IncrementalAutoSave)
+        UpdateHostsList()
+        '
+    End Sub
+
+    Private Sub ImportFirewalls()
+        Dim ofd As New OpenFileDialog With {.Filter = "Text files (*.txt)|*.txt"}
+        If ofd.ShowDialog() = DialogResult.OK Then
+            Try
+                Dim ImportedList As String = IO.File.ReadAllText(ofd.FileName)
+                Dim ImportedListArray As String() = Split(ImportedList.Replace(vbCrLf, vbLf), vbLf)
+                For Each ListLine As String In ImportedListArray
+                    Dim ImportedHostLine As String = ListLine.Trim
+                    If Trim(ImportedHostLine).Length > 0 Then
+                        If ImportedHostLine.Contains(" ") Then
+                            Dim HostString As String = ImportedHostLine.Substring(0, ImportedHostLine.IndexOf(" ")).Trim
+                            Dim Password As String = ImportedHostLine.Substring(ImportedHostLine.IndexOf(" ") + 1).Trim
+                            Dim Host As New KeyValuePair(Of String, String)(HostString, Password)
+                            AddNewHost(Host)
+
+                        Else
+                            Dim Host As New KeyValuePair(Of String, String)(ImportedHostLine, "")
+                            AddNewHost(Host)
+
+                        End If
+                    End If
+                Next
+
+                'combine unique entries
+                FinishAddNewHosts()
+                SaveHosts(IncrementalAutoSave)
+                UpdateHostsList()
+            Catch ex As Exception
+                Debug.Print("E04683" & ex.Message)
+            End Try
+
+        End If
+    End Sub
 
     Private Sub SetRegistryPermissions()
         Try
@@ -658,6 +618,8 @@ Public Class MainForm
 
     Private Sub LoadSavedValues()
         Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
+            TrustInitialSSHFingerprintToolStripMenuItem.Checked = key.GetValue("TrustInitialSSHFingerprint", True)
+
             DataIV = key.GetValue("Init3")
             If DataIV Is Nothing OrElse DataIV.Length < 16 Then
                 DataIV = Convert.ToBase64String(GetRandomBytes(16))
@@ -773,8 +735,20 @@ Public Class MainForm
         Dim En = True
 
         If Hosts.Count = 0 Then En = False
-        GoButton.Enabled = En
-        DeleteButton.Enabled = ResultsListView.CheckedItems.Count > 0
+        ActionToolStripMenuItem.Enabled = En
+
+        If ResultsListView.CheckedItems.Count = 0 Then
+            DeleteSelectedToolStripMenuItem.Enabled = False
+            ActionToolStripMenuItem.Text = "Action (All Firewalls)"
+        Else
+            DeleteSelectedToolStripMenuItem.Enabled = True
+            If ResultsListView.CheckedItems.Count = 1 Then
+                ActionToolStripMenuItem.Text = String.Format("Action ({0} Firewall)", ResultsListView.CheckedItems.Count)
+            Else
+                ActionToolStripMenuItem.Text = String.Format("Action ({0} Firewalls)", ResultsListView.CheckedItems.Count)
+            End If
+        End If
+
     End Sub
 
     Private Sub AddHost(Optional defaulthost As String = "", Optional defaultpass As String = "")
@@ -784,7 +758,7 @@ Public Class MainForm
         Dim another As Boolean = False
         If defaultpass = Nothing Then defaultpass = ""
         Do
-            af = New AddFirewalls With {.CommonPassword = ShellCommonPass}
+            af = New AddFirewalls(DataKey, DataIV) With {.CommonPassword = ShellCommonPass}
             If defaulthost.Length > 0 Then af.SSHHost = defaulthost
             If Not defaultpass.Equals("*") Then af.SSHPass = defaultpass
             af.AddAnother = another
@@ -829,18 +803,6 @@ Public Class MainForm
         End If
         NewHosts.Add(newhost)
     End Sub
-
-    Private Function SerialNumbers() As String
-        Dim q As New SelectQuery("Win32_bios")
-        Dim search As New ManagementObjectSearcher(q)
-        Dim info As New ManagementObject
-
-        Dim ret As String = ""
-        For Each info In search.Get
-            ret &= info("serialnumber").ToString & info("version").ToString
-        Next
-        Return ret
-    End Function
 
     Private Sub FinishAddNewHosts()
         If NewHosts.Count = 0 Then Exit Sub
@@ -957,34 +919,116 @@ Public Class MainForm
         SaveSettings(IncrementalAutoSave)
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+#Region "File Menu"
+
+    Private Sub ImportFirewallsListToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportFirewallsListToolStripMenuItem.Click
+        ImportFirewalls()
+    End Sub
+
+    Private Sub BackupApplicationKeyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BackupApplicationKeyToolStripMenuItem.Click
+        BackupKey()
+    End Sub
+
+    Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
+        Application.Exit()
+    End Sub
+
+#End Region
+
+#Region "Edit Menu"
+
+    Private Sub AddFirewallsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddFirewallsToolStripMenuItem.Click
+        AddHost()
+    End Sub
+
+    Private Sub DeleteSelectedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteSelectedToolStripMenuItem.Click
+        DeleteSelected()
+    End Sub
+
+    Private Sub ChangeCentralCredentialsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeCentralCredentialsToolStripMenuItem.Click
+        SetCentralCreds()
+    End Sub
+
+#End Region
+
+#Region "View Menu"
+
+    Private Sub PasswordChangeLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PasswordChangeLogsToolStripMenuItem.Click
         Dim lv As New LogViewer(DataKey, DataIV)
         lv.ShowDialog()
+    End Sub
+
+#End Region
+
+#Region "Action Menu"
+
+    Private Sub RegisterEnableAllCentralServicesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RegisterEnableAllCentralServicesToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoMigration(LogLevel, True, True, True)
+        TopPanel.Enabled = True
+    End Sub
+
+
+    Private Sub EnableCentralManagementOnlyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableCentralManagementOnlyToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoMigration(LogLevel, True, True, False)
+        TopPanel.Enabled = True
+    End Sub
+
+    Private Sub EnableCentralReportingOnlyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableCentralReportingOnlyToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoMigration(LogLevel, False, False, True)
+        TopPanel.Enabled = True
+    End Sub
+
+    Private Sub DeregisterFromSophosCentralToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeregisterFromSophosCentralToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoDeRegister(LogLevel)
+        TopPanel.Enabled = True
+    End Sub
+
+    Private Sub BulkChangeadminPasswordToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BulkChangeadminPasswordToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoSetAdminPassword(LogLevel)
+        TopPanel.Enabled = True
+    End Sub
+
+    Private Sub CheckCurrentFirmwareVersionToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CheckCurrentFirmwareVersionToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoVersionCheck(LogLevel)
+        TopPanel.Enabled = True
 
     End Sub
 
-    Private Sub MainForm_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        SaveSettings(FormIsDirty)
-        SaveHosts(FormIsDirty)
+    Private Sub InstallAnyAvailableHotfixesevenIfToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoHotfixInstall(LogLevel)
+        TopPanel.Enabled = True
     End Sub
 
-    Private Sub CheckAllButton_Click(sender As Object, e As EventArgs) Handles CheckAllButton.Click
-        For Each lvi As ListViewItem In ResultsListView.Items
-            lvi.Checked = True
-        Next
+    Private Sub Label2_Click(sender As Object, e As EventArgs) Handles Label2.Click
+
     End Sub
 
-    Private Sub CheckNoneButton_Click(sender As Object, e As EventArgs) Handles CheckNoneButton.Click
-        For Each lvi As ListViewItem In ResultsListView.Items
-            lvi.Checked = False
-        Next
+    Private Sub TrustInitialSSHFingerprintToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TrustInitialSSHFingerprintToolStripMenuItem.Click
+        TrustInitialSSHFingerprintToolStripMenuItem.Checked = Not TrustInitialSSHFingerprintToolStripMenuItem.Checked
+        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
+            key.SetValue("TrustInitialSSHFingerprint", TrustInitialSSHFingerprintToolStripMenuItem.Checked)
+        End Using
+
     End Sub
 
-    Private Sub ToggleCheckButton_Click(sender As Object, e As EventArgs) Handles ToggleCheckButton.Click
-        For Each lvi As ListViewItem In ResultsListView.Items
-            lvi.Checked = Not lvi.Checked
-        Next
-    End Sub
+
+#End Region
+
 
 #End Region
 

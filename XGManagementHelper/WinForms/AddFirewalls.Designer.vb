@@ -233,11 +233,11 @@ Partial Class AddFirewalls
         Me.Button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.Button3.Font = New System.Drawing.Font("Arial", 12.0!)
         Me.Button3.ForeColor = System.Drawing.Color.FromArgb(CType(CType(25, Byte), Integer), CType(CType(135, Byte), Integer), CType(CType(203, Byte), Integer))
-        Me.Button3.Location = New System.Drawing.Point(123, 291)
+        Me.Button3.Location = New System.Drawing.Point(123, 290)
         Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(83, 23)
+        Me.Button3.Size = New System.Drawing.Size(252, 26)
         Me.Button3.TabIndex = 60
-        Me.Button3.Text = "Launch"
+        Me.Button3.Text = "Open (and copy pwd to clipboard)"
         Me.Button3.UseVisualStyleBackColor = True
         '
         'AddFirewalls

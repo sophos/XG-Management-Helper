@@ -1,4 +1,11 @@
-﻿Imports System
+﻿' Copyright 2020  Sophos Ltd.  All rights reserved.
+' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+' You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+' Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, 
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing 
+' permissions and limitations under the License.
+
+Imports System
 Imports System.Security.Cryptography
 Imports System.Text
 
@@ -20,20 +27,6 @@ Public Class PBKDF2
             ClearBytes(SaltBytes)
         End Try
         Return RetKey
-    End Function
-
-    Public Shared Function CreateRandomSalt(ByVal length As Integer) As Byte()
-        Dim randBytes As Byte()
-
-        If length >= 1 Then
-            randBytes = New Byte(length - 1) {}
-        Else
-            randBytes = New Byte(0) {}
-        End If
-
-        Dim rand As RNGCryptoServiceProvider = New RNGCryptoServiceProvider()
-        rand.GetBytes(randBytes)
-        Return randBytes
     End Function
 
     Public Shared Sub ClearBytes(ByVal buffer As Byte())

@@ -79,7 +79,7 @@ Class AES256Wrapper
         If IV Is Nothing OrElse IV.Length <= 0 Then Throw New ArgumentNullException("IV")
         Dim EncryptedBytes As Byte()
         '
-        Using MyAES As AesManaged = New AesManaged() With {.Key = Key, .IV = IV}
+        Using MyAES As AesManaged = New AesManaged() With {.Key = Key, .IV = IV, .Mode = CipherMode.CBC, .Padding = PaddingMode.PKCS7}
             Dim MyCryptoTransform As ICryptoTransform = MyAES.CreateEncryptor(MyAES.Key, MyAES.IV)
             Using MyMemoryStream As MemoryStream = New MemoryStream()
                 Using MyCryptoStream As CryptoStream = New CryptoStream(MyMemoryStream, MyCryptoTransform, CryptoStreamMode.Write)
@@ -94,33 +94,7 @@ Class AES256Wrapper
         Return Convert.ToBase64String(EncryptedBytes)
     End Function
 
-    Public Shared Function AESEncryptBytes(ByVal PlainText As Byte(), ByVal Key As Byte(), ByVal IV As Byte(), Iterations As Integer) As String
-        If PlainText Is Nothing OrElse PlainText.Length <= 0 Then Return "" 'Throw New ArgumentNullException("plainText")
-        If Key Is Nothing OrElse Key.Length <= 0 Then Throw New ArgumentNullException("Key")
 
-
-        If IV Is Nothing OrElse IV.Length <= 0 Then Throw New ArgumentNullException("IV")
-        If Iterations < 1 Then Throw New ArgumentException("Iterations must be a positive integer greater than 0")
-        Dim EncryptedBytes As Byte()
-        '
-        For x As Integer = 1 To Iterations
-            Using MyAES As AesManaged = New AesManaged() With {.Key = Key, .IV = IV}
-                Dim MyCryptoTransform As ICryptoTransform = MyAES.CreateEncryptor(MyAES.Key, MyAES.IV)
-                Using MyMemoryStream As MemoryStream = New MemoryStream()
-                    Using MyCryptoStream As CryptoStream = New CryptoStream(MyMemoryStream, MyCryptoTransform, CryptoStreamMode.Write)
-                        Using MyMemoryWriter As StreamWriter = New StreamWriter(MyCryptoStream)
-                            MyMemoryWriter.Write(PlainText)
-                        End Using
-                        EncryptedBytes = MyMemoryStream.ToArray()
-                    End Using
-                End Using
-                ReDim PlainText(EncryptedBytes.GetUpperBound(0))
-                EncryptedBytes.CopyTo(PlainText, 0)
-            End Using
-        Next
-        '
-        Return Convert.ToBase64String(EncryptedBytes)
-    End Function
 
     Private Shared Function AESDecryptBytes(ByVal cipherTextString As String, ByVal Key As Byte(), ByVal IV As Byte()) As String
         Try
@@ -133,6 +107,8 @@ Class AES256Wrapper
             Using MyAES As Aes = Aes.Create()
                 MyAES.Key = Key
                 MyAES.IV = IV
+                MyAES.Mode = CipherMode.CBC
+                MyAES.Padding = PaddingMode.PKCS7
 
                 Dim MyDecryptor As ICryptoTransform = MyAES.CreateDecryptor(MyAES.Key, MyAES.IV)
                 Using MyMemoryStream As MemoryStream = New MemoryStream(EncryptedBytes)
@@ -151,37 +127,7 @@ Class AES256Wrapper
         End Try
     End Function
 
-    Public Shared Function AESDecryptBytes(ByVal cipherTextString As String, ByVal Key As Byte(), ByVal IV As Byte(), Iterations As Integer) As Byte()
-        Try
-            Dim EncryptedBytes As Byte() = Convert.FromBase64String(cipherTextString)
-            If EncryptedBytes Is Nothing OrElse EncryptedBytes.Length <= 0 Then Return Nothing 'Throw New ArgumentNullException("EncryptedBytes")
-            If Key Is Nothing OrElse Key.Length <= 0 Then Throw New ArgumentNullException("Key")
-            If IV Is Nothing OrElse IV.Length <= 0 Then Throw New ArgumentNullException("IV")
-            Dim plaintext As Byte() = {}
-            '
-            For x As Integer = 1 To Iterations
-                Using MyAES As Aes = Aes.Create()
-                    MyAES.Key = Key
-                    MyAES.IV = IV
 
-                    Dim MyDecryptor As ICryptoTransform = MyAES.CreateDecryptor(MyAES.Key, MyAES.IV)
-                    Using MyMemoryStream As MemoryStream = New MemoryStream(EncryptedBytes)
-                        Using MyCryptoStream As CryptoStream = New CryptoStream(MyMemoryStream, MyDecryptor, CryptoStreamMode.Read)
-                            ReDim plaintext(MyCryptoStream.Length - 1)
-                            MyCryptoStream.Read(plaintext, 0, MyCryptoStream.Length)
-                        End Using
-                    End Using
-                    ReDim plaintext(EncryptedBytes.GetUpperBound(0))
-                    EncryptedBytes.CopyTo(plaintext, 0)
-                End Using
-            Next
-            '
-            Return plaintext
-        Catch ex As Exception
-            MsgBox(ex.ToString & vbNewLine & vbNewLine & cipherTextString.Length)
-            Return Nothing
-        End Try
-    End Function
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
