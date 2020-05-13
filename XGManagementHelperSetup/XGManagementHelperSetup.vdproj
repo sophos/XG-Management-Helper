@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BAFDCA7D517D443A81AAFFFF7B445B1E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_FD1DF02CDA47DB32892EBF76E58F49C5"
         "OwnerKey" = "8:_490B63E212EC4883AE632BEDD70CBB4C"
         "MsmSig" = "8:_UNDEFINED"
@@ -143,6 +149,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BAFDCA7D517D443A81AAFFFF7B445B1E"
+            {
+            "SourcePath" = "8:..\\XGManagementHelper\\XG.ico"
+            "TargetName" = "8:XG.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_F9965C7A29A64A8EB826222B42431B62"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FD1DF02CDA47DB32892EBF76E58F49C5"
             {
             "AssemblyRegister" = "3:1"
@@ -202,7 +228,7 @@
                 {
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_B1CE33D94F92475191C857468793A780"
                     {
-                    "Name" = "8:Sophos XG Management Helper"
+                    "Name" = "8:XG Management Helper"
                     "AlwaysCreate" = "11:FALSE"
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
@@ -242,7 +268,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:XGManagementHelperSetup"
         "ProductCode" = "8:{8BC48D5D-B0FE-49C8-88F2-C23A40108397}"
-        "PackageCode" = "8:{0369B5B4-2EE8-4AED-9ACD-66E3D6F2E672}"
+        "PackageCode" = "8:{5A35FB21-EA5B-48F2-8812-51EC700923D8}"
         "UpgradeCode" = "8:{23139082-E6A0-489C-B52E-31360843A3F5}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -373,7 +399,7 @@
             "Target" = "8:_490B63E212EC4883AE632BEDD70CBB4C"
             "Folder" = "8:_B1CE33D94F92475191C857468793A780"
             "WorkingFolder" = "8:_F9965C7A29A64A8EB826222B42431B62"
-            "Icon" = "8:"
+            "Icon" = "8:_BAFDCA7D517D443A81AAFFFF7B445B1E"
             "Feature" = "8:"
             }
         }
