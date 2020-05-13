@@ -506,6 +506,130 @@ Public Class MainForm
         ActionToolStripMenuItem.Enabled = True
     End Sub
 
+    Private Sub DoCAPCHAAction(loglevel As XGShellConnection.LogSeverity, Check As Boolean, Enable As Boolean)
+        Dim SelectedHosts() As KeyValuePair(Of String, String) = GetSelectedHosts()
+        Dim confirm As New ChangeConfirmation(SelectedHosts.Count, loglevel = XGShellConnection.LogSeverity.Debug)
+        If Not Check Then If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
+        If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
+
+        ActionToolStripMenuItem.Enabled = False
+        ToolStripProgressBar.Maximum = SelectedHosts.Count
+        ToolStripProgressBar.Minimum = 0
+        ToolStripProgressBar.Value = 0
+        ToolStripProgressBar.Visible = True
+        Dim count As Integer = 0
+
+        'clear results window
+        ListHosts()
+        For Each Host As KeyValuePair(Of String, String) In SelectedHosts
+            count += 1
+            ToolStripProgressBar.Value += 1
+            StatusToolStripStatusLabel.Text = String.Format("checking {0} of {1} - {2}", count, SelectedHosts.Count, Host.Key)
+            Dim lvi As ListViewItem = GetListViewItemForHost(Host)
+            lvi.ImageKey = "wait"
+
+            Dim SSH As New XGShellConnection(TrustInitialSSHFingerprintToolStripMenuItem.Checked, DataKey, DataIV)
+            Dim pass As String = Host.Value
+            If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
+
+            Dim result As XGShellConnection.ExpectResult
+            If Check Then
+                result = SSH.GetCaptchaSetting(Host.Key, "admin", pass, loglevel)
+            ElseIf Enable Then
+                result = SSH.EnableCaptchaOnVPN(Host.Key, "admin", pass, loglevel)
+            Else
+                result = SSH.DisableCaptchaOnVPN(Host.Key, "admin", pass, loglevel)
+            End If
+
+            lvi.SubItems.Add(result.Summary)
+            lvi.SubItems.Add(Now.ToString("yyyy-MM-dd h:mm:ss tt"))
+            If result.Success Then
+                lvi.ImageKey = "green check"
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result.Summary, loglevel)
+            Else
+                Select Case result.FailReason
+                    Case "Timeout"
+                        lvi.ImageKey = "timeout"
+                    Case "Credentials"
+                        lvi.ImageKey = "fail"
+                    Case "Connection"
+                        lvi.ImageKey = "fail"
+                    Case Else
+                        lvi.ImageKey = "fail"
+                End Select
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
+            End If
+            AddResultsLog(Host.Key, lvi.ImageKey, result.Summary)
+
+            ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent) 'And ColumnHeaderAutoResizeStyle.HeaderSize)
+        Next
+        'finished. update status and clean up
+        StatusToolStripStatusLabel.Text = "Finished"
+        ToolStripProgressBar.Visible = False
+        ActionToolStripMenuItem.Enabled = True
+    End Sub
+
+    Private Sub DoPasswordRestAction(loglevel As XGShellConnection.LogSeverity, Check As Boolean)
+        Dim SelectedHosts() As KeyValuePair(Of String, String) = GetSelectedHosts()
+        Dim confirm As New ChangeConfirmation(SelectedHosts.Count, loglevel = XGShellConnection.LogSeverity.Debug)
+        If Not Check Then If confirm.ShowDialog = DialogResult.Cancel Then Exit Sub
+        If confirm.DebugLogging Then loglevel = XGShellConnection.LogSeverity.Debug
+
+        ActionToolStripMenuItem.Enabled = False
+        ToolStripProgressBar.Maximum = SelectedHosts.Count
+        ToolStripProgressBar.Minimum = 0
+        ToolStripProgressBar.Value = 0
+        ToolStripProgressBar.Visible = True
+        Dim count As Integer = 0
+
+        'clear results window
+        ListHosts()
+        For Each Host As KeyValuePair(Of String, String) In SelectedHosts
+            count += 1
+            ToolStripProgressBar.Value += 1
+            StatusToolStripStatusLabel.Text = String.Format("checking {0} of {1} - {2}", count, SelectedHosts.Count, Host.Key)
+            Dim lvi As ListViewItem = GetListViewItemForHost(Host)
+            lvi.ImageKey = "wait"
+
+            Dim SSH As New XGShellConnection(TrustInitialSSHFingerprintToolStripMenuItem.Checked, DataKey, DataIV)
+            Dim pass As String = Host.Value
+            If pass = "" Then pass = ShellCommonPass 'ShellPassTextBox.Text
+
+            Dim result As XGShellConnection.ExpectResult
+            If Check Then
+                result = SSH.GetManditoryPasswordResetStatus(Host.Key, "admin", pass, loglevel)
+            Else
+                result = SSH.DisableManditoryPasswordReset(Host.Key, "admin", pass, loglevel)
+            End If
+
+            lvi.SubItems.Add(result.Summary)
+            lvi.SubItems.Add(Now.ToString("yyyy-MM-dd h:mm:ss tt"))
+            If result.Success Then
+                lvi.ImageKey = "green check"
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Informational, result.Summary, loglevel)
+            Else
+                Select Case result.FailReason
+                    Case "Timeout"
+                        lvi.ImageKey = "timeout"
+                    Case "Credentials"
+                        lvi.ImageKey = "fail"
+                    Case "Connection"
+                        lvi.ImageKey = "fail"
+                    Case Else
+                        lvi.ImageKey = "fail"
+                End Select
+                XGShellConnection.WriteToLog(XGShellConnection.LogSeverity.Error, result.Summary, loglevel)
+            End If
+            AddResultsLog(Host.Key, lvi.ImageKey, result.Summary)
+
+            ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent) 'And ColumnHeaderAutoResizeStyle.HeaderSize)
+        Next
+        'finished. update status and clean up
+        StatusToolStripStatusLabel.Text = "Finished"
+        ToolStripProgressBar.Visible = False
+        ActionToolStripMenuItem.Enabled = True
+    End Sub
+
 #End Region
 
 #Region "Private Methods"
@@ -991,6 +1115,18 @@ Public Class MainForm
         SetCentralCreds()
     End Sub
 
+    Private Sub TrustInitialSSHFingerprintToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TrustInitialSSHFingerprintToolStripMenuItem.Click
+        TrustInitialSSHFingerprintToolStripMenuItem.Checked = Not TrustInitialSSHFingerprintToolStripMenuItem.Checked
+        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
+            key.SetValue("TrustInitialSSHFingerprint", TrustInitialSSHFingerprintToolStripMenuItem.Checked)
+        End Using
+
+    End Sub
+
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+        Dim a As New AboutBox1
+        a.ShowDialog()
+    End Sub
 #End Region
 
 #Region "View Menu"
@@ -1054,21 +1190,39 @@ Public Class MainForm
         TopPanel.Enabled = True
     End Sub
 
-    Private Sub Label2_Click(sender As Object, e As EventArgs) Handles Label2.Click
-
+    Private Sub EnableCapchaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableCAPCHAToolStripMenuItem1.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoCAPCHAAction(LogLevel, False, True)
+        TopPanel.Enabled = True
     End Sub
 
-    Private Sub TrustInitialSSHFingerprintToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TrustInitialSSHFingerprintToolStripMenuItem.Click
-        TrustInitialSSHFingerprintToolStripMenuItem.Checked = Not TrustInitialSSHFingerprintToolStripMenuItem.Checked
-        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
-            key.SetValue("TrustInitialSSHFingerprint", TrustInitialSSHFingerprintToolStripMenuItem.Checked)
-        End Using
-
+    Private Sub CheckStatusToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CkeckStatusToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoCAPCHAAction(LogLevel, True, False)
+        TopPanel.Enabled = True
     End Sub
 
-    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
-        Dim a As New AboutBox1
-        a.ShowDialog()
+    Private Sub DisableCapchaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisableCAPCHAOnVPNZoneToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoCAPCHAAction(LogLevel, False, False)
+        TopPanel.Enabled = True
+    End Sub
+
+    Private Sub CheckStatusToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles CheckStatusToolStripMenuItem1.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoPasswordRestAction(LogLevel, True)
+        TopPanel.Enabled = True
+    End Sub
+
+    Private Sub DisablePopUpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisablePopUpToolStripMenuItem.Click
+        Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
+        If LogLevel = Nothing Then Exit Sub
+        DoPasswordRestAction(LogLevel, False)
+        TopPanel.Enabled = True
     End Sub
 
 #End Region
@@ -1102,6 +1256,8 @@ Public Class MainForm
     Private Sub DeleteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteToolStripMenuItem.Click
         DeleteSelectedHost()
     End Sub
+
+
 
 #End Region
 

@@ -71,6 +71,11 @@ Partial Class MainForm
         Me.BulkChangeadminPasswordToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CheckCurrentFirmwareVersionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem7 = New System.Windows.Forms.ToolStripSeparator()
+        Me.CheckStatusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CkeckStatusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EnableCAPCHAToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DisableCAPCHAOnVPNZoneToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogListView = New System.Windows.Forms.ListView()
@@ -80,12 +85,15 @@ Partial Class MainForm
         Me.LogsLabel = New System.Windows.Forms.Label()
         Me.Splitter1 = New System.Windows.Forms.Splitter()
         Me.FirewallsRightClickContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ActionsForFirewallToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditFirewallToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ActionsForFirewallToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripSeparator()
         Me.DeleteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
+        Me.ManditoryPasswordResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CheckStatusToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DisablePopUpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TopPanel.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
@@ -322,7 +330,7 @@ Partial Class MainForm
         Me.EditHostToolStripMenuItem.Checked = True
         Me.EditHostToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.EditHostToolStripMenuItem.Name = "EditHostToolStripMenuItem"
-        Me.EditHostToolStripMenuItem.Size = New System.Drawing.Size(421, 22)
+        Me.EditHostToolStripMenuItem.Size = New System.Drawing.Size(431, 22)
         Me.EditHostToolStripMenuItem.Text = "Edit Firewall Settings"
         '
         'ToolStripMenuItem3
@@ -352,7 +360,7 @@ Partial Class MainForm
         '
         'ActionToolStripMenuItem
         '
-        Me.ActionToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SophosCentralToolStripMenuItem, Me.RegisterEnableAllCentralServicesToolStripMenuItem, Me.RegisterAndToolStripMenuItem, Me.ToolStripMenuItem5, Me.DeregisterFromSophosCentralToolStripMenuItem, Me.ToolStripMenuItem4, Me.OtherToolStripMenuItem, Me.BulkChangeadminPasswordToolStripMenuItem, Me.CheckCurrentFirmwareVersionToolStripMenuItem, Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem})
+        Me.ActionToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SophosCentralToolStripMenuItem, Me.RegisterEnableAllCentralServicesToolStripMenuItem, Me.RegisterAndToolStripMenuItem, Me.ToolStripMenuItem5, Me.DeregisterFromSophosCentralToolStripMenuItem, Me.ToolStripMenuItem4, Me.OtherToolStripMenuItem, Me.BulkChangeadminPasswordToolStripMenuItem, Me.CheckCurrentFirmwareVersionToolStripMenuItem, Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem, Me.ToolStripMenuItem7, Me.CheckStatusToolStripMenuItem, Me.ManditoryPasswordResetToolStripMenuItem})
         Me.ActionToolStripMenuItem.Name = "ActionToolStripMenuItem"
         Me.ActionToolStripMenuItem.Size = New System.Drawing.Size(161, 22)
         Me.ActionToolStripMenuItem.Text = "Action (All Firewalls)"
@@ -430,6 +438,36 @@ Partial Class MainForm
         Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
         Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Text = "Install Any Available Hotfixes (If automatic installation disabled)"
         '
+        'ToolStripMenuItem7
+        '
+        Me.ToolStripMenuItem7.Name = "ToolStripMenuItem7"
+        Me.ToolStripMenuItem7.Size = New System.Drawing.Size(501, 6)
+        '
+        'CheckStatusToolStripMenuItem
+        '
+        Me.CheckStatusToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CkeckStatusToolStripMenuItem, Me.EnableCAPCHAToolStripMenuItem1, Me.DisableCAPCHAOnVPNZoneToolStripMenuItem})
+        Me.CheckStatusToolStripMenuItem.Name = "CheckStatusToolStripMenuItem"
+        Me.CheckStatusToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
+        Me.CheckStatusToolStripMenuItem.Text = "CAPCHA on VPN Zone"
+        '
+        'CkeckStatusToolStripMenuItem
+        '
+        Me.CkeckStatusToolStripMenuItem.Name = "CkeckStatusToolStripMenuItem"
+        Me.CkeckStatusToolStripMenuItem.Size = New System.Drawing.Size(298, 22)
+        Me.CkeckStatusToolStripMenuItem.Text = "Ckeck Status"
+        '
+        'EnableCAPCHAToolStripMenuItem1
+        '
+        Me.EnableCAPCHAToolStripMenuItem1.Name = "EnableCAPCHAToolStripMenuItem1"
+        Me.EnableCAPCHAToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.EnableCAPCHAToolStripMenuItem1.Text = "Enable"
+        '
+        'DisableCAPCHAOnVPNZoneToolStripMenuItem
+        '
+        Me.DisableCAPCHAOnVPNZoneToolStripMenuItem.Name = "DisableCAPCHAOnVPNZoneToolStripMenuItem"
+        Me.DisableCAPCHAOnVPNZoneToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.DisableCAPCHAOnVPNZoneToolStripMenuItem.Text = "Disable"
+        '
         'HelpToolStripMenuItem
         '
         Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AboutToolStripMenuItem})
@@ -499,6 +537,13 @@ Partial Class MainForm
         Me.FirewallsRightClickContextMenu.Name = "ContextMenuStrip1"
         Me.FirewallsRightClickContextMenu.Size = New System.Drawing.Size(326, 98)
         '
+        'ActionsForFirewallToolStripMenuItem
+        '
+        Me.ActionsForFirewallToolStripMenuItem.Enabled = False
+        Me.ActionsForFirewallToolStripMenuItem.Name = "ActionsForFirewallToolStripMenuItem"
+        Me.ActionsForFirewallToolStripMenuItem.Size = New System.Drawing.Size(325, 22)
+        Me.ActionsForFirewallToolStripMenuItem.Text = "Actions for Firewall"
+        '
         'EditFirewallToolStripMenuItem
         '
         Me.EditFirewallToolStripMenuItem.Name = "EditFirewallToolStripMenuItem"
@@ -510,13 +555,6 @@ Partial Class MainForm
         Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem.Name = "OpenWebAdminCopyPasswordToClipboardToolStripMenuItem"
         Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem.Size = New System.Drawing.Size(325, 22)
         Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem.Text = "&Open WebAdmin (Copy password to clipboard)"
-        '
-        'ActionsForFirewallToolStripMenuItem
-        '
-        Me.ActionsForFirewallToolStripMenuItem.Enabled = False
-        Me.ActionsForFirewallToolStripMenuItem.Name = "ActionsForFirewallToolStripMenuItem"
-        Me.ActionsForFirewallToolStripMenuItem.Size = New System.Drawing.Size(325, 22)
-        Me.ActionsForFirewallToolStripMenuItem.Text = "Actions for Firewall"
         '
         'ToolStripMenuItem6
         '
@@ -535,10 +573,29 @@ Partial Class MainForm
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
         Me.MyTitleBar1.MaximizeBox = True
-        Me.MyTitleBar1.MinimizeBox = False
+        Me.MyTitleBar1.MinimizeBox = True
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(958, 50)
         Me.MyTitleBar1.TabIndex = 44
+        '
+        'ManditoryPasswordResetToolStripMenuItem
+        '
+        Me.ManditoryPasswordResetToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CheckStatusToolStripMenuItem1, Me.DisablePopUpToolStripMenuItem})
+        Me.ManditoryPasswordResetToolStripMenuItem.Name = "ManditoryPasswordResetToolStripMenuItem"
+        Me.ManditoryPasswordResetToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
+        Me.ManditoryPasswordResetToolStripMenuItem.Text = "Manditory Password Reset"
+        '
+        'CheckStatusToolStripMenuItem1
+        '
+        Me.CheckStatusToolStripMenuItem1.Name = "CheckStatusToolStripMenuItem1"
+        Me.CheckStatusToolStripMenuItem1.Size = New System.Drawing.Size(188, 22)
+        Me.CheckStatusToolStripMenuItem1.Text = "Check Status"
+        '
+        'DisablePopUpToolStripMenuItem
+        '
+        Me.DisablePopUpToolStripMenuItem.Name = "DisablePopUpToolStripMenuItem"
+        Me.DisablePopUpToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.DisablePopUpToolStripMenuItem.Text = "Disable Pop-Up"
         '
         'MainForm
         '
@@ -636,4 +693,12 @@ Partial Class MainForm
     Friend WithEvents ActionsForFirewallToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem6 As ToolStripSeparator
     Friend WithEvents DeleteToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem7 As ToolStripSeparator
+    Friend WithEvents CheckStatusToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CkeckStatusToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents EnableCAPCHAToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents DisableCAPCHAOnVPNZoneToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ManditoryPasswordResetToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CheckStatusToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents DisablePopUpToolStripMenuItem As ToolStripMenuItem
 End Class

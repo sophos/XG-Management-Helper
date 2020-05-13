@@ -293,6 +293,154 @@ Public Class XGShellConnection
 
     End Function
 
+    Public Function GetCaptchaSetting(Host As String, shell_user As String, shell_pass As String, LogLevel As LogSeverity) As XGShellConnection.ExpectResult
+        Me.LogLevel = LogLevel
+
+        WriteToLog(LogSeverity.Debug, String.Format("action='showArgs' host='{0}' shell_user='{1}' shell_pass='{2}'", Host, shell_user, shell_pass.Length & " chars"))
+        Try
+            Dim nfo As ExpectResult
+            Dim shell As ShellStream = GetConsole(Host, shell_user, shell_pass)
+            nfo = ExtendedExpect("system captcha_authentication_VPN show", "console>", shell)
+            If nfo.Reply.Contains("% Error: Unknown Parameter 'captcha_authentication_VPN'") Then
+                nfo.Success = False
+                nfo.Reply = "Option not available on current firmware/hotfix version."
+            ElseIf nfo.Reply.Contains("enabled") Then
+                nfo.Reply = "ENABLED on VPN zone"
+            Else
+                nfo.Reply = "DISABLED on VPN zone"
+            End If
+            Return nfo
+
+        Catch ex As Exception
+            Dim ret As ExpectResult = InterpretError(ex, "SetAdminPassword")
+            WriteToLog(LogSeverity.Error, String.Format("action='connect' caller='SetAdminPassword' host='{0}' message='{1}' error='{1}'", Host, ex.Message, ret.FailReason))
+            Return ret
+        End Try
+    End Function
+
+    Public Function DisableCaptchaOnVPN(Host As String, shell_user As String, shell_pass As String, LogLevel As LogSeverity) As XGShellConnection.ExpectResult
+        Me.LogLevel = LogLevel
+
+        WriteToLog(LogSeverity.Debug, String.Format("action='showArgs' host='{0}' shell_user='{1}' shell_pass='{2}'", Host, shell_user, shell_pass.Length & " chars"))
+        Try
+            Dim nfo As ExpectResult
+            Dim shell As ShellStream = GetConsole(Host, shell_user, shell_pass)
+            nfo = ExtendedExpect("system captcha_authentication_VPN disable", {"console>", "(Y/N) ?"}, shell)
+            If nfo.Reply.Contains("% Error: Unknown Parameter 'captcha_authentication_VPN'") Then
+                nfo.Success = False
+                nfo.Reply = "Option not available on current firmware/hotfix version."
+                Return nfo
+            End If
+            If nfo.LookingFor = "(Y/N) ?" Then
+                nfo = ExtendedExpect("Y", "console>", shell)
+            End If
+
+            If nfo.Reply.Contains("VPN zone is turned off") Then
+                    nfo.Reply = "CAPCHA disabled on VPN zone"
+                Else
+                    nfo.Success = False
+                End If
+
+                Return nfo
+
+        Catch ex As Exception
+            Dim ret As ExpectResult = InterpretError(ex, "SetAdminPassword")
+            WriteToLog(LogSeverity.Error, String.Format("action='connect' caller='SetAdminPassword' host='{0}' message='{1}' error='{1}'", Host, ex.Message, ret.FailReason))
+            Return ret
+        End Try
+    End Function
+
+    Public Function EnableCaptchaOnVPN(Host As String, shell_user As String, shell_pass As String, LogLevel As LogSeverity) As XGShellConnection.ExpectResult
+        Me.LogLevel = LogLevel
+
+        WriteToLog(LogSeverity.Debug, String.Format("action='showArgs' host='{0}' shell_user='{1}' shell_pass='{2}'", Host, shell_user, shell_pass.Length & " chars"))
+        Try
+            Dim nfo As ExpectResult
+            Dim shell As ShellStream = GetConsole(Host, shell_user, shell_pass)
+
+            nfo = ExtendedExpect("system captcha_authentication_VPN enable", {"console>", "(Y/N) ?"}, shell)
+            If nfo.Reply.Contains("% Error: Unknown Parameter 'captcha_authentication_VPN'") Then
+                nfo.Success = False
+                nfo.Reply = "Option not available on current firmware/hotfix version."
+                Return nfo
+            End If
+
+            If nfo.LookingFor = "(Y/N) ?" Then
+                nfo = ExtendedExpect("Y", "console>", shell)
+            End If
+
+            If nfo.Reply.Contains("VPN zone is turned on") Then
+                nfo.Reply = "CAPCHA enabled on VPN zone"
+            Else
+                nfo.Success = False
+            End If
+
+            Return nfo
+
+        Catch ex As Exception
+            Dim ret As ExpectResult = InterpretError(ex, "SetAdminPassword")
+            WriteToLog(LogSeverity.Error, String.Format("action='connect' caller='SetAdminPassword' host='{0}' message='{1}' error='{1}'", Host, ex.Message, ret.FailReason))
+            Return ret
+        End Try
+    End Function
+
+    Public Function GetManditoryPasswordResetStatus(Host As String, shell_user As String, shell_pass As String, LogLevel As LogSeverity) As XGShellConnection.ExpectResult
+        Me.LogLevel = LogLevel
+
+        WriteToLog(LogSeverity.Debug, String.Format("action='showArgs' host='{0}' shell_user='{1}' shell_pass='{2}'", Host, shell_user, shell_pass.Length & " chars"))
+        Try
+            Dim nfo As ExpectResult
+            Dim shell As ShellStream = GetConsole(Host, shell_user, shell_pass)
+            nfo = ExtendedExpect("system mandatory_password_reset show", "console>", shell)
+            If nfo.Reply.Contains("% Error: Unknown Parameter 'mandatory_password_reset'") Then
+                nfo.Success = False
+                nfo.Reply = "Option not available on current firmware/hotfix version."
+            ElseIf nfo.Reply.Contains("enabled") Then
+                nfo.Reply = "ENABLED on VPN zone"
+            Else
+                nfo.Reply = "DISABLED on VPN zone"
+            End If
+            Return nfo
+
+        Catch ex As Exception
+            Dim ret As ExpectResult = InterpretError(ex, "SetAdminPassword")
+            WriteToLog(LogSeverity.Error, String.Format("action='connect' caller='SetAdminPassword' host='{0}' message='{1}' error='{1}'", Host, ex.Message, ret.FailReason))
+            Return ret
+        End Try
+    End Function
+
+    Public Function DisableManditoryPasswordReset(Host As String, shell_user As String, shell_pass As String, LogLevel As LogSeverity) As XGShellConnection.ExpectResult
+        Me.LogLevel = LogLevel
+
+        WriteToLog(LogSeverity.Debug, String.Format("action='showArgs' host='{0}' shell_user='{1}' shell_pass='{2}'", Host, shell_user, shell_pass.Length & " chars"))
+        Try
+            Dim nfo As ExpectResult
+            Dim shell As ShellStream = GetConsole(Host, shell_user, shell_pass)
+            nfo = ExtendedExpect("system mandatory_password_reset disable", {"console>", "(Y/N) ?"}, shell)
+            If nfo.Reply.Contains("% Error: Unknown Parameter 'mandatory_password_reset'") Then
+                nfo.Success = False
+                nfo.Reply = "Option not available on current firmware/hotfix version."
+                Return nfo
+            End If
+            If nfo.LookingFor = "(Y/N) ?" Then
+                nfo = ExtendedExpect("Y", "console>", shell)
+            End If
+
+            If nfo.Reply.Contains("is turned off") Then
+                nfo.Reply = "Password reset pop-up is DISABLED"
+            Else
+                nfo.Success = False
+            End If
+
+            Return nfo
+
+        Catch ex As Exception
+            Dim ret As ExpectResult = InterpretError(ex, "SetAdminPassword")
+            WriteToLog(LogSeverity.Error, String.Format("action='connect' caller='SetAdminPassword' host='{0}' message='{1}' error='{1}'", Host, ex.Message, ret.FailReason))
+            Return ret
+        End Try
+    End Function
+
 #End Region
 
 #Region "Private Methods"
@@ -310,7 +458,7 @@ Public Class XGShellConnection
 
     Private Function InterpretError(ex As Exception, action As String) As ExpectResult
         If ex.Message.Contains("after a period of time") Then
-            Return New ExpectResult(New TimeoutException(ex.Message, ex), "Timeout", action, "")
+            Return New ExpectResult(New TimeoutException("Connection Timed Out", ex), "Timeout", action, "")
         ElseIf ex.Message.Contains("password") Then
             Return New ExpectResult(New Exception("Username or password not accepted", ex), "Credentials", action, "")
         ElseIf ex.Message.Contains("connect to shell") Then
@@ -362,6 +510,16 @@ Public Class XGShellConnection
         WriteToLog(LogSeverity.Informational, String.Format("action='connect' host='{0}' message='Not Connected' error='unknown'", Host))
         Return Nothing
 
+    End Function
+
+    Private Function GetConsole(Host As String, shell_user As String, shell_pass As String) As ShellStream
+        WriteToLog(LogSeverity.Debug, String.Format("action='showArgs' host='{0}' shell_user='{1}' shell_pass='{2}'", Host, shell_user, shell_pass.Length & " chars"))
+        If AdvancedShell Then Throw New Exception("Already dropped to advanced shell.")
+        Dim nfo As ExpectResult
+        Dim shell As ShellStream = GetShellMenu(Host, shell_user, shell_pass)
+        nfo = ExtendedExpect("4", "console>", shell)
+        Return shell
+        '
     End Function
 
     Private Function GetAdvancedShell(Host As String, shell_user As String, shell_pass As String) As ShellStream
