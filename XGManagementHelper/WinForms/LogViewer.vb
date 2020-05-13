@@ -7,13 +7,15 @@
 
 Public Class LogViewer
 
-    Sub New(Key As String, IV As String)
+    Private LogLocation As String
+    Sub New(LogLocation As String, Key As String, IV As String)
 
         ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
         AESWrapper = New AES256Wrapper(Key, IV)
+        Me.LogLocation = LogLocation
         ListLogs()
     End Sub
 
@@ -23,29 +25,34 @@ Public Class LogViewer
     Private Sub OpenLog(filename As String)
 
         If Not filename.EndsWith(".enc", StringComparison.CurrentCultureIgnoreCase) Then filename &= ".enc"
-        If Not IO.File.Exists(filename) Then
+        Dim filepath As String = filename
+        If Not filename.StartsWith(LogLocation) Then filepath = IO.Path.Combine(LogLocation, filename)
+        If Not IO.File.Exists(filepath) Then
             LogMessagesTextBox.Text = ""
             Exit Sub
         End If
 
         'IO.Directory.SetCurrentDirectory(Application.StartupPath)
-        Dim CipherText As String = IO.File.ReadAllText(filename)
+        Dim CipherText As String = IO.File.ReadAllText(filepath)
         LogMessagesTextBox.Text = AESWrapper.Decrypt(CipherText)
     End Sub
 
-    Public Sub ShowLog(logname As String)
+    Public Sub ShowLog(filename As String)
         IsLoading = True
-        If logname.ToLower.EndsWith(".enc") Then
-            LogsComboBox.Text = IO.Path.GetFileNameWithoutExtension(logname)
+        Dim filepath As String = filename
+
+        If filepath.ToLower.EndsWith(".enc") Then
+            LogsComboBox.Text = IO.Path.GetFileNameWithoutExtension(filename)
         Else
-            LogsComboBox.Text = logname
+            LogsComboBox.Text = filename
         End If
 
-        OpenLog(logname & ".enc")
+        OpenLog(filepath & ".enc")
         IsLoading = False
     End Sub
     Private Sub ListLogs()
-        Dim files As String() = System.IO.Directory.GetFiles(".\", "*.enc")
+
+        Dim files As String() = System.IO.Directory.GetFiles(LogLocation, "*.enc")
         LogsComboBox.Items.Clear()
 
         For Each file As String In files

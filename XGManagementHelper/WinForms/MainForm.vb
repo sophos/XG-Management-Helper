@@ -27,6 +27,8 @@ Public Class MainForm
     Private CentralPass As String = ""
     Private ShellCommonPass As String = ""
     Private LoadingBool As Boolean = False
+    Private LogLocation As String = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.MyDocuments, "XG Management Helper")
+
 
 #Region "Form Events"
 
@@ -35,6 +37,18 @@ Public Class MainForm
         SetRegistryPermissions()
         LoadSavedValues()
         UpdateHostsList()
+        XGShellConnection.LogFile = IO.Path.Combine(LogLocation, "application.log")
+        If IO.File.Exists(IO.Path.Combine(LogLocation, "application.log")) Then
+            If IO.File.Exists(IO.Path.Combine(LogLocation, "application.last.log")) Then IO.File.Delete(IO.Path.Combine(LogLocation, "application.last.log"))
+            IO.File.Move(XGShellConnection.LogFile, IO.Path.Combine(LogLocation, "application.last.log"))
+        End If
+
+
+        Try
+            If Not IO.Directory.Exists(LogLocation) Then IO.Directory.CreateDirectory(LogLocation)
+        Catch ex As Exception
+
+        End Try
         LoadingBool = False
         Me.MaximumSize = Screen.FromRectangle(Me.Bounds).WorkingArea.Size
         '
@@ -423,6 +437,8 @@ Public Class MainForm
         Dim Logname As String = String.Format("PasswordChanges-{0}", Now.ToString("yyyy-MM-dd_h-mm_tt"))
         Dim loglines As String = ""
         Dim Logfilename As String = FileHelpers.MakeUniqueFilename(Logname & ".enc")
+        Logfilename = IO.Path.Combine(LogLocation, Logfilename)
+        MsgBox(Logfilename)
         Logname = IO.Path.GetFileNameWithoutExtension(Logfilename)
         For Each Host As KeyValuePair(Of String, String) In SelectedHosts
             count += 1
@@ -482,7 +498,7 @@ Public Class MainForm
             ResultsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
             '
         Next
-        Dim lv As New LogViewer(DataKey, DataIV)
+        Dim lv As New LogViewer(LogLocation, DataKey, DataIV)
         lv.ShowLog(Logname)
         lv.ShowDialog()
 
@@ -1132,7 +1148,7 @@ Public Class MainForm
 #Region "View Menu"
 
     Private Sub PasswordChangeLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PasswordChangeLogsToolStripMenuItem.Click
-        Dim lv As New LogViewer(DataKey, DataIV)
+        Dim lv As New LogViewer(LogLocation, DataKey, DataIV)
         lv.ShowDialog()
     End Sub
 
@@ -1256,8 +1272,6 @@ Public Class MainForm
     Private Sub DeleteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteToolStripMenuItem.Click
         DeleteSelectedHost()
     End Sub
-
-
 
 #End Region
 
