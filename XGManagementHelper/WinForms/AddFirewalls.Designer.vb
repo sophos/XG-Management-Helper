@@ -44,11 +44,10 @@ Partial Class AddFirewalls
         'CommonPassCheckBox
         '
         Me.CommonPassCheckBox.AutoSize = True
-        Me.CommonPassCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.CommonPassCheckBox.Checked = True
         Me.CommonPassCheckBox.CheckState = System.Windows.Forms.CheckState.Checked
         Me.CommonPassCheckBox.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.CommonPassCheckBox.Location = New System.Drawing.Point(99, 164)
+        Me.CommonPassCheckBox.Location = New System.Drawing.Point(51, 164)
         Me.CommonPassCheckBox.Name = "CommonPassCheckBox"
         Me.CommonPassCheckBox.Size = New System.Drawing.Size(235, 22)
         Me.CommonPassCheckBox.TabIndex = 3
@@ -139,13 +138,12 @@ Partial Class AddFirewalls
         'AddAnotherCheckBox
         '
         Me.AddAnotherCheckBox.AutoSize = True
-        Me.AddAnotherCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.AddAnotherCheckBox.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.AddAnotherCheckBox.Location = New System.Drawing.Point(238, 321)
+        Me.AddAnotherCheckBox.Location = New System.Drawing.Point(229, 322)
         Me.AddAnotherCheckBox.Name = "AddAnotherCheckBox"
-        Me.AddAnotherCheckBox.Size = New System.Drawing.Size(96, 22)
+        Me.AddAnotherCheckBox.Size = New System.Drawing.Size(113, 22)
         Me.AddAnotherCheckBox.TabIndex = 52
-        Me.AddAnotherCheckBox.Text = "Add More"
+        Me.AddAnotherCheckBox.Text = "Add Another"
         Me.AddAnotherCheckBox.UseVisualStyleBackColor = True
         '
         'MyTitleBar1
@@ -189,7 +187,7 @@ Partial Class AddFirewalls
         '
         Me.FingerprintTextBox.AcceptsReturn = True
         Me.FingerprintTextBox.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.FingerprintTextBox.Location = New System.Drawing.Point(51, 222)
+        Me.FingerprintTextBox.Location = New System.Drawing.Point(51, 206)
         Me.FingerprintTextBox.Multiline = True
         Me.FingerprintTextBox.Name = "FingerprintTextBox"
         Me.FingerprintTextBox.PasswordChar = Global.Microsoft.VisualBasic.ChrW(88)
@@ -201,7 +199,7 @@ Partial Class AddFirewalls
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(48, 206)
+        Me.Label1.Location = New System.Drawing.Point(48, 190)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(81, 13)
         Me.Label1.TabIndex = 57
@@ -211,7 +209,7 @@ Partial Class AddFirewalls
         '
         Me.WebadminPortTextBox.AcceptsReturn = True
         Me.WebadminPortTextBox.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.WebadminPortTextBox.Location = New System.Drawing.Point(51, 290)
+        Me.WebadminPortTextBox.Location = New System.Drawing.Point(51, 282)
         Me.WebadminPortTextBox.Name = "WebadminPortTextBox"
         Me.WebadminPortTextBox.Size = New System.Drawing.Size(66, 26)
         Me.WebadminPortTextBox.TabIndex = 58
@@ -221,7 +219,7 @@ Partial Class AddFirewalls
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(48, 274)
+        Me.Label2.Location = New System.Drawing.Point(48, 266)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(81, 13)
         Me.Label2.TabIndex = 59
@@ -231,11 +229,11 @@ Partial Class AddFirewalls
         '
         Me.Button3.FlatAppearance.BorderSize = 0
         Me.Button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Button3.Font = New System.Drawing.Font("Arial", 12.0!)
+        Me.Button3.Font = New System.Drawing.Font("Arial", 10.0!)
         Me.Button3.ForeColor = System.Drawing.Color.FromArgb(CType(CType(25, Byte), Integer), CType(CType(135, Byte), Integer), CType(CType(203, Byte), Integer))
-        Me.Button3.Location = New System.Drawing.Point(123, 290)
+        Me.Button3.Location = New System.Drawing.Point(119, 282)
         Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(252, 26)
+        Me.Button3.Size = New System.Drawing.Size(230, 26)
         Me.Button3.TabIndex = 60
         Me.Button3.Text = "Open (and copy pwd to clipboard)"
         Me.Button3.UseVisualStyleBackColor = True
@@ -269,7 +267,7 @@ Partial Class AddFirewalls
         Me.Name = "AddFirewalls"
         Me.Padding = New System.Windows.Forms.Padding(2)
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "AddFirewalls"
+        Me.Text = "Add Firewall"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

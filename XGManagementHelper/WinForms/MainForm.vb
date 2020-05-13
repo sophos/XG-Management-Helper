@@ -1,5 +1,4 @@
-﻿
-' Copyright 2020  Sophos Ltd.  All rights reserved.
+﻿' Copyright 2020  Sophos Ltd.  All rights reserved.
 ' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 ' You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 ' Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, 
@@ -86,11 +85,9 @@ Public Class MainForm
 
     End Sub
 
-
     Private Sub ResultsListView_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles ResultsListView.ItemChecked
         EnableDisable()
     End Sub
-
 
     Private Sub AllCheckBox_CheckedChanged(sender As Object, e As EventArgs) Handles AllCheckBox.CheckedChanged
 
@@ -106,22 +103,26 @@ Public Class MainForm
     End Sub
 
     Private Sub ResultsListView_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles ResultsListView.MouseDoubleClick
-        If ResultsListView.SelectedItems.Count = 1 Then
-            Dim h As String = ResultsListView.SelectedItems(0).Text
-            For Each host As KeyValuePair(Of String, String) In Hosts
-                If host.Key.Equals(h) Then
-                    AddHost(host.Key, host.Value)
-                    Exit Sub
-                End If
-            Next
 
+        If EditHostToolStripMenuItem.Checked Then
+            EditSelectedHost()
+        Else
+            OpenSelectedHostWebadmin()
         End If
+    End Sub
 
+    Private Sub ResultsListView_MouseClick(sender As Object, e As MouseEventArgs) Handles ResultsListView.MouseClick
+        If ResultsListView.SelectedItems.Count = 1 Then
+            If e.Button = Windows.Forms.MouseButtons.Right Then
+                FirewallsRightClickContextMenu.Show(CType(sender, Control), e.Location)
+            End If
+        End If
     End Sub
 
 #End Region
 
 #Region "Main Methods"
+
     Private Sub AddResultsLog(Host As String, result As String, message As String)
         Splitter1.Visible = True
         LogsLabel.Visible = True
@@ -530,7 +531,7 @@ Public Class MainForm
 
     End Function
 
-    Private Sub DeleteSelected()
+    Private Sub DeleteCheckedHosts()
         Dim selected As KeyValuePair(Of String, String)() = GetSelectedHosts()
         Dim removedlist As New List(Of KeyValuePair(Of String, String))
         '
@@ -619,6 +620,11 @@ Public Class MainForm
     Private Sub LoadSavedValues()
         Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
             TrustInitialSSHFingerprintToolStripMenuItem.Checked = key.GetValue("TrustInitialSSHFingerprint", True)
+            If key.GetValue("DoubleClick", "Edit").Equals("Edit") Then
+                EditHostToolStripMenuItem.Checked = True
+            Else
+                OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem.Checked = True
+            End If
 
             DataIV = key.GetValue("Init3")
             If DataIV Is Nothing OrElse DataIV.Length < 16 Then
@@ -919,6 +925,41 @@ Public Class MainForm
         SaveSettings(IncrementalAutoSave)
     End Sub
 
+    Private Sub EditSelectedHost()
+        If ResultsListView.SelectedItems.Count <> 1 Then Exit Sub
+        Dim hostname As String = ResultsListView.SelectedItems(0).Text
+        Dim host As KeyValuePair(Of String, String) = GetHostByName(hostname)
+        AddHost(host.Key, host.Value)
+    End Sub
+
+    Private Sub OpenSelectedHostWebadmin()
+        If ResultsListView.SelectedItems.Count <> 1 Then Exit Sub
+        Dim hostname As String = ResultsListView.SelectedItems(0).Text
+        Dim host As KeyValuePair(Of String, String) = GetHostByName(hostname)
+        Dim pass As String = ShellCommonPass
+        If Not host.Value = "" Then pass = host.Value
+        Clipboard.SetText(pass)
+        Dim port As String
+        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & host.Key)
+            port = key.GetValue("Webadmin", "4444")
+        End Using
+        Process.Start(String.Format("https://{0}:{1}/", host.Key, port))
+    End Sub
+
+    Private Sub DeleteSelectedHost()
+        If ResultsListView.SelectedItems.Count <> 1 Then Exit Sub
+        Dim hostname As String = ResultsListView.SelectedItems(0).Text
+        Dim host As KeyValuePair(Of String, String) = GetHostByName(hostname)
+        '
+        If host.Key.Length > 0 Then
+            If MsgBox("Are you sure you want to delete this host and its saved password?", MsgBoxStyle.Question + MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                Hosts.Remove(host)
+                SaveHosts(IncrementalAutoSave)
+                UpdateHostsList()
+            End If
+        End If
+
+    End Sub
 
 #Region "File Menu"
 
@@ -943,7 +984,7 @@ Public Class MainForm
     End Sub
 
     Private Sub DeleteSelectedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteSelectedToolStripMenuItem.Click
-        DeleteSelected()
+        DeleteCheckedHosts()
     End Sub
 
     Private Sub ChangeCentralCredentialsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeCentralCredentialsToolStripMenuItem.Click
@@ -969,7 +1010,6 @@ Public Class MainForm
         DoMigration(LogLevel, True, True, True)
         TopPanel.Enabled = True
     End Sub
-
 
     Private Sub EnableCentralManagementOnlyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableCentralManagementOnlyToolStripMenuItem.Click
         Dim LogLevel As XGShellConnection.LogSeverity = GetSet()
@@ -1026,6 +1066,42 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+        Dim a As New AboutBox1
+        a.ShowDialog()
+    End Sub
+
+#End Region
+
+#Region "Context Menu"
+
+    Private Sub EditFirewallToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EditFirewallToolStripMenuItem.Click
+        EditSelectedHost()
+    End Sub
+
+    Private Sub OpenWebAdminCopyPasswordToClipboardToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenWebAdminCopyPasswordToClipboardToolStripMenuItem.Click
+        OpenSelectedHostWebadmin()
+    End Sub
+
+    Private Sub OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem.Click, EditHostToolStripMenuItem.Click
+
+        sender.checked = True
+        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
+            If sender.name.Equals(OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem.Name) Then
+                EditHostToolStripMenuItem.Checked = False
+                key.SetValue("DoubleClick", "Edit")
+            Else
+                OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem.Checked = False
+                key.SetValue("DoubleClick", "Open")
+            End If
+        End Using
+
+
+    End Sub
+
+    Private Sub DeleteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteToolStripMenuItem.Click
+        DeleteSelectedHost()
+    End Sub
 
 #End Region
 

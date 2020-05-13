@@ -25,6 +25,10 @@ Public Class AddFirewalls
         End Get
         Set(value As String)
             SSHHostTextBox.Text = value
+            SSHHostTextBox.ReadOnly = True
+            Me.Text = "Edit Firewall"
+            AddAnotherCheckBox.Visible = False
+            DialogOKButton.Text = "Save"
             IsLoading = True
             Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & value)
                 Using AESWrapper As New AES256Wrapper(DataKey, DataIV)

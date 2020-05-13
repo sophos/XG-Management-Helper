@@ -9,10 +9,10 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("XG Management Helper")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("Alan Toews")>
+<Assembly: AssemblyDescription("This app will automate a handful of management and password related tasks to make bulk actions easier")>
+<Assembly: AssemblyCompany("Sophos Ltd.")>
 <Assembly: AssemblyProduct("XG Management Helper")>
-<Assembly: AssemblyCopyright("Copyright ©  2020 Alan Toews")>
+<Assembly: AssemblyCopyright("Copyright ©  2020 Sophos Ltd.")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>

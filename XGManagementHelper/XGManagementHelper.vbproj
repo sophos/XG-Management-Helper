@@ -98,8 +98,15 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Classes\PasswordDerivedBytes.vb" />
     <Compile Include="Classes\RandomStringGenerator.vb" />
+    <Compile Include="WinForms\AboutBox1.Designer.vb">
+      <DependentUpon>AboutBox1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\AboutBox1.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="WinForms\AddFirewalls.Designer.vb">
       <DependentUpon>AddFirewalls.vb</DependentUpon>
     </Compile>
@@ -179,6 +186,9 @@
     <Compile Include="Classes\XGShellConnection.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="WinForms\AboutBox1.resx">
+      <DependentUpon>AboutBox1.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WinForms\AddFirewalls.resx">
       <DependentUpon>AddFirewalls.vb</DependentUpon>
     </EmbeddedResource>

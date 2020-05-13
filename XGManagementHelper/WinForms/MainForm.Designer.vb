@@ -51,6 +51,9 @@ Partial Class MainForm
         Me.AddFirewallsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeCentralCredentialsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TrustInitialSSHFingerprintToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DoubleClickOpensWebadminToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EditHostToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem3 = New System.Windows.Forms.ToolStripSeparator()
         Me.DeleteSelectedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -68,16 +71,25 @@ Partial Class MainForm
         Me.BulkChangeadminPasswordToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CheckCurrentFirmwareVersionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogListView = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.LogsLabel = New System.Windows.Forms.Label()
         Me.Splitter1 = New System.Windows.Forms.Splitter()
+        Me.FirewallsRightClickContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.EditFirewallToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ActionsForFirewallToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripSeparator()
+        Me.DeleteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
         Me.StatusStrip1.SuspendLayout()
         Me.TopPanel.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
+        Me.FirewallsRightClickContextMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'ResultsListView
@@ -198,7 +210,7 @@ Partial Class MainForm
         Me.AllCheckBox.AutoSize = True
         Me.AllCheckBox.Font = New System.Drawing.Font("Arial", 8.0!)
         Me.AllCheckBox.ForeColor = System.Drawing.Color.SteelBlue
-        Me.AllCheckBox.Location = New System.Drawing.Point(3, 30)
+        Me.AllCheckBox.Location = New System.Drawing.Point(4, 30)
         Me.AllCheckBox.Name = "AllCheckBox"
         Me.AllCheckBox.Size = New System.Drawing.Size(38, 18)
         Me.AllCheckBox.TabIndex = 50
@@ -223,7 +235,7 @@ Partial Class MainForm
         'MenuStrip1
         '
         Me.MenuStrip1.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.FirewallsToolStripMenuItem, Me.ViewToolStripMenuItem, Me.ActionToolStripMenuItem})
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.FirewallsToolStripMenuItem, Me.ViewToolStripMenuItem, Me.ActionToolStripMenuItem, Me.HelpToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Size = New System.Drawing.Size(958, 26)
@@ -267,7 +279,7 @@ Partial Class MainForm
         '
         'FirewallsToolStripMenuItem
         '
-        Me.FirewallsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddFirewallsToolStripMenuItem, Me.ChangeCentralCredentialsToolStripMenuItem, Me.TrustInitialSSHFingerprintToolStripMenuItem, Me.ToolStripMenuItem3, Me.DeleteSelectedToolStripMenuItem})
+        Me.FirewallsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddFirewallsToolStripMenuItem, Me.ChangeCentralCredentialsToolStripMenuItem, Me.TrustInitialSSHFingerprintToolStripMenuItem, Me.DoubleClickOpensWebadminToolStripMenuItem, Me.ToolStripMenuItem3, Me.DeleteSelectedToolStripMenuItem})
         Me.FirewallsToolStripMenuItem.Name = "FirewallsToolStripMenuItem"
         Me.FirewallsToolStripMenuItem.Size = New System.Drawing.Size(48, 22)
         Me.FirewallsToolStripMenuItem.Text = "&Edit"
@@ -275,13 +287,13 @@ Partial Class MainForm
         'AddFirewallsToolStripMenuItem
         '
         Me.AddFirewallsToolStripMenuItem.Name = "AddFirewallsToolStripMenuItem"
-        Me.AddFirewallsToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
+        Me.AddFirewallsToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
         Me.AddFirewallsToolStripMenuItem.Text = "&Add Firewall(s)"
         '
         'ChangeCentralCredentialsToolStripMenuItem
         '
         Me.ChangeCentralCredentialsToolStripMenuItem.Name = "ChangeCentralCredentialsToolStripMenuItem"
-        Me.ChangeCentralCredentialsToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
+        Me.ChangeCentralCredentialsToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
         Me.ChangeCentralCredentialsToolStripMenuItem.Text = "Set Central Credentials"
         '
         'TrustInitialSSHFingerprintToolStripMenuItem
@@ -289,19 +301,40 @@ Partial Class MainForm
         Me.TrustInitialSSHFingerprintToolStripMenuItem.Checked = True
         Me.TrustInitialSSHFingerprintToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.TrustInitialSSHFingerprintToolStripMenuItem.Name = "TrustInitialSSHFingerprintToolStripMenuItem"
-        Me.TrustInitialSSHFingerprintToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
+        Me.TrustInitialSSHFingerprintToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
         Me.TrustInitialSSHFingerprintToolStripMenuItem.Text = "Trust Initial SSH Fingerprint"
+        '
+        'DoubleClickOpensWebadminToolStripMenuItem
+        '
+        Me.DoubleClickOpensWebadminToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem, Me.EditHostToolStripMenuItem})
+        Me.DoubleClickOpensWebadminToolStripMenuItem.Name = "DoubleClickOpensWebadminToolStripMenuItem"
+        Me.DoubleClickOpensWebadminToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
+        Me.DoubleClickOpensWebadminToolStripMenuItem.Text = "Double-Click Opens Webadmin"
+        '
+        'OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem
+        '
+        Me.OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem.Name = "OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem"
+        Me.OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem.Size = New System.Drawing.Size(431, 22)
+        Me.OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem.Text = "Open WebAdmin (and copy password to clipboard)"
+        '
+        'EditHostToolStripMenuItem
+        '
+        Me.EditHostToolStripMenuItem.Checked = True
+        Me.EditHostToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.EditHostToolStripMenuItem.Name = "EditHostToolStripMenuItem"
+        Me.EditHostToolStripMenuItem.Size = New System.Drawing.Size(421, 22)
+        Me.EditHostToolStripMenuItem.Text = "Edit Firewall Settings"
         '
         'ToolStripMenuItem3
         '
         Me.ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(261, 6)
+        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(293, 6)
         '
         'DeleteSelectedToolStripMenuItem
         '
         Me.DeleteSelectedToolStripMenuItem.Enabled = False
         Me.DeleteSelectedToolStripMenuItem.Name = "DeleteSelectedToolStripMenuItem"
-        Me.DeleteSelectedToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
+        Me.DeleteSelectedToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
         Me.DeleteSelectedToolStripMenuItem.Text = "&Delete Selected"
         '
         'ViewToolStripMenuItem
@@ -397,6 +430,19 @@ Partial Class MainForm
         Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
         Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Text = "Install Any Available Hotfixes (If automatic installation disabled)"
         '
+        'HelpToolStripMenuItem
+        '
+        Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AboutToolStripMenuItem})
+        Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
+        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(52, 22)
+        Me.HelpToolStripMenuItem.Text = "Help"
+        '
+        'AboutToolStripMenuItem
+        '
+        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(231, 22)
+        Me.AboutToolStripMenuItem.Text = "About This Application"
+        '
         'LogListView
         '
         Me.LogListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader3, Me.ColumnHeader2})
@@ -447,13 +493,49 @@ Partial Class MainForm
         Me.Splitter1.TabStop = False
         Me.Splitter1.Visible = False
         '
+        'FirewallsRightClickContextMenu
+        '
+        Me.FirewallsRightClickContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ActionsForFirewallToolStripMenuItem, Me.EditFirewallToolStripMenuItem, Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem, Me.ToolStripMenuItem6, Me.DeleteToolStripMenuItem})
+        Me.FirewallsRightClickContextMenu.Name = "ContextMenuStrip1"
+        Me.FirewallsRightClickContextMenu.Size = New System.Drawing.Size(326, 98)
+        '
+        'EditFirewallToolStripMenuItem
+        '
+        Me.EditFirewallToolStripMenuItem.Name = "EditFirewallToolStripMenuItem"
+        Me.EditFirewallToolStripMenuItem.Size = New System.Drawing.Size(325, 22)
+        Me.EditFirewallToolStripMenuItem.Text = "&Edit Firewall"
+        '
+        'OpenWebAdminCopyPasswordToClipboardToolStripMenuItem
+        '
+        Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem.Name = "OpenWebAdminCopyPasswordToClipboardToolStripMenuItem"
+        Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem.Size = New System.Drawing.Size(325, 22)
+        Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem.Text = "&Open WebAdmin (Copy password to clipboard)"
+        '
+        'ActionsForFirewallToolStripMenuItem
+        '
+        Me.ActionsForFirewallToolStripMenuItem.Enabled = False
+        Me.ActionsForFirewallToolStripMenuItem.Name = "ActionsForFirewallToolStripMenuItem"
+        Me.ActionsForFirewallToolStripMenuItem.Size = New System.Drawing.Size(325, 22)
+        Me.ActionsForFirewallToolStripMenuItem.Text = "Actions for Firewall"
+        '
+        'ToolStripMenuItem6
+        '
+        Me.ToolStripMenuItem6.Name = "ToolStripMenuItem6"
+        Me.ToolStripMenuItem6.Size = New System.Drawing.Size(322, 6)
+        '
+        'DeleteToolStripMenuItem
+        '
+        Me.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
+        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(325, 22)
+        Me.DeleteToolStripMenuItem.Text = "Delete"
+        '
         'MyTitleBar1
         '
         Me.MyTitleBar1.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
         Me.MyTitleBar1.MaximizeBox = True
-        Me.MyTitleBar1.MinimizeBox = True
+        Me.MyTitleBar1.MinimizeBox = False
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(958, 50)
         Me.MyTitleBar1.TabIndex = 44
@@ -487,6 +569,7 @@ Partial Class MainForm
         Me.TopPanel.PerformLayout()
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
+        Me.FirewallsRightClickContextMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -542,4 +625,15 @@ Partial Class MainForm
     Friend WithEvents Splitter1 As Splitter
     Friend WithEvents ColumnHeader3 As ColumnHeader
     Friend WithEvents TrustInitialSSHFingerprintToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents HelpToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents FirewallsRightClickContextMenu As ContextMenuStrip
+    Friend WithEvents EditFirewallToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents OpenWebAdminCopyPasswordToClipboardToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DoubleClickOpensWebadminToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents EditHostToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ActionsForFirewallToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem6 As ToolStripSeparator
+    Friend WithEvents DeleteToolStripMenuItem As ToolStripMenuItem
 End Class
