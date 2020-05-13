@@ -1,14 +1,19 @@
 ﻿XG Management Helper
 Created By: Alan Toews (alan.toews@sophos.com)
 Created April 30, 2020
+Version 1.0
 ==============================
 XG Management Helper is a tool to automate several administrative XG Firewall tasks
 
-=== FEATURES ===
-Basics:
+
+=== Basics ===
+The source code is provided for your inspection. it is built in Visual Studio 2019, on .NET Framework 4.7.2. You can recompile from the provided source, or simply download XGManagementHelperSetup.zip to install and run a pre-compiled version of the application. You will need the appropriate .NET runtimes installed to use this application. If you do not already have them, can be found here: https://dotnet.microsoft.com/download/dotnet-framework/net472
+
 Common Shell Password
 If many of your firewalls use the same shell password, then you can enter it in the Common Shell Password field, for convenience, rather than entering if for each firewall being added.
 
+
+=== FEATURES ===
 Adding firewalls
 On the Edit menu, select Add Firewall(s) to add new firewalls manually. You will need to enter at least the hostname or IP address for the firewall. If the firewall uses the password set in Common Shell Password, then there is no need to set a password when adding hte firewall. Clicking test will verify whether the address is accessible, and the credentials are correct. It will also retrieve the ssh key (device fingerprint) for you to review.
 
@@ -46,14 +51,7 @@ Install Any Available Hotfixes
  If automatic hotfix installation is disabled, this app can trigger available hotfixes to download and install. You will receive confirmation that the command completed successfully, but it will not report whether any hotfixes were available to install, or whether they installed successfuly. You may use the "Check Current Firmware Version" action to check again later, whether hotfixes may have bene installed or not.
 
 === WARNINGS ===
-Every effort was made to ensure this application will operate with minimal risk to the user. However, 
-changing the admin password through an automated solution carries some risk. The application attempts 
-to account for any possible failures by logging the attempted password before the change, and the results after, 
-but if any unforseen disruption prevents the application from successfully recording and displaying 
-the pasword used, then you may be left with no record of the admin password used. Admin account passwords 
-can be reset with physical access to the system, during a reboot of hte appliance. However, the safest and
-easiest recovery method is to ensure the firewall is manged by Sophos Central. This will allow you to easily reset
-the admin password even if unforseen events occur.
+Every effort was made to ensure this application will operate with minimal risk to the user. However, changing the admin password through an automated solution carries some risk. The application attempts to account for any possible failures by logging the attempted password before the change, and the results after, but if any unforseen disruption prevents the application from successfully recording and displaying the pasword used, then you may be left with no record of the admin password used. Admin account passwords can be reset with physical access to the system, during a reboot of hte appliance. However, the safest and easiest recovery method is to ensure the firewall is manged by Sophos Central. This will allow you to easily reset the admin password even if unforseen events occur.
 
 === SECURITY ===
 Accessing firewalls: This application uses SSH to access firewalls. You should avoid exposing SSH broadly to the internet, or untrusted networks. It is recommended that you use access control rules to limit access to SSH as precisely as possible, or access the firewall over secure VPN tunnels. 
