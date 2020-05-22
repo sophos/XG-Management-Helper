@@ -21,7 +21,7 @@ Public Class MainForm
     ReadOnly Hosts As New List(Of KeyValuePair(Of String, String))
     ReadOnly Shortcuts As New List(Of String)
     ReadOnly Property LogLocation As String = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.MyDocuments, "XG Management Helper")
-    ReadOnly VersionCheckURL As String = "https://raw.githubusercontent.com/sophos/XG-Management-Helper/master/README.TXT"
+    ReadOnly VersionCheckURL As String = "https://raw.githubusercontent.com/sophos/XG-Management-Helper/master/VERSION.TXT"
     Private FormIsDirty As Boolean
     Private CentralUser As String = ""
     Private CentralPass As String = ""

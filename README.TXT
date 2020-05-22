@@ -1,7 +1,7 @@
 ﻿XG Management Helper
 Created By: Alan Toews (alan.toews@sophos.com)
 Created April 30, 2020
-Version 1.0
+Version 1.1.0.1
 ==============================
 XG Management Helper is a tool to automate several administrative XG Firewall tasks
 
