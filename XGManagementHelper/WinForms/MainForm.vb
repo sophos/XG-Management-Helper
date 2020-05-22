@@ -239,13 +239,16 @@ Public Class MainForm
         Dim m As Match = Regex.Match(e.Data, "Version\s(?<version>\d+\.\d+(\.\d+\.\d+)?)")
 
         If m.Success Then
+
             Dim thisv As String() = Split(Application.ProductVersion, ".")
-            Dim webv As String() = Split(m.Groups("version").Value, ".")
+            Dim WebVersion As String = m.Groups("version").Value
+            'WebVersion = "Version 1.1.0.2" 'for testing. comment out before release!
+            Dim webv As String() = Split(WebVersion, ".")
 
             Dim UpdateAvailable As Boolean = False
             Dim NewerThanWeb As Boolean = False
 
-            If thisv.Length = 3 And webv.Length = 3 Then
+            If thisv.Count = 4 And webv.Count = 4 Then
                 If webv(0) > thisv(0) Then
                     UpdateAvailable = True
                 ElseIf webv(0) = thisv(0) Then
@@ -257,7 +260,8 @@ Public Class MainForm
                         ElseIf webv(2) = thisv(2) Then
                             If webv(3) > thisv(3) Then
                                 UpdateAvailable = True
-                            ElseIf webv(3) < thisv(3) Then
+                            ElseIf webv(3) = thisv(3) Then
+                            Else
                                 NewerThanWeb = True
                             End If
                         Else
@@ -275,6 +279,7 @@ Public Class MainForm
 
             Using key As SecureRegistryKey = GetApplicationRootKey()
                 VersionLabel.ForeColor = Color.FromKnownColor(KnownColor.ControlDarkDark)
+                VersionLabel.Cursor = Cursors.Default
                 If NewerThanWeb Then
                     VersionLabel.Text = String.Format("v{0} (Pre-release version)", Application.ProductVersion)
                     key.SetValue("LastVersionCheckResult", "(Pre-release version)")
@@ -283,9 +288,10 @@ Public Class MainForm
                     VersionLabel.Text = String.Format("v{0} (Update available)", Application.ProductVersion)
                     key.SetValue("LastVersionCheckResult", "(Update available)")
                     VersionLabel.ForeColor = Color.Red
+                    VersionLabel.Cursor = Cursors.Hand
                     If UserRequestedUpdateCheck Then
-                        If MsgBox("An update is available. Do you want to download it now?", MsgBoxStyle.Information, "Update Check") = MsgBoxResult.Yes Then
-                            Process.Start("https://github.com/sophos/XG-Management-Helper/raw/master/XGManagementHelperLatestSetup.zip")
+                        If MsgBox("An update is available. Do you want to download it now?", MsgBoxStyle.Information + MsgBoxStyle.YesNo, "Update Check") = MsgBoxResult.Yes Then
+                            Process.Start("https://github.com/sophos/XG-Management-Helper/raw/master/XGManagementHelperSetupLatest.zip")
                         End If
                     End If
                 Else
@@ -1357,6 +1363,13 @@ Public Class MainForm
     Private Sub WGET_AsyncDownloadFail(sender As Object, e As HttpGet.AsyncDownloadEventArgs) Handles WGET.AsyncDownloadFail
         If UserRequestedUpdateCheck Then
             MsgBox("Unable to check for new version." & vbNewLine & "Error Message: " & e.Exception.Message, MsgBoxStyle.Exclamation, "Update Check Error")
+        End If
+    End Sub
+
+    Private Sub VersionLabel_Click(sender As Object, e As EventArgs) Handles VersionLabel.Click
+        If VersionLabel.ForeColor = Color.Red Then
+            UserRequestedUpdateCheck = True
+            CheckForUpdate()
         End If
     End Sub
 

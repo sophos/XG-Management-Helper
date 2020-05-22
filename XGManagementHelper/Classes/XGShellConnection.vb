@@ -521,7 +521,7 @@ Public Class XGShellConnection
             Dim nfo As ActionResult
             Dim shell As ShellStream = GetConsole(Host, shell_user, shell_pass)
             nfo = ExtendedExpect(Host, "system localusers localuser_list_not_changed_passwords show", "console>", shell)
-            If nfo.Reply.Contains("% Error: Unknown Parameter 'mandatory_password_reset'") Then
+            If nfo.Reply.Contains("% Error: Unknown Parameter") Then
                 nfo.Success = False
                 nfo.Reply = "Option not available on current firmware/hotfix version."
                 Return nfo
@@ -545,7 +545,7 @@ Public Class XGShellConnection
             Dim nfo As ActionResult
             Dim shell As ShellStream = GetConsole(Host, shell_user, shell_pass)
             nfo = ExtendedExpect(Host, String.Format("system localusers append_PIN_to_password all_localuser PIN {0}", pin), {"console>", "(Y/N)"}, shell)
-            If nfo.Reply.Contains("% Error: Unknown Parameter 'mandatory_password_reset'") Then
+            If nfo.Reply.Contains("% Error: Unknown Parameter ") Then
                 nfo.Success = False
                 nfo.Reply = "Option not available on current firmware/hotfix version."
                 Return nfo
