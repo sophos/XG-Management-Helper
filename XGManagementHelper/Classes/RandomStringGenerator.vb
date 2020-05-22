@@ -8,8 +8,8 @@
 Imports System.Security.Cryptography
 
 Public Class Randomness
-
     Private Const ExtendedAllowedChars As String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-=+!@#$%^&*()"
+    'Private Const ExtendedAllowedChars As String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@^*()_+{}:<>?~-=[]\;,/|."
     Private Const AllowedChars As String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
     Public Shared Function GetRandomString(Length As Integer, UseExtendedCharacters As Boolean) As String

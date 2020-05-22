@@ -24,7 +24,7 @@ Partial Class FingerprintConfirmation
     Private Sub InitializeComponent()
         Me.OKButton = New System.Windows.Forms.Button()
         Me.MessageLabel = New System.Windows.Forms.Label()
-        Me.CancelButton = New System.Windows.Forms.Button()
+        Me.DialogCancelButton = New System.Windows.Forms.Button()
         Me.FingerprintLabel = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
@@ -60,20 +60,20 @@ Partial Class FingerprintConfirmation
         Me.MessageLabel.Text = "The firewall's host key is not known. Do you want to trust it?"
         Me.MessageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'CancelButton
+        'DialogCancelButton
         '
-        Me.CancelButton.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.CancelButton.FlatAppearance.BorderSize = 0
-        Me.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.CancelButton.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.CancelButton.ForeColor = System.Drawing.Color.SteelBlue
-        Me.CancelButton.Location = New System.Drawing.Point(23, 133)
-        Me.CancelButton.Name = "CancelButton"
-        Me.CancelButton.Size = New System.Drawing.Size(147, 31)
-        Me.CancelButton.TabIndex = 1
-        Me.CancelButton.Text = "Cancel"
-        Me.CancelButton.UseVisualStyleBackColor = True
+        Me.DialogCancelButton.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.DialogCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.DialogCancelButton.FlatAppearance.BorderSize = 0
+        Me.DialogCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.DialogCancelButton.Font = New System.Drawing.Font("Arial", 12.0!)
+        Me.DialogCancelButton.ForeColor = System.Drawing.Color.SteelBlue
+        Me.DialogCancelButton.Location = New System.Drawing.Point(23, 133)
+        Me.DialogCancelButton.Name = "DialogCancelButton"
+        Me.DialogCancelButton.Size = New System.Drawing.Size(147, 31)
+        Me.DialogCancelButton.TabIndex = 1
+        Me.DialogCancelButton.Text = "Cancel"
+        Me.DialogCancelButton.UseVisualStyleBackColor = True
         '
         'FingerprintLabel
         '
@@ -103,10 +103,11 @@ Partial Class FingerprintConfirmation
         'MyTitleBar1
         '
         Me.MyTitleBar1.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.MyTitleBar1.ControlBox = True
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
         Me.MyTitleBar1.MaximizeBox = False
-        Me.MyTitleBar1.MinimizeBox = True
+        Me.MyTitleBar1.MinimizeBox = False
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(365, 50)
         Me.MyTitleBar1.TabIndex = 49
@@ -114,7 +115,7 @@ Partial Class FingerprintConfirmation
         '
         'Panel1
         '
-        Me.Panel1.Controls.Add(Me.CancelButton)
+        Me.Panel1.Controls.Add(Me.DialogCancelButton)
         Me.Panel1.Controls.Add(Me.FingerprintLabel)
         Me.Panel1.Controls.Add(Me.Label2)
         Me.Panel1.Controls.Add(Me.OKButton)
@@ -148,7 +149,7 @@ Partial Class FingerprintConfirmation
 
     Friend WithEvents OKButton As Button
     Friend WithEvents MessageLabel As Label
-    Friend WithEvents CancelButton As Button
+    Friend WithEvents DialogCancelButton As Button
     Friend WithEvents FingerprintLabel As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents MyTitleBar1 As MyTitleBar

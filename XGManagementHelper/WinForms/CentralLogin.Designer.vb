@@ -128,10 +128,11 @@ Partial Class CentralLogin
         'MyTitleBar1
         '
         Me.MyTitleBar1.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.MyTitleBar1.ControlBox = True
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
-        Me.MyTitleBar1.MaximizeBox = True
-        Me.MyTitleBar1.MinimizeBox = True
+        Me.MyTitleBar1.MaximizeBox = False
+        Me.MyTitleBar1.MinimizeBox = False
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(366, 50)
         Me.MyTitleBar1.TabIndex = 16

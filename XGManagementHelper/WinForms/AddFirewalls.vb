@@ -4,20 +4,17 @@
 ' Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, 
 ' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing 
 ' permissions and limitations under the License.
-
+Imports XGManagementHelper.EncryptionHelper
 Public Class AddFirewalls
-    Public Property CommonPassword As String
+    Private Property CommonPassword As String
     Private IsLoading As Boolean = False
-    ReadOnly DataKey As String
-    ReadOnly DataIV As String
-    Sub New(Key As String, IV As String)
+    Sub New(CommonPassword As String)
 
         ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        DataKey = Key
-        DataIV = IV
+        Me.CommonPassword = CommonPassword
     End Sub
     Public Property SSHHost As String
         Get
@@ -30,19 +27,17 @@ Public Class AddFirewalls
             AddAnotherCheckBox.Visible = False
             DialogOKButton.Text = "Save"
             IsLoading = True
-            Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & value)
-                Using AESWrapper As New AES256Wrapper(DataKey, DataIV)
-                    Dim ExpectedFingerprint As String = AESWrapper.Decrypt(key.GetValue("Fingerprint"))
-                    If ExpectedFingerprint IsNot Nothing Then
-                        If ExpectedFingerprint.StartsWith(SSHHostTextBox.Text) Then
-                            ExpectedFingerprint = ExpectedFingerprint.Substring(SSHHostTextBox.Text.Length)
-                        Else
-                            ExpectedFingerprint = "<No Fingerprint>"
-                        End If
+            Using key As SecureRegistryKey = GetHostKey(value)
+                Dim ExpectedFingerprint As String = key.GetSecureValue("Fingerprint")
+                If ExpectedFingerprint IsNot Nothing Then
+                    If ExpectedFingerprint.StartsWith(SSHHostTextBox.Text) Then
+                        ExpectedFingerprint = ExpectedFingerprint.Substring(SSHHostTextBox.Text.Length)
+                    Else
+                        ExpectedFingerprint = "<No Fingerprint>"
                     End If
-                    FingerprintTextBox.Text = ExpectedFingerprint
-                    WebadminPortTextBox.Text = key.GetValue("Webadmin", "4444")
-                End Using
+                End If
+                FingerprintTextBox.Text = ExpectedFingerprint
+                WebadminPortTextBox.Text = key.GetValue("Webadmin", "4444")
             End Using
             IsLoading = False
             EnableDisable()
@@ -118,19 +113,25 @@ Public Class AddFirewalls
     End Sub
 
     Private Sub SSHHostTextBox_TextChanged(sender As Object, e As EventArgs) Handles SSHHostTextBox.TextChanged, SSHPassTextBox.TextChanged
-        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & SSHHostTextBox.Text)
-            Using AESWrapper As New AES256Wrapper(DataKey, DataIV)
-                Dim ExpectedFingerprint As String = AESWrapper.Decrypt(key.GetValue("Fingerprint"))
-                If ExpectedFingerprint IsNot Nothing Then
-                    If ExpectedFingerprint.StartsWith(SSHHostTextBox.Text) Then
-                        ExpectedFingerprint = ExpectedFingerprint.Substring(SSHHostTextBox.Text.Length)
-                    Else
-                        ExpectedFingerprint = "<No Fingerprint>"
-                    End If
+        If SSHHostTextBox.Text.Length = 0 Then
+
+            FingerprintTextBox.Text = "<No Fingerprint>"
+            WebadminPortTextBox.Text = "4444"
+            Exit Sub
+        End If
+
+        Using key As SecureRegistryKey = GetHostKey(SSHHostTextBox.Text)
+            Dim ExpectedFingerprint As String = key.GetSecureValue("Fingerprint")
+            If ExpectedFingerprint IsNot Nothing Then
+                If ExpectedFingerprint.StartsWith(SSHHostTextBox.Text) Then
+                    ExpectedFingerprint = ExpectedFingerprint.Substring(SSHHostTextBox.Text.Length)
+                Else
+                    ExpectedFingerprint = "<No Fingerprint>"
                 End If
-                FingerprintTextBox.Text = ExpectedFingerprint
-                WebadminPortTextBox.Text = key.GetValue("Webadmin", "4444")
-            End Using
+            End If
+            FingerprintTextBox.Text = ExpectedFingerprint
+            WebadminPortTextBox.Text = key.GetValue("Webadmin", "4444")
+
         End Using
         EnableDisable()
     End Sub
@@ -171,26 +172,24 @@ Public Class AddFirewalls
 
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        Dim xg As New XGShellConnection(True, DataKey, DataIV)
+        Dim xg As New XGShellConnection(True)
         Dim pass As String = If(SSHPassTextBox.Text.Length > 0, SSHPassTextBox.Text, CommonPassword)
-        Dim result As XGShellConnection.ExpectResult = xg.CheckCurrentFirmwareVersion(SSHHostTextBox.Text, "admin", pass, XGShellConnection.LogSeverity.Critical)
+        Dim result As XGShellConnection.ActionResult = xg.CheckCurrentFirmwareVersion(New KeyValuePair(Of String, String)(SSHHostTextBox.Text, pass), "admin", pass, XGShellConnection.LogSeverity.Critical)
         If result.Success Then
-            Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & SSHHostTextBox.Text)
-                Using AESWrapper As New AES256Wrapper(DataKey, DataIV)
-
-                    Dim ExpectedFingerprint As String = AESWrapper.Decrypt(key.GetValue("Fingerprint"))
-                    If ExpectedFingerprint IsNot Nothing Then
-                        If ExpectedFingerprint.StartsWith(SSHHostTextBox.Text) Then
-                            ExpectedFingerprint = ExpectedFingerprint.Substring(SSHHostTextBox.Text.Length)
-                        Else
-                            ExpectedFingerprint = "<No Fingerprint>"
-                        End If
+            Using key As SecureRegistryKey = GetHostKey(SSHHostTextBox.Text)
+                Dim ExpectedFingerprint As String = key.GetSecureValue("Fingerprint")
+                If ExpectedFingerprint IsNot Nothing Then
+                    If ExpectedFingerprint.StartsWith(SSHHostTextBox.Text) Then
+                        ExpectedFingerprint = ExpectedFingerprint.Substring(SSHHostTextBox.Text.Length)
+                    Else
+                        ExpectedFingerprint = "<No Fingerprint>"
                     End If
-                    FingerprintTextBox.Text = ExpectedFingerprint
-                End Using
+                End If
+                FingerprintTextBox.Text = ExpectedFingerprint
             End Using
+            MsgBox("Connected Successfully", MsgBoxStyle.Information)
         Else
-            MsgBox("Connection Failed: " & vbNewLine & result.Summary)
+            MsgBox("Connection Failed: " & vbNewLine & result.Summary, MsgBoxStyle.Exclamation)
 
         End If
     End Sub
@@ -211,7 +210,7 @@ Public Class AddFirewalls
         Else
 
         End If
-        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper\Hosts\Host-" & SSHHostTextBox.Text)
+        Using key As SecureRegistryKey = GetApplicationRootKey()
             key.SetValue("WebAdmin", WebadminPortTextBox.Text)
         End Using
 

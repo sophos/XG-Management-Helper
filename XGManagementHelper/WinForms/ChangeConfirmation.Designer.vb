@@ -118,6 +118,7 @@ Partial Class ChangeConfirmation
         'MyTitleBar1
         '
         Me.MyTitleBar1.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.MyTitleBar1.ControlBox = True
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
         Me.MyTitleBar1.MaximizeBox = False

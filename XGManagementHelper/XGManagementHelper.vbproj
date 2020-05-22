@@ -25,8 +25,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
     <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -76,10 +78,13 @@
     <ManifestKeyFile>XGManagementHelper_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
@@ -114,6 +119,11 @@
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Classes\PasswordDerivedBytes.vb" />
     <Compile Include="Classes\RandomStringGenerator.vb" />
+    <Compile Include="Classes\EncryptionHelper.vb" />
+    <Compile Include="Classes\wget.vb" />
+    <Compile Include="UserControls\ListViewDoubleBuffered.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WinForms\AboutBox1.Designer.vb">
       <DependentUpon>AboutBox1.vb</DependentUpon>
     </Compile>
@@ -197,6 +207,12 @@
     <Compile Include="Classes\PasswordStrength.vb" />
     <Compile Include="Classes\AES256Wrapper.vb" />
     <Compile Include="Classes\XGShellConnection.vb" />
+    <Compile Include="WinForms\SetToken.Designer.vb">
+      <DependentUpon>SetToken.vb</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\SetToken.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="WinForms\AboutBox1.resx">
@@ -235,8 +251,14 @@
     <EmbeddedResource Include="WinForms\ChangeConfirmation.resx">
       <DependentUpon>ChangeConfirmation.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\SetToken.resx">
+      <DependentUpon>SetToken.vb</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
@@ -252,6 +274,10 @@
     <None Include="XGManagementHelper_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\close.png" />
+    <None Include="Resources\maximize.png" />
+    <None Include="Resources\minimize.png" />
+    <None Include="Resources\restore.png" />
     <Content Include="XG.ico" />
   </ItemGroup>
   <ItemGroup>

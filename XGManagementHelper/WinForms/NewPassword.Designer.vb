@@ -44,10 +44,11 @@ Partial Class NewPassword
         'MyTitleBar1
         '
         Me.MyTitleBar1.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.MyTitleBar1.ControlBox = False
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
-        Me.MyTitleBar1.MaximizeBox = True
-        Me.MyTitleBar1.MinimizeBox = True
+        Me.MyTitleBar1.MaximizeBox = False
+        Me.MyTitleBar1.MinimizeBox = False
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(645, 50)
         Me.MyTitleBar1.TabIndex = 0
@@ -165,7 +166,7 @@ Partial Class NewPassword
         '
         Me.StrengthProgressBar.BackColor = System.Drawing.SystemColors.Control
         Me.StrengthProgressBar.ForeColor = System.Drawing.Color.Red
-        Me.StrengthProgressBar.Location = New System.Drawing.Point(357, 129)
+        Me.StrengthProgressBar.Location = New System.Drawing.Point(357, 124)
         Me.StrengthProgressBar.Name = "StrengthProgressBar"
         Me.StrengthProgressBar.Size = New System.Drawing.Size(220, 10)
         Me.StrengthProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous
@@ -247,6 +248,7 @@ Partial Class NewPassword
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(649, 300)
         Me.ControlBox = False
+        Me.Controls.Add(Me.NewPasswordTextBox)
         Me.Controls.Add(Me.ComplexityCheckBox)
         Me.Controls.Add(Me.StrengthLabel)
         Me.Controls.Add(Me.Label5)
@@ -261,7 +263,6 @@ Partial Class NewPassword
         Me.Controls.Add(Me.DialogOKButton)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.ConfirmNewPasswordTextBox)
-        Me.Controls.Add(Me.NewPasswordTextBox)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.MyTitleBar1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None

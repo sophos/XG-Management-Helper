@@ -174,7 +174,7 @@ Partial Class Login
         Me.Label2.ForeColor = System.Drawing.Color.Red
         Me.Label2.Location = New System.Drawing.Point(0, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(374, 56)
+        Me.Label2.Size = New System.Drawing.Size(374, 58)
         Me.Label2.TabIndex = 44
         Me.Label2.Text = "This application stores sensitive password information. Please choose a strong pa" &
     "ssword to protect it."
@@ -231,7 +231,7 @@ Partial Class Login
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(220, 27)
         Me.Button2.TabIndex = 44
-        Me.Button2.Text = "Forgot Password"
+        Me.Button2.Text = "Forgot/Change Password"
         Me.Button2.UseVisualStyleBackColor = True
         '
         'Label1
@@ -285,10 +285,11 @@ Partial Class Login
         'MyTitleBar1
         '
         Me.MyTitleBar1.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.MyTitleBar1.ControlBox = True
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
         Me.MyTitleBar1.MaximizeBox = False
-        Me.MyTitleBar1.MinimizeBox = True
+        Me.MyTitleBar1.MinimizeBox = False
         Me.MyTitleBar1.Name = "MyTitleBar1"
         Me.MyTitleBar1.Size = New System.Drawing.Size(374, 50)
         Me.MyTitleBar1.TabIndex = 42
@@ -309,7 +310,7 @@ Partial Class Login
         Me.Name = "Login"
         Me.Padding = New System.Windows.Forms.Padding(2)
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Login"
+        Me.Text = "XG Management Helper Login"
         Me.SetPasswordPanel.ResumeLayout(False)
         Me.SetPasswordPanel.PerformLayout()
         Me.LoginPanel.ResumeLayout(False)

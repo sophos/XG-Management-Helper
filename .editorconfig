@@ -1,0 +1,4 @@
+﻿[*.vb]
+
+# BC40005: Member shadows an overridable method in the base type
+dotnet_diagnostic.BC40005.severity = silent

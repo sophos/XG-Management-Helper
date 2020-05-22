@@ -8,7 +8,7 @@
 Imports System.IO
 Imports System.IO.Compression
 Public Class FileHelpers
-    Public Shared Sub OpenFile(Filename As String)
+    Public Shared Sub OpenFileWithDefaultApplication(Filename As String)
         Try
             System.Diagnostics.Process.Start(Filename)
         Catch ex As Exception
@@ -19,7 +19,6 @@ Public Class FileHelpers
         Always
         WithNewer
         Never
-        pu
     End Enum
 
     Public Shared Function MakeUniqueFilename(filename As String) As String
@@ -38,7 +37,6 @@ Public Class FileHelpers
         Loop
 
         Return newfilename
-
     End Function
 
 

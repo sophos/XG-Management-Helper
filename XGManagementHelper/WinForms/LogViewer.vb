@@ -7,23 +7,19 @@
 
 Public Class LogViewer
 
-    Private LogLocation As String
-    Sub New(LogLocation As String, Key As String, IV As String)
+    Private IsLoading As Boolean
+    ReadOnly Property LogLocation As String
+    Sub New(LogLocation As String)
 
         ' This call is required by the designer.
         InitializeComponent()
 
-        ' Add any initialization after the InitializeComponent() call.
-        AESWrapper = New AES256Wrapper(Key, IV)
+        ' Add any initialization after the InitializeComponent() call.        
         Me.LogLocation = LogLocation
         ListLogs()
     End Sub
 
-    ReadOnly AESWrapper As AES256Wrapper
-    Private IsLoading As Boolean
-
     Private Sub OpenLog(filename As String)
-
         If Not filename.EndsWith(".enc", StringComparison.CurrentCultureIgnoreCase) Then filename &= ".enc"
         Dim filepath As String = filename
         If Not filename.StartsWith(LogLocation) Then filepath = IO.Path.Combine(LogLocation, filename)
@@ -32,9 +28,8 @@ Public Class LogViewer
             Exit Sub
         End If
 
-        'IO.Directory.SetCurrentDirectory(Application.StartupPath)
         Dim CipherText As String = IO.File.ReadAllText(filepath)
-        LogMessagesTextBox.Text = AESWrapper.Decrypt(CipherText)
+        LogMessagesTextBox.Text = EncryptionHelper.EncryptedFileRead(filepath)
     End Sub
 
     Public Sub ShowLog(filename As String)
@@ -50,8 +45,8 @@ Public Class LogViewer
         OpenLog(filepath & ".enc")
         IsLoading = False
     End Sub
-    Private Sub ListLogs()
 
+    Private Sub ListLogs()
         Dim files As String() = System.IO.Directory.GetFiles(LogLocation, "*.enc")
         LogsComboBox.Items.Clear()
 
@@ -63,6 +58,7 @@ Public Class LogViewer
             LogsComboBox.Text = LogsComboBox.Items(LogsComboBox.Items.Count - 1)
         Else
             LogsComboBox.Text = "No password change logs found"
+            LogMessagesTextBox.Clear()
         End If
     End Sub
 
@@ -75,9 +71,10 @@ Public Class LogViewer
         Delete(LogsComboBox.Text)
 
     End Sub
-    Private Sub Delete(filename As String)
-        If Not filename.EndsWith(".enc", StringComparison.CurrentCultureIgnoreCase) Then filename &= ".enc"
 
+    Private Sub Delete(ByVal filename As String)
+        If Not filename.EndsWith(".enc", StringComparison.CurrentCultureIgnoreCase) Then filename &= ".enc"
+        filename = IO.Path.Combine(LogLocation, filename)
         If MsgBox(
         "Be sure to record any passwords stored in this file that may still be in use before deleting.
 Thet cannot be recovered later!
@@ -94,4 +91,5 @@ Are you sure you want to delete this file now?", MsgBoxStyle.YesNo + MsgBoxStyle
         ListLogs()
 
     End Sub
+
 End Class

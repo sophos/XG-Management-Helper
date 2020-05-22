@@ -3,7 +3,7 @@ Partial Class MainForm
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -24,11 +24,6 @@ Partial Class MainForm
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
-        Me.ResultsListView = New System.Windows.Forms.ListView()
-        Me.HostColumnHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.PassColumnHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ResultColumnHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.TimeColumnHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
@@ -38,9 +33,14 @@ Partial Class MainForm
         Me.ShellPassTextBox = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.TopPanel = New System.Windows.Forms.Panel()
+        Me.Shortcut1Button = New System.Windows.Forms.Button()
+        Me.Shortcut4Button = New System.Windows.Forms.Button()
+        Me.Shortcut3Button = New System.Windows.Forms.Button()
+        Me.Shortcut2Button = New System.Windows.Forms.Button()
+        Me.VersionLabel = New System.Windows.Forms.Label()
         Me.AllCheckBox = New System.Windows.Forms.CheckBox()
         Me.ToggleCheckButton = New System.Windows.Forms.Button()
-        Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
+        Me.TopMenuStrip = New System.Windows.Forms.MenuStrip()
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportFirewallsListToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
@@ -54,34 +54,46 @@ Partial Class MainForm
         Me.DoubleClickOpensWebadminToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditHostToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AutoCheckStatusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem3 = New System.Windows.Forms.ToolStripSeparator()
         Me.DeleteSelectedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PasswordChangeLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ApplicationLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ActionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PingCheckToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem8 = New System.Windows.Forms.ToolStripSeparator()
         Me.SophosCentralToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RegisterEnableAllCentralServicesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RegisterAndToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EnableCentralManagementOnlyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EnableCentralReportingOnlyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem5 = New System.Windows.Forms.ToolStripSeparator()
-        Me.DeregisterFromSophosCentralToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem9 = New System.Windows.Forms.ToolStripSeparator()
+        Me.DeregisterFromSophosCentralToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem4 = New System.Windows.Forms.ToolStripSeparator()
         Me.OtherToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BulkChangeadminPasswordToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CheckCurrentFirmwareVersionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BulkChangeLocalUserPasswordsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CheckPasswordsOlderThanApr252020ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddTokenToOlderUserPasswordsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem7 = New System.Windows.Forms.ToolStripSeparator()
         Me.CheckStatusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CkeckStatusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EnableCAPCHAToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.DisableCAPCHAOnVPNZoneToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ManditoryPasswordResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CheckStatusToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DisablePopUpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GetLatestVersionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ReportAnIssueToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogListView = New System.Windows.Forms.ListView()
-        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.CHLogTimestamp = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.CHLogHost = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.CHLogAction = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.CHLogMessage = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.LogsLabel = New System.Windows.Forms.Label()
         Me.Splitter1 = New System.Windows.Forms.Splitter()
         Me.FirewallsRightClickContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
@@ -90,52 +102,16 @@ Partial Class MainForm
         Me.OpenWebAdminCopyPasswordToClipboardToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripSeparator()
         Me.DeleteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AutoPingTimer = New System.Windows.Forms.Timer(Me.components)
+        Me.UpdateListTimes = New System.Windows.Forms.Timer(Me.components)
+        Me.ResultsListView = New XGManagementHelper.ListViewDoubleBuffered()
+        Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.MyTitleBar1 = New XGManagementHelper.MyTitleBar()
-        Me.ManditoryPasswordResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CheckStatusToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DisablePopUpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.TopPanel.SuspendLayout()
-        Me.MenuStrip1.SuspendLayout()
+        Me.TopMenuStrip.SuspendLayout()
         Me.FirewallsRightClickContextMenu.SuspendLayout()
         Me.SuspendLayout()
-        '
-        'ResultsListView
-        '
-        Me.ResultsListView.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ResultsListView.CheckBoxes = True
-        Me.ResultsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.HostColumnHeader, Me.PassColumnHeader, Me.ResultColumnHeader, Me.TimeColumnHeader})
-        Me.ResultsListView.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ResultsListView.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.ResultsListView.FullRowSelect = True
-        Me.ResultsListView.HideSelection = False
-        Me.ResultsListView.Location = New System.Drawing.Point(2, 103)
-        Me.ResultsListView.Name = "ResultsListView"
-        Me.ResultsListView.Size = New System.Drawing.Size(958, 320)
-        Me.ResultsListView.SmallImageList = Me.ImageList1
-        Me.ResultsListView.TabIndex = 13
-        Me.ResultsListView.UseCompatibleStateImageBehavior = False
-        Me.ResultsListView.View = System.Windows.Forms.View.Details
-        '
-        'HostColumnHeader
-        '
-        Me.HostColumnHeader.Text = "Host"
-        Me.HostColumnHeader.Width = 170
-        '
-        'PassColumnHeader
-        '
-        Me.PassColumnHeader.Text = "Password"
-        Me.PassColumnHeader.Width = 90
-        '
-        'ResultColumnHeader
-        '
-        Me.ResultColumnHeader.Text = "Result"
-        Me.ResultColumnHeader.Width = 73
-        '
-        'TimeColumnHeader
-        '
-        Me.TimeColumnHeader.Text = "Time"
-        Me.TimeColumnHeader.Width = 55
         '
         'ImageList1
         '
@@ -201,16 +177,100 @@ Partial Class MainForm
         '
         'TopPanel
         '
+        Me.TopPanel.Controls.Add(Me.Shortcut1Button)
+        Me.TopPanel.Controls.Add(Me.Shortcut4Button)
+        Me.TopPanel.Controls.Add(Me.Shortcut3Button)
+        Me.TopPanel.Controls.Add(Me.Shortcut2Button)
+        Me.TopPanel.Controls.Add(Me.VersionLabel)
         Me.TopPanel.Controls.Add(Me.AllCheckBox)
         Me.TopPanel.Controls.Add(Me.ToggleCheckButton)
         Me.TopPanel.Controls.Add(Me.Label2)
         Me.TopPanel.Controls.Add(Me.ShellPassTextBox)
-        Me.TopPanel.Controls.Add(Me.MenuStrip1)
         Me.TopPanel.Dock = System.Windows.Forms.DockStyle.Top
-        Me.TopPanel.Location = New System.Drawing.Point(2, 52)
+        Me.TopPanel.Location = New System.Drawing.Point(2, 78)
         Me.TopPanel.Name = "TopPanel"
         Me.TopPanel.Size = New System.Drawing.Size(958, 51)
         Me.TopPanel.TabIndex = 9
+        '
+        'Shortcut1Button
+        '
+        Me.Shortcut1Button.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Shortcut1Button.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Shortcut1Button.FlatAppearance.BorderSize = 0
+        Me.Shortcut1Button.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Shortcut1Button.Font = New System.Drawing.Font("Arial", 8.0!)
+        Me.Shortcut1Button.ForeColor = System.Drawing.Color.SteelBlue
+        Me.Shortcut1Button.Location = New System.Drawing.Point(4, 3)
+        Me.Shortcut1Button.Name = "Shortcut1Button"
+        Me.Shortcut1Button.Size = New System.Drawing.Size(132, 23)
+        Me.Shortcut1Button.TabIndex = 55
+        Me.Shortcut1Button.Text = "Shortcut"
+        Me.Shortcut1Button.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Shortcut1Button.UseVisualStyleBackColor = True
+        Me.Shortcut1Button.Visible = False
+        '
+        'Shortcut4Button
+        '
+        Me.Shortcut4Button.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Shortcut4Button.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Shortcut4Button.FlatAppearance.BorderSize = 0
+        Me.Shortcut4Button.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Shortcut4Button.Font = New System.Drawing.Font("Arial", 8.0!)
+        Me.Shortcut4Button.ForeColor = System.Drawing.Color.SteelBlue
+        Me.Shortcut4Button.Location = New System.Drawing.Point(400, 3)
+        Me.Shortcut4Button.Name = "Shortcut4Button"
+        Me.Shortcut4Button.Size = New System.Drawing.Size(132, 23)
+        Me.Shortcut4Button.TabIndex = 54
+        Me.Shortcut4Button.Text = "Shortcut"
+        Me.Shortcut4Button.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Shortcut4Button.UseVisualStyleBackColor = True
+        Me.Shortcut4Button.Visible = False
+        '
+        'Shortcut3Button
+        '
+        Me.Shortcut3Button.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Shortcut3Button.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Shortcut3Button.FlatAppearance.BorderSize = 0
+        Me.Shortcut3Button.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Shortcut3Button.Font = New System.Drawing.Font("Arial", 8.0!)
+        Me.Shortcut3Button.ForeColor = System.Drawing.Color.SteelBlue
+        Me.Shortcut3Button.Location = New System.Drawing.Point(268, 3)
+        Me.Shortcut3Button.Name = "Shortcut3Button"
+        Me.Shortcut3Button.Size = New System.Drawing.Size(132, 23)
+        Me.Shortcut3Button.TabIndex = 53
+        Me.Shortcut3Button.Text = "Shortcut"
+        Me.Shortcut3Button.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Shortcut3Button.UseVisualStyleBackColor = True
+        Me.Shortcut3Button.Visible = False
+        '
+        'Shortcut2Button
+        '
+        Me.Shortcut2Button.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Shortcut2Button.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Shortcut2Button.FlatAppearance.BorderSize = 0
+        Me.Shortcut2Button.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Shortcut2Button.Font = New System.Drawing.Font("Arial", 8.0!)
+        Me.Shortcut2Button.ForeColor = System.Drawing.Color.SteelBlue
+        Me.Shortcut2Button.Location = New System.Drawing.Point(136, 3)
+        Me.Shortcut2Button.Name = "Shortcut2Button"
+        Me.Shortcut2Button.Size = New System.Drawing.Size(132, 23)
+        Me.Shortcut2Button.TabIndex = 52
+        Me.Shortcut2Button.Text = "Shortcut"
+        Me.Shortcut2Button.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Shortcut2Button.UseVisualStyleBackColor = True
+        Me.Shortcut2Button.Visible = False
+        '
+        'VersionLabel
+        '
+        Me.VersionLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.VersionLabel.Font = New System.Drawing.Font("Arial", 9.0!)
+        Me.VersionLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
+        Me.VersionLabel.Location = New System.Drawing.Point(753, 30)
+        Me.VersionLabel.Name = "VersionLabel"
+        Me.VersionLabel.Size = New System.Drawing.Size(202, 18)
+        Me.VersionLabel.TabIndex = 51
+        Me.VersionLabel.Text = "v1.0.0.0"
+        Me.VersionLabel.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
         'AllCheckBox
         '
@@ -240,15 +300,15 @@ Partial Class MainForm
         Me.ToggleCheckButton.Text = "Toggle"
         Me.ToggleCheckButton.UseVisualStyleBackColor = True
         '
-        'MenuStrip1
+        'TopMenuStrip
         '
-        Me.MenuStrip1.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.FirewallsToolStripMenuItem, Me.ViewToolStripMenuItem, Me.ActionToolStripMenuItem, Me.HelpToolStripMenuItem})
-        Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
-        Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(958, 26)
-        Me.MenuStrip1.TabIndex = 49
-        Me.MenuStrip1.Text = "MenuStrip1"
+        Me.TopMenuStrip.Font = New System.Drawing.Font("Arial", 12.0!)
+        Me.TopMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.FirewallsToolStripMenuItem, Me.ViewToolStripMenuItem, Me.ActionToolStripMenuItem, Me.HelpToolStripMenuItem})
+        Me.TopMenuStrip.Location = New System.Drawing.Point(2, 52)
+        Me.TopMenuStrip.Name = "TopMenuStrip"
+        Me.TopMenuStrip.Size = New System.Drawing.Size(958, 26)
+        Me.TopMenuStrip.TabIndex = 49
+        Me.TopMenuStrip.Text = "MenuStrip1"
         '
         'FileToolStripMenuItem
         '
@@ -260,34 +320,35 @@ Partial Class MainForm
         'ImportFirewallsListToolStripMenuItem
         '
         Me.ImportFirewallsListToolStripMenuItem.Name = "ImportFirewallsListToolStripMenuItem"
-        Me.ImportFirewallsListToolStripMenuItem.Size = New System.Drawing.Size(241, 22)
+        Me.ImportFirewallsListToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.I), System.Windows.Forms.Keys)
+        Me.ImportFirewallsListToolStripMenuItem.Size = New System.Drawing.Size(250, 22)
         Me.ImportFirewallsListToolStripMenuItem.Text = "&Import Firewall List"
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(238, 6)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(247, 6)
         '
         'BackupApplicationKeyToolStripMenuItem
         '
         Me.BackupApplicationKeyToolStripMenuItem.Name = "BackupApplicationKeyToolStripMenuItem"
-        Me.BackupApplicationKeyToolStripMenuItem.Size = New System.Drawing.Size(241, 22)
+        Me.BackupApplicationKeyToolStripMenuItem.Size = New System.Drawing.Size(250, 22)
         Me.BackupApplicationKeyToolStripMenuItem.Text = "&Backup Application Key"
         '
         'ToolStripMenuItem2
         '
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(238, 6)
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(247, 6)
         '
         'ExitToolStripMenuItem
         '
         Me.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(241, 22)
+        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(250, 22)
         Me.ExitToolStripMenuItem.Text = "E&xit"
         '
         'FirewallsToolStripMenuItem
         '
-        Me.FirewallsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddFirewallsToolStripMenuItem, Me.ChangeCentralCredentialsToolStripMenuItem, Me.TrustInitialSSHFingerprintToolStripMenuItem, Me.DoubleClickOpensWebadminToolStripMenuItem, Me.ToolStripMenuItem3, Me.DeleteSelectedToolStripMenuItem})
+        Me.FirewallsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddFirewallsToolStripMenuItem, Me.ChangeCentralCredentialsToolStripMenuItem, Me.TrustInitialSSHFingerprintToolStripMenuItem, Me.DoubleClickOpensWebadminToolStripMenuItem, Me.AutoCheckStatusToolStripMenuItem, Me.ToolStripMenuItem3, Me.DeleteSelectedToolStripMenuItem})
         Me.FirewallsToolStripMenuItem.Name = "FirewallsToolStripMenuItem"
         Me.FirewallsToolStripMenuItem.Size = New System.Drawing.Size(48, 22)
         Me.FirewallsToolStripMenuItem.Text = "&Edit"
@@ -295,13 +356,14 @@ Partial Class MainForm
         'AddFirewallsToolStripMenuItem
         '
         Me.AddFirewallsToolStripMenuItem.Name = "AddFirewallsToolStripMenuItem"
-        Me.AddFirewallsToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
+        Me.AddFirewallsToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.A), System.Windows.Forms.Keys)
+        Me.AddFirewallsToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
         Me.AddFirewallsToolStripMenuItem.Text = "&Add Firewall(s)"
         '
         'ChangeCentralCredentialsToolStripMenuItem
         '
         Me.ChangeCentralCredentialsToolStripMenuItem.Name = "ChangeCentralCredentialsToolStripMenuItem"
-        Me.ChangeCentralCredentialsToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
+        Me.ChangeCentralCredentialsToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
         Me.ChangeCentralCredentialsToolStripMenuItem.Text = "Set Central Credentials"
         '
         'TrustInitialSSHFingerprintToolStripMenuItem
@@ -309,15 +371,15 @@ Partial Class MainForm
         Me.TrustInitialSSHFingerprintToolStripMenuItem.Checked = True
         Me.TrustInitialSSHFingerprintToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.TrustInitialSSHFingerprintToolStripMenuItem.Name = "TrustInitialSSHFingerprintToolStripMenuItem"
-        Me.TrustInitialSSHFingerprintToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
+        Me.TrustInitialSSHFingerprintToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
         Me.TrustInitialSSHFingerprintToolStripMenuItem.Text = "Trust Initial SSH Fingerprint"
         '
         'DoubleClickOpensWebadminToolStripMenuItem
         '
         Me.DoubleClickOpensWebadminToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem, Me.EditHostToolStripMenuItem})
         Me.DoubleClickOpensWebadminToolStripMenuItem.Name = "DoubleClickOpensWebadminToolStripMenuItem"
-        Me.DoubleClickOpensWebadminToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
-        Me.DoubleClickOpensWebadminToolStripMenuItem.Text = "Double-Click Opens Webadmin"
+        Me.DoubleClickOpensWebadminToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
+        Me.DoubleClickOpensWebadminToolStripMenuItem.Text = "Double-Click Action:"
         '
         'OpenWebAdminAndCopyPasswordToClipboardToolStripMenuItem
         '
@@ -333,21 +395,28 @@ Partial Class MainForm
         Me.EditHostToolStripMenuItem.Size = New System.Drawing.Size(431, 22)
         Me.EditHostToolStripMenuItem.Text = "Edit Firewall Settings"
         '
+        'AutoCheckStatusToolStripMenuItem
+        '
+        Me.AutoCheckStatusToolStripMenuItem.CheckOnClick = True
+        Me.AutoCheckStatusToolStripMenuItem.Name = "AutoCheckStatusToolStripMenuItem"
+        Me.AutoCheckStatusToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
+        Me.AutoCheckStatusToolStripMenuItem.Text = "Auto-Check Status"
+        '
         'ToolStripMenuItem3
         '
         Me.ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(293, 6)
+        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(261, 6)
         '
         'DeleteSelectedToolStripMenuItem
         '
         Me.DeleteSelectedToolStripMenuItem.Enabled = False
         Me.DeleteSelectedToolStripMenuItem.Name = "DeleteSelectedToolStripMenuItem"
-        Me.DeleteSelectedToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
+        Me.DeleteSelectedToolStripMenuItem.Size = New System.Drawing.Size(264, 22)
         Me.DeleteSelectedToolStripMenuItem.Text = "&Delete Selected"
         '
         'ViewToolStripMenuItem
         '
-        Me.ViewToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PasswordChangeLogsToolStripMenuItem})
+        Me.ViewToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PasswordChangeLogsToolStripMenuItem, Me.ApplicationLogsToolStripMenuItem})
         Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
         Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(55, 22)
         Me.ViewToolStripMenuItem.Text = "&View"
@@ -358,55 +427,85 @@ Partial Class MainForm
         Me.PasswordChangeLogsToolStripMenuItem.Size = New System.Drawing.Size(244, 22)
         Me.PasswordChangeLogsToolStripMenuItem.Text = "Password Change Logs"
         '
+        'ApplicationLogsToolStripMenuItem
+        '
+        Me.ApplicationLogsToolStripMenuItem.Name = "ApplicationLogsToolStripMenuItem"
+        Me.ApplicationLogsToolStripMenuItem.Size = New System.Drawing.Size(244, 22)
+        Me.ApplicationLogsToolStripMenuItem.Text = "Application Logs"
+        '
         'ActionToolStripMenuItem
         '
-        Me.ActionToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SophosCentralToolStripMenuItem, Me.RegisterEnableAllCentralServicesToolStripMenuItem, Me.RegisterAndToolStripMenuItem, Me.ToolStripMenuItem5, Me.DeregisterFromSophosCentralToolStripMenuItem, Me.ToolStripMenuItem4, Me.OtherToolStripMenuItem, Me.BulkChangeadminPasswordToolStripMenuItem, Me.CheckCurrentFirmwareVersionToolStripMenuItem, Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem, Me.ToolStripMenuItem7, Me.CheckStatusToolStripMenuItem, Me.ManditoryPasswordResetToolStripMenuItem})
+        Me.ActionToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PingCheckToolStripMenuItem, Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem, Me.ToolStripMenuItem8, Me.SophosCentralToolStripMenuItem, Me.RegisterEnableAllCentralServicesToolStripMenuItem, Me.RegisterAndToolStripMenuItem, Me.ToolStripMenuItem4, Me.OtherToolStripMenuItem, Me.BulkChangeadminPasswordToolStripMenuItem, Me.BulkChangeLocalUserPasswordsToolStripMenuItem, Me.ToolStripMenuItem7, Me.CheckStatusToolStripMenuItem, Me.ManditoryPasswordResetToolStripMenuItem})
         Me.ActionToolStripMenuItem.Name = "ActionToolStripMenuItem"
         Me.ActionToolStripMenuItem.Size = New System.Drawing.Size(161, 22)
         Me.ActionToolStripMenuItem.Text = "Action (All Firewalls)"
+        '
+        'PingCheckToolStripMenuItem
+        '
+        Me.PingCheckToolStripMenuItem.Name = "PingCheckToolStripMenuItem"
+        Me.PingCheckToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
+        Me.PingCheckToolStripMenuItem.Tag = "StatusCheck"
+        Me.PingCheckToolStripMenuItem.Text = "Status Check"
+        '
+        'InstallAnyAvailableHotfixesevenIfToolStripMenuItem
+        '
+        Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Name = "InstallAnyAvailableHotfixesevenIfToolStripMenuItem"
+        Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
+        Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Tag = "HotfixInstall"
+        Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Text = "Install Any Available Hotfixes (If automatic installation disabled)"
+        '
+        'ToolStripMenuItem8
+        '
+        Me.ToolStripMenuItem8.Name = "ToolStripMenuItem8"
+        Me.ToolStripMenuItem8.Size = New System.Drawing.Size(501, 6)
         '
         'SophosCentralToolStripMenuItem
         '
         Me.SophosCentralToolStripMenuItem.Enabled = False
         Me.SophosCentralToolStripMenuItem.Name = "SophosCentralToolStripMenuItem"
         Me.SophosCentralToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
-        Me.SophosCentralToolStripMenuItem.Text = "Migrate Management to Sophos Central"
+        Me.SophosCentralToolStripMenuItem.Text = "Sophos Central Actions"
         '
         'RegisterEnableAllCentralServicesToolStripMenuItem
         '
+        Me.RegisterEnableAllCentralServicesToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Highlight
         Me.RegisterEnableAllCentralServicesToolStripMenuItem.Name = "RegisterEnableAllCentralServicesToolStripMenuItem"
         Me.RegisterEnableAllCentralServicesToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
+        Me.RegisterEnableAllCentralServicesToolStripMenuItem.Tag = "EnableCentralManagementAndReporting"
         Me.RegisterEnableAllCentralServicesToolStripMenuItem.Text = "Register to Central && Enable CM + CFR"
         '
         'RegisterAndToolStripMenuItem
         '
-        Me.RegisterAndToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableCentralManagementOnlyToolStripMenuItem, Me.EnableCentralReportingOnlyToolStripMenuItem})
+        Me.RegisterAndToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableCentralManagementOnlyToolStripMenuItem, Me.EnableCentralReportingOnlyToolStripMenuItem, Me.ToolStripMenuItem9, Me.DeregisterFromSophosCentralToolStripMenuItem1})
         Me.RegisterAndToolStripMenuItem.Name = "RegisterAndToolStripMenuItem"
         Me.RegisterAndToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
-        Me.RegisterAndToolStripMenuItem.Text = "Register to Central and..."
+        Me.RegisterAndToolStripMenuItem.Text = "Sophos Central Registration Tasks"
         '
         'EnableCentralManagementOnlyToolStripMenuItem
         '
         Me.EnableCentralManagementOnlyToolStripMenuItem.Name = "EnableCentralManagementOnlyToolStripMenuItem"
-        Me.EnableCentralManagementOnlyToolStripMenuItem.Size = New System.Drawing.Size(343, 22)
-        Me.EnableCentralManagementOnlyToolStripMenuItem.Text = "Enable Central Management Only"
+        Me.EnableCentralManagementOnlyToolStripMenuItem.Size = New System.Drawing.Size(402, 22)
+        Me.EnableCentralManagementOnlyToolStripMenuItem.Tag = "EnableCentralManagement"
+        Me.EnableCentralManagementOnlyToolStripMenuItem.Text = "Register and Enable Central Management"
         '
         'EnableCentralReportingOnlyToolStripMenuItem
         '
         Me.EnableCentralReportingOnlyToolStripMenuItem.Name = "EnableCentralReportingOnlyToolStripMenuItem"
-        Me.EnableCentralReportingOnlyToolStripMenuItem.Size = New System.Drawing.Size(343, 22)
-        Me.EnableCentralReportingOnlyToolStripMenuItem.Text = "Enable Central Firewall Reporting Only"
+        Me.EnableCentralReportingOnlyToolStripMenuItem.Size = New System.Drawing.Size(402, 22)
+        Me.EnableCentralReportingOnlyToolStripMenuItem.Tag = "EnableCentralReporting"
+        Me.EnableCentralReportingOnlyToolStripMenuItem.Text = "Register and Enable Central Firewall Reporting"
         '
-        'ToolStripMenuItem5
+        'ToolStripMenuItem9
         '
-        Me.ToolStripMenuItem5.Name = "ToolStripMenuItem5"
-        Me.ToolStripMenuItem5.Size = New System.Drawing.Size(501, 6)
+        Me.ToolStripMenuItem9.Name = "ToolStripMenuItem9"
+        Me.ToolStripMenuItem9.Size = New System.Drawing.Size(399, 6)
         '
-        'DeregisterFromSophosCentralToolStripMenuItem
+        'DeregisterFromSophosCentralToolStripMenuItem1
         '
-        Me.DeregisterFromSophosCentralToolStripMenuItem.Name = "DeregisterFromSophosCentralToolStripMenuItem"
-        Me.DeregisterFromSophosCentralToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
-        Me.DeregisterFromSophosCentralToolStripMenuItem.Text = "De-register from Sophos Central"
+        Me.DeregisterFromSophosCentralToolStripMenuItem1.Name = "DeregisterFromSophosCentralToolStripMenuItem1"
+        Me.DeregisterFromSophosCentralToolStripMenuItem1.Size = New System.Drawing.Size(402, 22)
+        Me.DeregisterFromSophosCentralToolStripMenuItem1.Tag = "DeRegisterFromCentral"
+        Me.DeregisterFromSophosCentralToolStripMenuItem1.Text = "De-register from Sophos Central"
         '
         'ToolStripMenuItem4
         '
@@ -418,25 +517,38 @@ Partial Class MainForm
         Me.OtherToolStripMenuItem.Enabled = False
         Me.OtherToolStripMenuItem.Name = "OtherToolStripMenuItem"
         Me.OtherToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
-        Me.OtherToolStripMenuItem.Text = "Other Actions"
+        Me.OtherToolStripMenuItem.Text = "Password Actions"
         '
         'BulkChangeadminPasswordToolStripMenuItem
         '
+        Me.BulkChangeadminPasswordToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Highlight
         Me.BulkChangeadminPasswordToolStripMenuItem.Name = "BulkChangeadminPasswordToolStripMenuItem"
         Me.BulkChangeadminPasswordToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
+        Me.BulkChangeadminPasswordToolStripMenuItem.Tag = "SetAdminPassword"
         Me.BulkChangeadminPasswordToolStripMenuItem.Text = "Bulk Change ""admin"" Password"
         '
-        'CheckCurrentFirmwareVersionToolStripMenuItem
+        'BulkChangeLocalUserPasswordsToolStripMenuItem
         '
-        Me.CheckCurrentFirmwareVersionToolStripMenuItem.Name = "CheckCurrentFirmwareVersionToolStripMenuItem"
-        Me.CheckCurrentFirmwareVersionToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
-        Me.CheckCurrentFirmwareVersionToolStripMenuItem.Text = "Check Current Firmware Version"
+        Me.BulkChangeLocalUserPasswordsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CheckPasswordsOlderThanApr252020ToolStripMenuItem, Me.AddTokenToOlderUserPasswordsToolStripMenuItem})
+        Me.BulkChangeLocalUserPasswordsToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Highlight
+        Me.BulkChangeLocalUserPasswordsToolStripMenuItem.Name = "BulkChangeLocalUserPasswordsToolStripMenuItem"
+        Me.BulkChangeLocalUserPasswordsToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
+        Me.BulkChangeLocalUserPasswordsToolStripMenuItem.Tag = ""
+        Me.BulkChangeLocalUserPasswordsToolStripMenuItem.Text = "Local User Passwords"
         '
-        'InstallAnyAvailableHotfixesevenIfToolStripMenuItem
+        'CheckPasswordsOlderThanApr252020ToolStripMenuItem
         '
-        Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Name = "InstallAnyAvailableHotfixesevenIfToolStripMenuItem"
-        Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
-        Me.InstallAnyAvailableHotfixesevenIfToolStripMenuItem.Text = "Install Any Available Hotfixes (If automatic installation disabled)"
+        Me.CheckPasswordsOlderThanApr252020ToolStripMenuItem.Name = "CheckPasswordsOlderThanApr252020ToolStripMenuItem"
+        Me.CheckPasswordsOlderThanApr252020ToolStripMenuItem.Size = New System.Drawing.Size(363, 22)
+        Me.CheckPasswordsOlderThanApr252020ToolStripMenuItem.Tag = "CheckUnchangedUsers"
+        Me.CheckPasswordsOlderThanApr252020ToolStripMenuItem.Text = "Check passwords older than Apr 25 2020"
+        '
+        'AddTokenToOlderUserPasswordsToolStripMenuItem
+        '
+        Me.AddTokenToOlderUserPasswordsToolStripMenuItem.Name = "AddTokenToOlderUserPasswordsToolStripMenuItem"
+        Me.AddTokenToOlderUserPasswordsToolStripMenuItem.Size = New System.Drawing.Size(363, 22)
+        Me.AddTokenToOlderUserPasswordsToolStripMenuItem.Tag = "ChangeUserPasswords"
+        Me.AddTokenToOlderUserPasswordsToolStripMenuItem.Text = "Add Token to older user passwords"
         '
         'ToolStripMenuItem7
         '
@@ -453,24 +565,48 @@ Partial Class MainForm
         'CkeckStatusToolStripMenuItem
         '
         Me.CkeckStatusToolStripMenuItem.Name = "CkeckStatusToolStripMenuItem"
-        Me.CkeckStatusToolStripMenuItem.Size = New System.Drawing.Size(298, 22)
+        Me.CkeckStatusToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.CkeckStatusToolStripMenuItem.Tag = "CheckVPNCAPCHA"
         Me.CkeckStatusToolStripMenuItem.Text = "Ckeck Status"
         '
         'EnableCAPCHAToolStripMenuItem1
         '
         Me.EnableCAPCHAToolStripMenuItem1.Name = "EnableCAPCHAToolStripMenuItem1"
-        Me.EnableCAPCHAToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.EnableCAPCHAToolStripMenuItem1.Size = New System.Drawing.Size(169, 22)
+        Me.EnableCAPCHAToolStripMenuItem1.Tag = "EnableVPNCAPCHA"
         Me.EnableCAPCHAToolStripMenuItem1.Text = "Enable"
         '
         'DisableCAPCHAOnVPNZoneToolStripMenuItem
         '
         Me.DisableCAPCHAOnVPNZoneToolStripMenuItem.Name = "DisableCAPCHAOnVPNZoneToolStripMenuItem"
-        Me.DisableCAPCHAOnVPNZoneToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.DisableCAPCHAOnVPNZoneToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.DisableCAPCHAOnVPNZoneToolStripMenuItem.Tag = "DisableVPNCAPCHA"
         Me.DisableCAPCHAOnVPNZoneToolStripMenuItem.Text = "Disable"
+        '
+        'ManditoryPasswordResetToolStripMenuItem
+        '
+        Me.ManditoryPasswordResetToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CheckStatusToolStripMenuItem1, Me.DisablePopUpToolStripMenuItem})
+        Me.ManditoryPasswordResetToolStripMenuItem.Name = "ManditoryPasswordResetToolStripMenuItem"
+        Me.ManditoryPasswordResetToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
+        Me.ManditoryPasswordResetToolStripMenuItem.Text = "Manditory Password Reset"
+        '
+        'CheckStatusToolStripMenuItem1
+        '
+        Me.CheckStatusToolStripMenuItem1.Name = "CheckStatusToolStripMenuItem1"
+        Me.CheckStatusToolStripMenuItem1.Size = New System.Drawing.Size(188, 22)
+        Me.CheckStatusToolStripMenuItem1.Tag = "CheckPasswordResetPopup"
+        Me.CheckStatusToolStripMenuItem1.Text = "Check Status"
+        '
+        'DisablePopUpToolStripMenuItem
+        '
+        Me.DisablePopUpToolStripMenuItem.Name = "DisablePopUpToolStripMenuItem"
+        Me.DisablePopUpToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.DisablePopUpToolStripMenuItem.Tag = "DisablePasswordResetPopup"
+        Me.DisablePopUpToolStripMenuItem.Text = "Disable Pop-Up"
         '
         'HelpToolStripMenuItem
         '
-        Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AboutToolStripMenuItem})
+        Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AboutToolStripMenuItem, Me.GetLatestVersionToolStripMenuItem, Me.ReportAnIssueToolStripMenuItem})
         Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
         Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(52, 22)
         Me.HelpToolStripMenuItem.Text = "Help"
@@ -481,9 +617,21 @@ Partial Class MainForm
         Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(231, 22)
         Me.AboutToolStripMenuItem.Text = "About This Application"
         '
+        'GetLatestVersionToolStripMenuItem
+        '
+        Me.GetLatestVersionToolStripMenuItem.Name = "GetLatestVersionToolStripMenuItem"
+        Me.GetLatestVersionToolStripMenuItem.Size = New System.Drawing.Size(231, 22)
+        Me.GetLatestVersionToolStripMenuItem.Text = "Check For Update"
+        '
+        'ReportAnIssueToolStripMenuItem
+        '
+        Me.ReportAnIssueToolStripMenuItem.Name = "ReportAnIssueToolStripMenuItem"
+        Me.ReportAnIssueToolStripMenuItem.Size = New System.Drawing.Size(231, 22)
+        Me.ReportAnIssueToolStripMenuItem.Text = "Report an issue"
+        '
         'LogListView
         '
-        Me.LogListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader3, Me.ColumnHeader2})
+        Me.LogListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.CHLogTimestamp, Me.CHLogHost, Me.CHLogAction, Me.CHLogMessage})
         Me.LogListView.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.LogListView.HideSelection = False
         Me.LogListView.Location = New System.Drawing.Point(2, 436)
@@ -495,26 +643,30 @@ Partial Class MainForm
         Me.LogListView.View = System.Windows.Forms.View.Details
         Me.LogListView.Visible = False
         '
-        'ColumnHeader1
+        'CHLogTimestamp
         '
-        Me.ColumnHeader1.Text = "Timestamp"
-        Me.ColumnHeader1.Width = 86
+        Me.CHLogTimestamp.Text = "Timestamp"
+        Me.CHLogTimestamp.Width = 86
         '
-        'ColumnHeader3
+        'CHLogHost
         '
-        Me.ColumnHeader3.Text = "Host"
-        Me.ColumnHeader3.Width = 109
+        Me.CHLogHost.Text = "Host"
+        Me.CHLogHost.Width = 109
         '
-        'ColumnHeader2
+        'CHLogAction
         '
-        Me.ColumnHeader2.Text = "Message"
-        Me.ColumnHeader2.Width = 850
+        Me.CHLogAction.Text = "Action"
+        '
+        'CHLogMessage
+        '
+        Me.CHLogMessage.Text = "Message"
+        Me.CHLogMessage.Width = 850
         '
         'LogsLabel
         '
         Me.LogsLabel.AutoSize = True
         Me.LogsLabel.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.LogsLabel.Location = New System.Drawing.Point(2, 423)
+        Me.LogsLabel.Location = New System.Drawing.Point(2, 420)
         Me.LogsLabel.Name = "LogsLabel"
         Me.LogsLabel.Size = New System.Drawing.Size(72, 13)
         Me.LogsLabel.TabIndex = 46
@@ -524,7 +676,7 @@ Partial Class MainForm
         'Splitter1
         '
         Me.Splitter1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Splitter1.Location = New System.Drawing.Point(2, 420)
+        Me.Splitter1.Location = New System.Drawing.Point(2, 433)
         Me.Splitter1.Name = "Splitter1"
         Me.Splitter1.Size = New System.Drawing.Size(958, 3)
         Me.Splitter1.TabIndex = 47
@@ -567,9 +719,40 @@ Partial Class MainForm
         Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(325, 22)
         Me.DeleteToolStripMenuItem.Text = "Delete"
         '
+        'AutoPingTimer
+        '
+        Me.AutoPingTimer.Interval = 900000
+        Me.AutoPingTimer.Tag = "15 minutes"
+        '
+        'UpdateListTimes
+        '
+        Me.UpdateListTimes.Enabled = True
+        Me.UpdateListTimes.Interval = 10000
+        '
+        'ResultsListView
+        '
+        Me.ResultsListView.CheckBoxes = True
+        Me.ResultsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader4})
+        Me.ResultsListView.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ResultsListView.Font = New System.Drawing.Font("Arial", 12.0!)
+        Me.ResultsListView.FullRowSelect = True
+        Me.ResultsListView.HideSelection = False
+        Me.ResultsListView.Location = New System.Drawing.Point(2, 129)
+        Me.ResultsListView.Name = "ResultsListView"
+        Me.ResultsListView.Size = New System.Drawing.Size(958, 304)
+        Me.ResultsListView.SmallImageList = Me.ImageList1
+        Me.ResultsListView.TabIndex = 48
+        Me.ResultsListView.UseCompatibleStateImageBehavior = False
+        Me.ResultsListView.View = System.Windows.Forms.View.Details
+        '
+        'ColumnHeader4
+        '
+        Me.ColumnHeader4.Text = "Host"
+        '
         'MyTitleBar1
         '
         Me.MyTitleBar1.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.MyTitleBar1.ControlBox = True
         Me.MyTitleBar1.Dock = System.Windows.Forms.DockStyle.Top
         Me.MyTitleBar1.Location = New System.Drawing.Point(2, 2)
         Me.MyTitleBar1.MaximizeBox = True
@@ -578,38 +761,20 @@ Partial Class MainForm
         Me.MyTitleBar1.Size = New System.Drawing.Size(958, 50)
         Me.MyTitleBar1.TabIndex = 44
         '
-        'ManditoryPasswordResetToolStripMenuItem
-        '
-        Me.ManditoryPasswordResetToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CheckStatusToolStripMenuItem1, Me.DisablePopUpToolStripMenuItem})
-        Me.ManditoryPasswordResetToolStripMenuItem.Name = "ManditoryPasswordResetToolStripMenuItem"
-        Me.ManditoryPasswordResetToolStripMenuItem.Size = New System.Drawing.Size(504, 22)
-        Me.ManditoryPasswordResetToolStripMenuItem.Text = "Manditory Password Reset"
-        '
-        'CheckStatusToolStripMenuItem1
-        '
-        Me.CheckStatusToolStripMenuItem1.Name = "CheckStatusToolStripMenuItem1"
-        Me.CheckStatusToolStripMenuItem1.Size = New System.Drawing.Size(188, 22)
-        Me.CheckStatusToolStripMenuItem1.Text = "Check Status"
-        '
-        'DisablePopUpToolStripMenuItem
-        '
-        Me.DisablePopUpToolStripMenuItem.Name = "DisablePopUpToolStripMenuItem"
-        Me.DisablePopUpToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
-        Me.DisablePopUpToolStripMenuItem.Text = "Disable Pop-Up"
-        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(962, 556)
         Me.ControlBox = False
-        Me.Controls.Add(Me.Splitter1)
         Me.Controls.Add(Me.ResultsListView)
-        Me.Controls.Add(Me.LogsLabel)
+        Me.Controls.Add(Me.TopPanel)
+        Me.Controls.Add(Me.Splitter1)
         Me.Controls.Add(Me.LogListView)
         Me.Controls.Add(Me.StatusStrip1)
-        Me.Controls.Add(Me.TopPanel)
+        Me.Controls.Add(Me.TopMenuStrip)
         Me.Controls.Add(Me.MyTitleBar1)
+        Me.DoubleBuffered = True
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
@@ -619,35 +784,29 @@ Partial Class MainForm
         Me.Padding = New System.Windows.Forms.Padding(2)
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "XG Firewall Management Helper"
-        Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
         Me.TopPanel.ResumeLayout(False)
         Me.TopPanel.PerformLayout()
-        Me.MenuStrip1.ResumeLayout(False)
-        Me.MenuStrip1.PerformLayout()
+        Me.TopMenuStrip.ResumeLayout(False)
+        Me.TopMenuStrip.PerformLayout()
         Me.FirewallsRightClickContextMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents ResultsListView As ListView
     Friend WithEvents ImageList1 As ImageList
-    Friend WithEvents TimeColumnHeader As ColumnHeader
-    Friend WithEvents HostColumnHeader As ColumnHeader
-    Friend WithEvents ResultColumnHeader As ColumnHeader
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents ToolStripStatusLabel1 As ToolStripStatusLabel
     Friend WithEvents StatusToolStripStatusLabel As ToolStripStatusLabel
     Friend WithEvents ToolStripProgressBar As ToolStripProgressBar
     Friend WithEvents ToolTip1 As ToolTip
-    Friend WithEvents PassColumnHeader As ColumnHeader
     Friend WithEvents Label2 As Label
     Friend WithEvents ShellPassTextBox As TextBox
     Friend WithEvents TopPanel As Panel
     Friend WithEvents MyTitleBar1 As MyTitleBar
     Friend WithEvents ToggleCheckButton As Button
-    Friend WithEvents MenuStrip1 As MenuStrip
+    Friend WithEvents TopMenuStrip As MenuStrip
     Friend WithEvents FileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImportFirewallsListToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ViewToolStripMenuItem As ToolStripMenuItem
@@ -667,20 +826,18 @@ Partial Class MainForm
     Friend WithEvents RegisterAndToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents EnableCentralManagementOnlyToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents EnableCentralReportingOnlyToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents DeregisterFromSophosCentralToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem4 As ToolStripSeparator
     Friend WithEvents BulkChangeadminPasswordToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OtherToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents CheckCurrentFirmwareVersionToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents PingCheckToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents InstallAnyAvailableHotfixesevenIfToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AllCheckBox As CheckBox
-    Friend WithEvents ToolStripMenuItem5 As ToolStripSeparator
     Friend WithEvents LogListView As ListView
-    Friend WithEvents ColumnHeader1 As ColumnHeader
-    Friend WithEvents ColumnHeader2 As ColumnHeader
+    Friend WithEvents CHLogTimestamp As ColumnHeader
+    Friend WithEvents CHLogMessage As ColumnHeader
     Friend WithEvents LogsLabel As Label
     Friend WithEvents Splitter1 As Splitter
-    Friend WithEvents ColumnHeader3 As ColumnHeader
+    Friend WithEvents CHLogHost As ColumnHeader
     Friend WithEvents TrustInitialSSHFingerprintToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents HelpToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
@@ -701,4 +858,24 @@ Partial Class MainForm
     Friend WithEvents ManditoryPasswordResetToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CheckStatusToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents DisablePopUpToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ApplicationLogsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AutoPingTimer As Timer
+    Friend WithEvents ToolStripMenuItem8 As ToolStripSeparator
+    Friend WithEvents BulkChangeLocalUserPasswordsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AutoCheckStatusToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ResultsListView As ListViewDoubleBuffered
+    Friend WithEvents ColumnHeader4 As ColumnHeader
+    Friend WithEvents GetLatestVersionToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ReportAnIssueToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents VersionLabel As Label
+    Friend WithEvents Shortcut1Button As Button
+    Friend WithEvents Shortcut4Button As Button
+    Friend WithEvents Shortcut3Button As Button
+    Friend WithEvents Shortcut2Button As Button
+    Friend WithEvents CheckPasswordsOlderThanApr252020ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AddTokenToOlderUserPasswordsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem9 As ToolStripSeparator
+    Friend WithEvents DeregisterFromSophosCentralToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents CHLogAction As ColumnHeader
+    Friend WithEvents UpdateListTimes As Timer
 End Class

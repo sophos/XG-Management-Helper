@@ -22,47 +22,14 @@ Partial Class MyTitleBar
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.MaxLabel = New System.Windows.Forms.Label()
-        Me.MinLabel = New System.Windows.Forms.Label()
-        Me.CloseLabel = New System.Windows.Forms.Label()
         Me.TitleLabel = New System.Windows.Forms.Label()
+        Me.MinimizeButton = New System.Windows.Forms.Button()
+        Me.MaximizeButton = New System.Windows.Forms.Button()
+        Me.ControlButton = New System.Windows.Forms.Button()
+        Me.MaximizeSpacerLabel = New System.Windows.Forms.Label()
+        Me.MinimizeSpacerLabel = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
-        '
-        'MaxLabel
-        '
-        Me.MaxLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.MaxLabel.AutoSize = True
-        Me.MaxLabel.Font = New System.Drawing.Font("Wingdings", 12.0!)
-        Me.MaxLabel.ForeColor = System.Drawing.Color.Silver
-        Me.MaxLabel.Location = New System.Drawing.Point(624, 16)
-        Me.MaxLabel.Name = "MaxLabel"
-        Me.MaxLabel.Size = New System.Drawing.Size(22, 17)
-        Me.MaxLabel.TabIndex = 7
-        Me.MaxLabel.Text = "o"
-        '
-        'MinLabel
-        '
-        Me.MinLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.MinLabel.AutoSize = True
-        Me.MinLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MinLabel.ForeColor = System.Drawing.Color.Silver
-        Me.MinLabel.Location = New System.Drawing.Point(597, 10)
-        Me.MinLabel.Name = "MinLabel"
-        Me.MinLabel.Size = New System.Drawing.Size(18, 20)
-        Me.MinLabel.TabIndex = 5
-        Me.MinLabel.Text = "_"
-        '
-        'CloseLabel
-        '
-        Me.CloseLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.CloseLabel.AutoSize = True
-        Me.CloseLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CloseLabel.ForeColor = System.Drawing.Color.Silver
-        Me.CloseLabel.Location = New System.Drawing.Point(650, 16)
-        Me.CloseLabel.Name = "CloseLabel"
-        Me.CloseLabel.Size = New System.Drawing.Size(20, 20)
-        Me.CloseLabel.TabIndex = 4
-        Me.CloseLabel.Text = "X"
         '
         'TitleLabel
         '
@@ -77,25 +44,107 @@ Partial Class MyTitleBar
         Me.TitleLabel.Text = "Window Title"
         Me.TitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
+        'MinimizeButton
+        '
+        Me.MinimizeButton.BackgroundImage = Global.XGManagementHelper.My.Resources.Resources.minimize
+        Me.MinimizeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.MinimizeButton.Dock = System.Windows.Forms.DockStyle.Right
+        Me.MinimizeButton.FlatAppearance.BorderSize = 0
+        Me.MinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.MinimizeButton.ImageKey = "close"
+        Me.MinimizeButton.Location = New System.Drawing.Point(586, 0)
+        Me.MinimizeButton.Name = "MinimizeButton"
+        Me.MinimizeButton.Size = New System.Drawing.Size(16, 50)
+        Me.MinimizeButton.TabIndex = 10
+        Me.MinimizeButton.UseVisualStyleBackColor = True
+        '
+        'MaximizeButton
+        '
+        Me.MaximizeButton.BackgroundImage = Global.XGManagementHelper.My.Resources.Resources.maximize
+        Me.MaximizeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.MaximizeButton.Dock = System.Windows.Forms.DockStyle.Right
+        Me.MaximizeButton.FlatAppearance.BorderSize = 0
+        Me.MaximizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.MaximizeButton.ImageKey = "close"
+        Me.MaximizeButton.Location = New System.Drawing.Point(612, 0)
+        Me.MaximizeButton.Name = "MaximizeButton"
+        Me.MaximizeButton.Size = New System.Drawing.Size(16, 50)
+        Me.MaximizeButton.TabIndex = 9
+        Me.MaximizeButton.UseVisualStyleBackColor = True
+        '
+        'ControlButton
+        '
+        Me.ControlButton.BackgroundImage = Global.XGManagementHelper.My.Resources.Resources.close
+        Me.ControlButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.ControlButton.Dock = System.Windows.Forms.DockStyle.Right
+        Me.ControlButton.FlatAppearance.BorderSize = 0
+        Me.ControlButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.ControlButton.ImageKey = "close"
+        Me.ControlButton.Location = New System.Drawing.Point(638, 0)
+        Me.ControlButton.Name = "ControlButton"
+        Me.ControlButton.Size = New System.Drawing.Size(16, 50)
+        Me.ControlButton.TabIndex = 8
+        Me.ControlButton.UseVisualStyleBackColor = True
+        '
+        'MaximizeSpacerLabel
+        '
+        Me.MaximizeSpacerLabel.Dock = System.Windows.Forms.DockStyle.Right
+        Me.MaximizeSpacerLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.MaximizeSpacerLabel.ForeColor = System.Drawing.Color.Silver
+        Me.MaximizeSpacerLabel.ImageKey = "close"
+        Me.MaximizeSpacerLabel.Location = New System.Drawing.Point(628, 0)
+        Me.MaximizeSpacerLabel.Margin = New System.Windows.Forms.Padding(0)
+        Me.MaximizeSpacerLabel.Name = "MaximizeSpacerLabel"
+        Me.MaximizeSpacerLabel.Size = New System.Drawing.Size(10, 50)
+        Me.MaximizeSpacerLabel.TabIndex = 11
+        '
+        'MinimizeSpacerLabel
+        '
+        Me.MinimizeSpacerLabel.Dock = System.Windows.Forms.DockStyle.Right
+        Me.MinimizeSpacerLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.MinimizeSpacerLabel.ForeColor = System.Drawing.Color.Silver
+        Me.MinimizeSpacerLabel.ImageKey = "close"
+        Me.MinimizeSpacerLabel.Location = New System.Drawing.Point(602, 0)
+        Me.MinimizeSpacerLabel.Margin = New System.Windows.Forms.Padding(0)
+        Me.MinimizeSpacerLabel.Name = "MinimizeSpacerLabel"
+        Me.MinimizeSpacerLabel.Size = New System.Drawing.Size(10, 50)
+        Me.MinimizeSpacerLabel.TabIndex = 12
+        '
+        'Label3
+        '
+        Me.Label3.Dock = System.Windows.Forms.DockStyle.Right
+        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.ForeColor = System.Drawing.Color.Silver
+        Me.Label3.ImageKey = "close"
+        Me.Label3.Location = New System.Drawing.Point(654, 0)
+        Me.Label3.Margin = New System.Windows.Forms.Padding(0)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(26, 50)
+        Me.Label3.TabIndex = 13
+        '
         'MyTitleBar
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(60, Byte), Integer))
-        Me.Controls.Add(Me.MaxLabel)
-        Me.Controls.Add(Me.MinLabel)
-        Me.Controls.Add(Me.CloseLabel)
+        Me.Controls.Add(Me.MinimizeButton)
+        Me.Controls.Add(Me.MinimizeSpacerLabel)
+        Me.Controls.Add(Me.MaximizeButton)
+        Me.Controls.Add(Me.MaximizeSpacerLabel)
+        Me.Controls.Add(Me.ControlButton)
+        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.TitleLabel)
         Me.DoubleBuffered = True
         Me.Name = "MyTitleBar"
         Me.Size = New System.Drawing.Size(680, 50)
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents MaxLabel As Label
-    Friend WithEvents MinLabel As Label
-    Friend WithEvents CloseLabel As Label
     Friend WithEvents TitleLabel As Label
+    Friend WithEvents ControlButton As Button
+    Friend WithEvents MaximizeButton As Button
+    Friend WithEvents MinimizeButton As Button
+    Friend WithEvents MaximizeSpacerLabel As Label
+    Friend WithEvents MinimizeSpacerLabel As Label
+    Friend WithEvents Label3 As Label
 End Class

@@ -7,6 +7,7 @@
 
 Imports System.Security.AccessControl
 Imports XGManagementHelper.Randomness
+Imports XGManagementHelper.EncryptionHelper
 
 Public Class Login
     ReadOnly pws As New PasswordMeter.PasswordStrength
@@ -130,19 +131,13 @@ Public Class Login
             End If
         End If
 
-
     End Sub
 
-
-
     Private Sub LoadSettings()
-
-        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
-
+        Using key As SecureRegistryKey = GetApplicationRootKey()
             PBKDF2IV = key.GetValue("Init1", "NOT SET")
             PBKDF2SALT = key.GetValue("Init2", "NOT SET")
             Dim DATAKEY_CHECK As String = key.GetValue("datavalue", "NOT SET")
-
             Me.Height = MyTitleBar1.Height + SetPasswordPanel.Height
 
             If PBKDF2IV.Equals("NOT SET") Or PBKDF2SALT.Equals("NOT SET") Or DATAKEY_CHECK.Equals("NOT SET") Then
@@ -169,59 +164,52 @@ Public Class Login
     End Sub
 
     Private Sub SetPasswordButton_Click(sender As Object, e As EventArgs) Handles SetPasswordButton.Click
-        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
+        Using key As SecureRegistryKey = GetApplicationRootKey()
             PBKDF2IV = key.GetValue("Init1")
             If PBKDF2IV Is Nothing OrElse PBKDF2IV.Length < 16 Then
                 PBKDF2IV = Convert.ToBase64String(GetRandomBytes(16))
                 key.SetValue("Init1", PBKDF2IV)
                 Debug.Print("Init1 set")
             End If
-
+            '
             PBKDF2SALT = key.GetValue("Init2")
             If PBKDF2SALT Is Nothing OrElse PBKDF2SALT.Length < 16 Then
                 PBKDF2SALT = Convert.ToBase64String(GetRandomBytes(16))
                 key.SetValue("Init2", PBKDF2SALT)
                 Debug.Print("Init2 set")
             End If
-
+            '
             PBKDF2Key = Convert.ToBase64String(PBKDF2.CryptDeriveKey(ConfirmNewPasswordTextBox.Text, PBKDF2SALT, 100000))
             If recoveredKey IsNot Nothing Then
                 DATAKEY = recoveredKey
                 key.SetValue("Init3", recoveredIV)
-
             Else
                 DATAKEY = Convert.ToBase64String(GetRandomBytes(32))
             End If
-
-            Using AESWrapper As New AES256Wrapper(PBKDF2Key, PBKDF2IV)
-                key.SetValue("datavalue", AESWrapper.Encrypt(DATAKEY))
-            End Using
-
+            key.SetSecureValue("datavalue", DATAKEY, PBKDF2Key, PBKDF2IV)
+            '
         End Using
     End Sub
 
     Private failcount As Integer = 0
     Private Sub LoginButton_Click(sender As Object, e As EventArgs) Handles LoginButton.Click
         PBKDF2Key = Convert.ToBase64String(PBKDF2.CryptDeriveKey(LoginTextBox.Text, PBKDF2SALT, 100000))
-        Using key As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\XGMigrationHelper")
-            Using AESWrapper As New AES256Wrapper(PBKDF2Key, PBKDF2IV)
-                DATAKEY = AESWrapper.Decrypt(key.GetValue("datavalue", ""))
-                If DATAKEY.Length = 0 Then
-                    ErrorLabel.Visible = True
-                    LoginTextBox.Clear()
-                    LoginTextBox.Focus()
-                    failcount += 1
-                    If failcount >= 3 Then
-                        DialogResult = DialogResult.Cancel
-                        Me.Close()
-                    End If
-                Else
-                    ErrorLabel.Visible = False
-                    DialogResult = DialogResult.OK
+        Using key As SecureRegistryKey = GetApplicationRootKey()
+            DATAKEY = key.GetSecureValue("datavalue", "", PBKDF2Key, PBKDF2IV)
+            If DATAKEY.Length = 0 Then
+                ErrorLabel.Visible = True
+                LoginTextBox.Clear()
+                LoginTextBox.Focus()
+                failcount += 1
+                If failcount >= 3 Then
+                    DialogResult = DialogResult.Cancel
                     Me.Close()
                 End If
-            End Using
-
+            Else
+                ErrorLabel.Visible = False
+                DialogResult = DialogResult.OK
+                Me.Close()
+            End If
         End Using
     End Sub
 

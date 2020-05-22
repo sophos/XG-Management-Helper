@@ -14,7 +14,7 @@ Imports System.Text
 'Largely driven by example at https://www.codeproject.com/tips/1156169/encrypt-strings-with-passwords-aes-sha
 'written by APE-Germany
 'License: CPOL https://www.codeproject.com/info/cpol10.aspx
-Class AES256Wrapper
+Public Class AES256Wrapper
     Implements IDisposable
 
 #Disable Warning IDE0044 ' Add readonly modifier
